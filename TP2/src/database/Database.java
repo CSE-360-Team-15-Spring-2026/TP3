@@ -1920,53 +1920,58 @@ public class Database {
 		return false;
 	}
 	
+	
 	public List<Post> searchPosts(String keyword, String thread) {
-	      List<Post> posts = new ArrayList<>();                                     
-	      String query;                                                             
-	   
-	      if (thread == null || thread.isEmpty()) {                                 
-	          // Search all threads
-	          query = "SELECT * FROM Posts WHERE isDeleted = FALSE AND " +
-	                  "(title LIKE ? OR body LIKE ? OR keywords LIKE ?) " +
-	                  "ORDER BY timestamp DESC";  
-	      } else {                                                                  
-	          // Search specific thread only
-	          query = "SELECT * FROM Posts WHERE isDeleted = FALSE AND threadName = ? AND " +                                   
-	                  "(title LIKE ? OR body LIKE ? OR keywords LIKE ?) " +         
-	                  "ORDER BY timestamp DESC";
-	      }                                                                         
-	   
-	      try (PreparedStatement pstmt = connection.prepareStatement(query)) {      
-	          String searchTerm = "%" + keyword + "%";                             
-	                                          
-	          if (thread == null || thread.isEmpty()) {
-	              pstmt.setString(1, searchTerm);                                   
-	              pstmt.setString(2, searchTerm);
-	              pstmt.setString(3, searchTerm);                                   
-	          } else {                        
-	              pstmt.setString(1, thread);
-	              pstmt.setString(2, searchTerm);                                   
-	              pstmt.setString(3, searchTerm);
-	              pstmt.setString(4, searchTerm);                                   
-	          }                               
-	          ResultSet rs = pstmt.executeQuery();                                  
-	          while (rs.next()) {
-	              Post post = new Post(                                             
-	                  rs.getString("username"),   
-	                  rs.getString("title"),  
-	                  rs.getString("body"),
-	                  rs.getString("keywords"),                                     
-	                  rs.getString("threadName")
-	              );                                                                
-	              post.setPostID(rs.getInt("postID"));
-	              post.setTimestamp(rs.getTimestamp("timestamp").toLocalDateTime());
-	              posts.add(post);                
-	          }                               
-	      } catch (SQLException e) {
-	          e.printStackTrace();                                                  
-	      }
-	      return posts;                                                             
-	  }
+		List<Post> posts = new ArrayList<>();
+		String query;
+ 
+		if (thread == null || thread.isEmpty()) {
+			// Search all threads
+			query = "SELECT * FROM postDB WHERE isDeleted = FALSE AND parentPostID = -1 AND "
+					+ "(title LIKE ? OR body LIKE ? OR keywords LIKE ?) "
+					+ "ORDER BY timeStamp DESC";
+		} else {
+			// Search specific thread only
+			query = "SELECT * FROM postDB WHERE isDeleted = FALSE AND parentPostID = -1 AND threadName = ? AND "
+					+ "(title LIKE ? OR body LIKE ? OR keywords LIKE ?) "
+					+ "ORDER BY timeStamp DESC";
+		}
+ 
+		try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+			String searchTerm = "%" + keyword + "%";
+ 
+			if (thread == null || thread.isEmpty()) {
+				pstmt.setString(1, searchTerm);
+				pstmt.setString(2, searchTerm);
+				pstmt.setString(3, searchTerm);
+			} else {
+				pstmt.setString(1, thread);
+				pstmt.setString(2, searchTerm);
+				pstmt.setString(3, searchTerm);
+				pstmt.setString(4, searchTerm);
+			}
+ 
+			ResultSet rs = pstmt.executeQuery();
+			while (rs.next()) {
+				Post post = new Post(
+					rs.getString("userName"),
+					rs.getString("title"),
+					rs.getString("body"),
+					rs.getString("keywords"),
+					rs.getString("threadName")
+				);
+				post.setPostID(rs.getInt("postID"));
+				Timestamp ts = rs.getTimestamp("timeStamp");
+				if (ts != null) {
+					post.setTimestamp(ts.toLocalDateTime());
+				}
+				posts.add(post);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return posts;
+	}
 	
 	/**
 	 * Update an existing post in the database

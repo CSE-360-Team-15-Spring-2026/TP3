@@ -5,34 +5,60 @@ import java.time.LocalDateTime;
 /*******
  * <p> Title: Post Class </p>
  *
- * </p>
- *
- *
- *
- * @version 1.00   2026-03-24   Initial implementation
+ * <p> Description: An class under the entityclasses Package that implements all the necessary attributes and functionality for the Post object for a student discussion system.</p>
+ * <p> The operations in this class provide input validation and changes the data values which is used by the different GUI packages and the database file to implement the Student Post</p>
+ * <p> All the attributes and functionality was decided and implemented using the Student User Stories as well as the Staff EPICS</p>
+ * <p> The class will contain the CRUD Functionality: </p>
+ * <ul>
+ * 	<li> Create: Using the Constructors</li>
+ * 	<li> Read: Using the Getter Functions</li>
+ * 	<li> Update: Using any of the Setter Functions</li>
+ *  <li> Delete: Using the setter / getter function for the Delete-Related Attributes. And the changedelete() function</li>
+ * </ul>
+ * 
+ * @version 1.00    
  */
 public class Post {
 
-	/*
-	 * These are the private attributes for this entity object
-	 */
-
+	/** Unique integer identifier for each Post */
 	private int postID;
+
+	/** Parent post ID; -1 for top-level posts and link to PostID for replies to main posts */
 	private int parentPostID;
+
+	/** Username of the author of the Post */
 	private String username;
+
+	/** Title for the Post */
 	private String title;
+
+	/** Body of the Post */
 	private String body;
+
+	/** Thread name that is Post is under */
 	private String threadName;
+
+	/** Time of the Post Creation */
 	private LocalDateTime timestamp;
+
+	/** Check whether Post id deleted */
 	private boolean isDeleted;
+
+	/** List of keywords related to the Post */
 	private String keywords;
 
-	// --- Staff Epic attributes (TP3 readiness) ---
-
+	/** Staff feedback text for TP3 epics. */
 	private String feedback;
+
+	/** Username of staff member who gave feedback. */
 	private String feedbackAuthor;
+
+	/** Flag if post was flagged by staff. */
 	private boolean isFlagged;
+
+	/** Reason for staff flagging. */
 	private String reason;
+
 
 
 	/*-*******************************************************************************************
@@ -40,10 +66,9 @@ public class Post {
 	 */
 
 	/*****
-	 * <p> Method: Post() </p>
 	 *
-	 * <p> Description: Default constructor. Initialises all fields to safe default
-	 * values. Follows the same pattern as the User default constructor. </p>
+	 * <p> Constructs a default Post Object with an empty title, body, username, keywords, feedback, feedbackAuthor, reason as well as
+	 * defaults the ID's to -1 and uses default variables values for threadName, isDeleted, isFlagged </p>
 	 */
 	public Post() {
 		this.postID = -1;
@@ -62,13 +87,9 @@ public class Post {
 	}
 
 	/*****
-	 * <p> Method: Post(String username, String title, String body,
-	 *                   String keywords, String threadName) </p>
 	 *
-	 * <p> Description: Constructor for creating a new top-level Post.
-	 * Sets postID to -1 (assigned by DB on insert), timestamp to now,
-	 * isDeleted to false, and all staff epic fields to defaults.
-	 * Defaults threadName to "General" if null or blank. </p>
+	 * <p> Constructs a Post Object with a given username, title, body, keywords and threadName.
+	 * If threadName is empty, it will default to "General"</p>
 	 *
 	 * @param username   the userName of the student creating this post
 	 * @param title      the post title
@@ -93,13 +114,18 @@ public class Post {
 		this.reason = "";
 	}
 
-
-	/*-*******************************************************************************************
-	 CRUD Operations
+	/*****
+	 * <p> CRUD Operations </p>
+	 *
+	 * <p> These methods implement the create, read, update, and delete
+	 * behaviors required by the Students User Stories. </p>
 	 */
 
+
+
 	/*****
-	 * <p> Method: changeDelete() </p>
+	 * <p> Changes the Delete Boolean Value </p>
+	 * <p> Useful for soft-delete and when used by staff</p>
 	 *
 	 */
 	public void changeDelete() {
@@ -107,7 +133,7 @@ public class Post {
 	}
 
 	/*****
-	 * <p> Method: validateTitle() </p>
+	 * <p> Checks whether the title provided is valid: Meaning it can't be empty or to long! </p>
 	 *
 	 * @return true if valid or this is a reply, false otherwise
 	 */
@@ -117,7 +143,7 @@ public class Post {
 	}
 
 	/*****
-	 * <p> Method: validateBody() </p>
+	 * <p> Checks whether the title provided is valid: Meaning it can't be empty </p>
 	 *
 	 * @return true if valid, false otherwise
 	 */
@@ -131,74 +157,95 @@ public class Post {
 	 */
 
 	/*****
-	 * <p> Method: getPostID() </p>
+	 * <p> Returns the PostID </p>
 	 * @return the postID
 	 */
-	public int getPostID() { return postID; }
+	public int getPostID() { 
+		return postID; 
+		}
 
 	/*****
-	 * <p> Method: setPostID(int postID) </p>
+	 * <p> Sets the PostID from the given parameter </p>
 	 * @param postID the auto-incremented ID assigned by the database
 	 */
-	public void setPostID(int postID) { this.postID = postID; }
+	public void setPostID(int postID) { 
+		this.postID = postID; 
+		}
 
 	/*****
-	 * <p> Method: getParentPostID() </p>
+	 * <p> Returns the Parent PostID. If it is a Post, will return -1 which is the default value given by the Database  </p>
 	 * @return the parentPostID
 	 */
-	public int getParentPostID() { return parentPostID; }
+	public int getParentPostID() { 
+		return parentPostID; 
+		}
 
 	/*****
-	 * <p> Method: setParentPostID(int parentPostID) </p>
+	 * <p> Sets the ParentPostID from the given parameter </p>
 	 * @param parentPostID the parent post ID, or -1 for top-level posts
 	 */
-	public void setParentPostID(int parentPostID) { this.parentPostID = parentPostID; }
+	public void setParentPostID(int parentPostID) { 
+		this.parentPostID = parentPostID; 
+		}
 
 	/*****
-	 * <p> Method: getUsername() </p>
+	 * <p> Returns the username of the author of the Post </p>
 	 * @return the userName of the author
 	 */
-	public String getUsername() { return username; }
+	public String getUsername() { 
+		return username; 
+		}
 
 	/*****
-	 * <p> Method: setUsername(String username) </p>
-	 * <p> Description: Sets the userName of the author. </p>
+	 * <p> Sets the username of the author of the Post </p>
 	 * @param username the userName of the author
 	 */
-	public void setUsername(String username) { this.username = username; }
+	public void setUsername(String username) { 
+		this.username = username; 
+		}
 
 	/*****
-	 * <p> Method: getTitle() </p>
+	 * <p> Returns the title of the Post </p>
 	 * @return the title
 	 */
-	public String getTitle() { return title; }
+	public String getTitle() { 
+		return title; 
+		}
 
 	/*****
-	 * <p> Method: setTitle(String title) </p>
+	 * <p> Sets the title of the Post from the given parameter </p>
 	 * @param title the new title
 	 */
-	public void setTitle(String title) { this.title = title; }
+	public void setTitle(String title) { 
+		this.title = title; 
+		}
 
 	/*****
-	 * <p> Method: getBody() </p>
+	 * <p> Returns the body of the Post </p>
 	 * @return the body content
 	 */
-	public String getBody() { return body; }
+	public String getBody() { 
+		return body; 
+		}
 
 	/*****
-	 * <p> Method: setBody(String body) </p>
+	 * <p> Sets the body of the Post from the given parameter </p>
 	 * @param body the new body content
 	 */
-	public void setBody(String body) { this.body = body; }
+	public void setBody(String body) { 
+		this.body = body; 
+		}
 
 	/*****
-	 * <p> Method: getThreadName() </p>
+	 * <p> Returns the threadName the Post is linked to </p>
 	 * @return the thread name
 	 */
-	public String getThreadName() { return threadName; }
+	public String getThreadName() { 
+		return threadName; 
+		}
 
 	/*****
-	 * <p> Method: setThreadName(String threadName) </p>
+	 * <p> Sets the ThreadName to the Post </p>
 	 * @param threadName the new thread name
 	 */
 	public void setThreadName(String threadName) {
@@ -206,116 +253,163 @@ public class Post {
 	}
 
 	/*****
-	 * <p> Method: getTimestamp() </p>
+	 * <p> Returns the timestamp of the Post </p>
 	 * @return the creation timestamp
 	 */
-	public LocalDateTime getTimestamp() { return timestamp; }
+	public LocalDateTime getTimestamp() { 
+		return timestamp; 
+		}
 
 	/*****
-	 * <p> Method: setTimestamp(LocalDateTime timestamp) </p>
+	 * <p> Sets the timestamp of the Post </p>
 	 * @param timestamp the timestamp to set
 	 */
-	public void setTimestamp(LocalDateTime timestamp) { this.timestamp = timestamp; }
+	public void setTimestamp(LocalDateTime timestamp) { 
+		this.timestamp = timestamp; 
+		}
 
 	/*****
-	 * <p> Method: isDeleted() </p>
+	 * <p> Returns if the post is deleted </p>
 	 * @return true if soft-deleted
 	 */
-	public boolean isDeleted() { return isDeleted; }
+	public boolean isDeleted() { 
+		return isDeleted; 
+		}
 
 	/*****
-	 * <p> Method: setDeleted(boolean isDeleted) </p>
+	 * <p> Sets the boolean value of whether the Post is deleted </p>
 	 * @param isDeleted true if deleted
 	 */
-	public void setDeleted(boolean isDeleted) { this.isDeleted = isDeleted; }
+	public void setDeleted(boolean isDeleted) { 
+		this.isDeleted = isDeleted; 
+		}
 
 	/*****
-	 * <p> Method: getKeyWords() </p>
+	 * <p> Returns the keywords linked to the Post </p>
 	 * @return the keywords
 	 */
-	public String getKeyWords() { return keywords; }
+	public String getKeyWords() { 
+		return keywords; 
+		}
 
 	/*****
-	 * <p> Method: setKeyWords(String keywords) </p>
+	 * <p> Sets the keywords linked to the Post </p>
 	 * @param keywords the new comma-separated keywords
 	 */
-	public void setKeyWords(String keywords) { this.keywords = keywords; }
+	public void setKeyWords(String keywords) { 
+		this.keywords = keywords; 
+		}
+
+//	/*****
+//	 * <p> Method: getKeywords() </p>
+//	 * @return the keywords
+//	 */
+//	public String getKeywords() { return keywords; }
+//
+//	/*****
+//	 * <p> Method: setKeywords(String keywords) </p>
+//	 * @param keywords the new comma-separated keywords
+//	 */
+//	public void setKeywords(String keywords) { this.keywords = keywords; }
 
 	/*****
-	 * <p> Method: getKeywords() </p>
-	 * @return the keywords
-	 */
-	public String getKeywords() { return keywords; }
-
-	/*****
-	 * <p> Method: setKeywords(String keywords) </p>
-	 * @param keywords the new comma-separated keywords
-	 */
-	public void setKeywords(String keywords) { this.keywords = keywords; }
-
-	/*****
-	 * <p> Method: getFeedback() </p>
+	 * <p> Returns Staff Feedback </p>
+	 * <p> Staff EPICS Functionality </p>
 	 * @return the staff feedback text
 	 */
-	public String getFeedback() { return feedback; }
+	public String getFeedback() { 
+		return feedback; 
+		}
 
 	/*****
-	 * <p> Method: setFeedback(String feedback) </p>
+	 * <p> Sets the Feedback given by the Staff </p>
+	 * <p> Staff EPICS Functionality </p>
 	 * @param feedback the feedback text written by the staff member
 	 */
-	public void setFeedback(String feedback) { this.feedback = feedback; }
+	public void setFeedback(String feedback) { 
+		this.feedback = feedback; 
+		}
 
 	/*****
-	 * <p> Method: getFeedbackAuthor() </p>
+	 * <p> Returns the author of the Feedback given to the Post </p>
+	 * <p> Staff EPICS Functionality </p>
 	 * @return the staff member's userName
 	 */
-	public String getFeedbackAuthor() { return feedbackAuthor; }
+	public String getFeedbackAuthor() { 
+		return feedbackAuthor; 
+		}
 
 	/*****
-	 * <p> Method: setFeedbackAuthor(String feedbackAuthor) </p>
+	 * <p> Sets the author of the Feedback given to a Post </p>
+	 * <p> Staff EPICS Functionality </p>
 	 * @param feedbackAuthor the staff member's userName
 	 */
-	public void setFeedbackAuthor(String feedbackAuthor) { this.feedbackAuthor = feedbackAuthor; }
+	public void setFeedbackAuthor(String feedbackAuthor) { 
+		this.feedbackAuthor = feedbackAuthor; 
+		}
 
 	/*****
-	 * <p> Method: isFlag() </p>
+	 * <p> Returns whether the Post has been flagged by the Staff </p>
+	 * <p> Staff EPICS Functionality </p>
 	 * @return true if flagged
 	 */
-	public boolean isFlag() { return isFlagged; }
+	public boolean isFlag() { 
+		return isFlagged; 
+		}
 
 	/*****
-	 * <p> Method: isFlagged() </p>
+	 * <p> Sets the boolean value if the Post is supposed to be Flagged or not </p>
+	 * <p> Staff EPICS Functionality </p>
 	 * @return true if flagged
 	 */
-	public boolean isFlagged() { return isFlagged; }
+	public boolean isFlagged() { 
+		return isFlagged; 
+		}
 
 	/*****
 	 * <p> Method: setFlag(boolean isFlagged) </p>
+	 * <p> Staff EPICS Functionality </p>
 	 * @param isFlagged true to flag this post, false to unflag
 	 */
 	public void setFlag(boolean isFlagged) {
 		this.isFlagged = isFlagged;
-		if (!isFlagged) this.reason = "";
+		if (!isFlagged) {
+			this.reason = "";
+		}
 	}
 
 	/*****
-	 * <p> Method: setFlagged(boolean isFlagged) </p>
+	 * <p> Sets the boolean value if the Post is supposed to be Flagged or not </p>
+	 * <p> Staff EPICS Functionality </p>
 	 * @param isFlagged true to flag this post, false to unflag
 	 */
 	public void setFlagged(boolean isFlagged) {
 		this.isFlagged = isFlagged;
-		if (!isFlagged) this.reason = "";
+		if (!isFlagged) {
+			this.reason = "";
+		}
 	}
 
 	/*****
-	 * <p> Method: getReason() </p>
+	 * <p> Returns the reason for the Flag </p>
+	 * <p> Staff EPICS Functionality </p>
 	 * @return the flag reason
 	 */
-	public String getReason() { return reason; }
+	public String getReason() { 
+		return reason; 
+		}
 
 	/*****
-	 * <p> Method: setReason(String reason) </p>
+	 * <p> Sets the reason for the Flag </p>
+	 * <p> Staff EPICS Functionality </p>
 	 * @param reason the reason for flagging
 	 */
-	public void setReason(String reason) { this.reason = reason; }
+	public void setReason(String reason) { 
+		this.reason = reason; 
+		}
+	
+	
 }
+
+
+
