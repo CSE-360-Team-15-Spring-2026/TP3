@@ -1967,6 +1967,32 @@ public class Database {
 	      }
 	      return posts;                                                             
 	  }
+	
+	/**
+	 * Update an existing post in the database
+	 */
+	public boolean updatePost(Post post) {
+	    if (post == null) {
+	        return false;
+	    }
+	    
+	    try {
+	        String sql = "UPDATE postDB SET title = ?, body = ?, threadName = ? WHERE postID = ?";
+	        
+	        PreparedStatement pstmt = connection.prepareStatement(sql);
+	        pstmt.setString(1, post.getTitle());
+	        pstmt.setString(2, post.getBody());
+	        pstmt.setString(3, post.getThreadName());
+	        pstmt.setInt(4, post.getPostID());
+	        
+	        int rowsAffected = pstmt.executeUpdate();
+	        return rowsAffected > 0;
+	        
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        return false;
+	    }
+	}
 
 
 	/*******

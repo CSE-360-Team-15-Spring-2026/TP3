@@ -1,31 +1,51 @@
 package guiEditPost;
 
+import entityClasses.Post;
+import database.Database;
+
 /**
- * The Class ModelEditPost.
+ * <p> Title: ModelEditPost Class </p>
+ *
+ * <p> Description: Model for editing posts </p>
+ *
+ * <p> Copyright: Lynn Robert Carter © 2025 </p>
+ *
+ * @author Lynn Robert Carter
+ * @version 2.00 2025-03-25 Complete edit functionality with database update
  */
 public class ModelEditPost {
 
-/*******
- * <p> Title: ModelEditPost Class. </p>
- * 
- * <p> Description: The Role1Home Page Model.  This class is a stub for future expansion.
- * 
- * This class is not used as there is no unique data manipulation for this GUI page.</p>
- * 
- * <p> Copyright: Lynn Robert Carter © 2025 </p>
- * 
- * @author Lynn Robert Carter
- * 
- * @version 1.00		2025-08-15 Initial version
- * @version 1.01		2025-09-13 Updated JavaDoc description
- *  
- */
-	
-	/**
-	 * Default constructor. This Model class is a stub; no data is
-	 * directly managed by this MVC component beyond what the database handles.
-	 */
-	public ModelEditPost() {
-	}
+    private static Database theDatabase = applicationMain.FoundationsMain.database;
 
+    /**
+     * Update an existing post
+     */
+    protected static boolean updatePost(Post post, String title, String body, String threadName) {
+        if (post == null) {
+            return false;
+        }
+        if (title == null || title.isBlank()) {
+            return false;
+        }
+        if (body == null || body.isBlank()) {
+            return false;
+        }
+        if (threadName == null || threadName.isBlank()) {
+            threadName = "General";
+        }
+        
+        try {
+            // Update the post object fields
+            post.setTitle(title.trim());
+            post.setBody(body.trim());
+            post.setThreadName(threadName);
+            
+            // CRITICAL: Save changes back to database
+            return theDatabase.updatePost(post);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

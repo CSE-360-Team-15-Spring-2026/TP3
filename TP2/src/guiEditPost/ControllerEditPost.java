@@ -1,76 +1,83 @@
 package guiEditPost;
 
-
-/*******
- * <p> Title: ControllerEditPost Class. </p>
- * 
- * <p> Description: The Java/FX-based Role 1 Home Page.  This class provides the controller
- * actions basic on the user's use of the JavaFX GUI widgets defined by the View class.
- * 
- * This page is a stub for establish future roles for the application.
- * 
- * The class has been written assuming that the View or the Model are the only class methods that
- * can invoke these methods.  This is why each has been declared at "protected".  Do not change any
- * of these methods to public.</p>
- * 
+/**
+ * <p> Title: ControllerEditPost Class </p>
+ *
+ * <p> Description: Controller for Edit Post page </p>
+ *
  * <p> Copyright: Lynn Robert Carter © 2025 </p>
- * 
+ *
  * @author Lynn Robert Carter
- * 
- * @version 1.00		2025-08-17 Initial version
- * @version 1.01		2025-09-16 Update Javadoc documentation *  
+ * @version 2.00 2025-03-25 Complete edit functionality
  */
-
 public class ControllerEditPost {
 
-	/*-*******************************************************************************************
+    /**
+     * Save changes to the post
+     */
+    protected static void performSaveChanges() {
+        String title = ViewEditPost.text_PostTitle.getText();
+        String body = ViewEditPost.text_PostBody.getText();
+        String threadName = ViewEditPost.comboBox_ThreadName.getValue();
+        
+        if (title == null || title.trim().isEmpty()) {
+            ViewEditPost.showAlert("Validation Error", "Post title cannot be empty.");
+            return;
+        }
+        
+        if (body == null || body.trim().isEmpty()) {
+            ViewEditPost.showAlert("Validation Error", "Post body cannot be empty.");
+            return;
+        }
+        
+        if (threadName == null || threadName.isBlank()) {
+            threadName = "General";
+        }
+        
+        boolean success = ModelEditPost.updatePost(
+            ViewEditPost.thePost,
+            title,
+            body,
+            threadName
+        );
+        
+        if (success) {
+            ViewEditPost.showAlert("Success", "Post updated successfully!");
+            performCancel();  // Return to home
+        } else {
+            ViewEditPost.showAlert("Error", "Failed to update post.");
+        }
+    }
+    
+    /**
+     * Cancel editing and return to home
+     */
+    protected static void performCancel() {
+        if (applicationMain.FoundationsMain.activeHomePage == 2) {
+            guiRole1.ViewRole1Home.displayRole1Home(
+                ViewEditPost.theStage,
+                ViewEditPost.theUser
+            );
+        } else {
+            guiRole2.ViewRole2Home.displayRole2Home(
+                ViewEditPost.theStage,
+                ViewEditPost.theUser
+            );
+        }
+    }
+    
+    protected static void performUpdate() {
+        guiUserUpdate.ViewUserUpdate.displayUserUpdate(
+            ViewEditPost.theStage,
+            ViewEditPost.theUser
+        );
+    }
 
-	User Interface Actions for this page
-	
-	This controller is not a class that gets instantiated.  Rather, it is a collection of protected
-	static methods that can be called by the View (which is a singleton instantiated object) and 
-	the Model is often just a stub, or will be a singleton instantiated object.
-	
-	 */
+    protected static void performLogout() {
+        guiUserLogin.ViewUserLogin.displayUserLogin(ViewEditPost.theStage);
+    }
 
-	/**
-	 * Default constructor is not used.
-	 */
-	public ControllerEditPost() {
-	}
-
-	/**********
-	 * <p> Method: performUpdate() </p>
-	 * 
-	 * <p> Description: This method directs the user to the User Update Page so the user can change
-	 * the user account attributes. </p>
-	 * 
-	 */
-	protected static void performUpdate () {
-		guiUserUpdate.ViewUserUpdate.displayUserUpdate(ViewEditPost.theStage, ViewEditPost.theUser);
-	}	
-
-	/**********
-	 * <p> Method: performLogout() </p>
-	 * 
-	 * <p> Description: This method logs out the current user and proceeds to the normal login
-	 * page where existing users can log in or potential new users with a invitation code can
-	 * start the process of setting up an account. </p>
-	 * 
-	 */
-	protected static void performLogout() {
-		guiUserLogin.ViewUserLogin.displayUserLogin(ViewEditPost.theStage);
-	}
-	
-	/**********
-	 * <p> Method: performQuit() </p>
-	 * 
-	 * <p> Description: This method terminates the execution of the program.  It leaves the
-	 * database in a state where the normal login page will be displayed when the application is
-	 * restarted.</p>
-	 * 
-	 */	
-	protected static void performQuit() {
-		System.exit(0);
-	}
+    protected static void performQuit() {
+        System.exit(0);
+    }
 }

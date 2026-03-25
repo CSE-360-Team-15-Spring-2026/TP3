@@ -72,34 +72,28 @@ public class ControllerRole1Home {
     /**
      * Edit selected post
      */
-    protected static void editPost() {
-        ViewRole1Home.PostDisplay selected = 
-            ViewRole1Home.table_Posts.getSelectionModel().getSelectedItem();
+    public static void editPost() {
+        ViewRole1Home.PostDisplay selected = ViewRole1Home.table_Posts.getSelectionModel().getSelectedItem();
         
         if (selected == null) {
-            ViewRole1Home.showAlert("No Selection", 
-                "Please select a post to edit.");
+            ViewRole1Home.showAlert("No Selection", "Please select a post to edit.");
             return;
         }
         
-        int postId = selected.getPostId();
-        Post post = ModelRole1Home.getPostById(postId);
+        Post post = selected.getPost();
         
-        if (post == null) {
-            ViewRole1Home.showAlert("Error", "Post not found.");
-            return;
-        }
-        
-        // Check if user is the author (using getUsername instead of getAuthor)
+        // Check ownership
         if (!post.getUsername().equals(ModelRole1Home.getCurrentUser())) {
-            ViewRole1Home.showAlert("Unauthorized", 
-                "You can only edit your own posts.");
+            ViewRole1Home.showAlert("Unauthorized", "You can only edit your own posts.");
             return;
         }
         
-        // Open edit post dialog
-        guiEditPost.ViewEditPost.displayEditPost(ViewRole1Home.theStage, 
-            ViewRole1Home.theUser);
+        // Open edit page
+        guiEditPost.ViewEditPost.displayEditPost(
+            ViewRole1Home.theStage,
+            ViewRole1Home.theUser,
+            post
+        );
     }
     
     /**
