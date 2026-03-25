@@ -1,11 +1,15 @@
 package database;
 
 import java.sql.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import entityClasses.User;
+import entityClasses.Post;
+import entityClasses.Reply;
+
 
 /*******
  * <p> Title: Database Class. </p>
