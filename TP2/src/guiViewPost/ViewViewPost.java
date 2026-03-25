@@ -109,6 +109,12 @@ public class ViewViewPost {
         text_PostBody.setText(post.getBody() == null ? "" : post.getBody());
         text_ReplyBody.clear();
         
+        if(post.isDeleted()) 
+        {
+    	label_PostTitle.setText("[Deleted]");
+    	text_PostBody.setText("[Deleted]");
+        }
+        
         loadReplies();
         
         theStage.setTitle("View Post");
@@ -128,7 +134,9 @@ public class ViewViewPost {
         }
         
         if (thePost.isDeleted()) {
+        	Reply temp = new Reply();
             replyData.add("Original post has been deleted.");
+            currentReplies.add(temp);
         }
         
         List<Reply> replies = new ArrayList<>();

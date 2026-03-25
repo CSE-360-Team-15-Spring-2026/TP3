@@ -64,6 +64,7 @@ public class ControllerRole1Home {
             return;
         }
         
+        
         // Open view post dialog
         guiViewPost.ViewViewPost.displayViewPost(ViewRole1Home.theStage, 
             ViewRole1Home.theUser, post);
@@ -86,6 +87,12 @@ public class ControllerRole1Home {
         if (!post.getUsername().equals(ModelRole1Home.getCurrentUser())) {
             ViewRole1Home.showAlert("Unauthorized", "You can only edit your own posts.");
             return;
+        }
+        
+        // Check if it's deleted (for future TP uses)
+        if (post.isDeleted()) {
+        	ViewRole1Home.showAlert("Error", "Post was deleted");
+        	return;
         }
         
         // Open edit page
@@ -121,6 +128,11 @@ public class ControllerRole1Home {
         if (!post.getUsername().equals(ModelRole1Home.getCurrentUser())) {
             ViewRole1Home.showAlert("Unauthorized", 
                 "You can only delete your own posts.");
+            return;
+        }
+        
+        if (post.isDeleted()) {
+            ViewRole1Home.showAlert("Error", "Post already deleted.");
             return;
         }
         

@@ -5,6 +5,8 @@ import entityClasses.Reply;
 import java.util.ArrayList;
 import java.util.List;
 
+import database.Database;
+
 /**
  * <p> Title: ModelRole1Home Class </p>
  *
@@ -86,7 +88,7 @@ public class ModelRole1Home {
         }
         
         post.changeDelete();
-        return true;
+        return applicationMain.FoundationsMain.database.deletePost(post);
     }
 
     /**
