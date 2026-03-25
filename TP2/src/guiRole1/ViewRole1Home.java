@@ -215,10 +215,7 @@ public class ViewRole1Home {
         
         postData.clear();
         for (Post post : posts) {
-            if (!post.isDeleted()) {
-                postData.add(new PostDisplay(post));
-            } else {
-            }
+               postData.add(new PostDisplay(post));
         }
     }
     
@@ -278,7 +275,7 @@ public class ViewRole1Home {
      */
     public static class PostDisplay {
         private final int postId;
-        private final String title;
+        private String title;
         private final String thread;     // NEW!
         private final String author;
         private final int replyCount;
@@ -289,8 +286,9 @@ public class ViewRole1Home {
         public PostDisplay(Post post) {
             this.post = post;
             this.postId = post.getPostID();
-            this.title = post.getTitle();
             this.thread = post.getThreadName();  // NEW!
+            if(post.isDeleted()) this.title = "[Deleted]";
+            else 				 this.title = post.getTitle();
             this.author = post.getUsername();
             this.replyCount = ModelRole1Home.getReplyCount(post.getPostID());
             this.status = ModelRole1Home.isRead(post.getPostID()) ? "READ" : "UNREAD";

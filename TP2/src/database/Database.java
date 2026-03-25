@@ -1851,6 +1851,30 @@ public class Database {
 	
 	
 	/*********
+	 * <p> Method: deletePost() </p>
+	 * 
+	 * <p> Description: Soft deletes a post in the database. </p>
+	 * 
+	 * @param Post the post
+	 * @return true if successful else false
+	 */
+	public boolean deletePost(Post post) {
+		if (post == null) {
+			return false;
+		}
+
+		String query = "UPDATE postDB SET isDeleted = TRUE WHERE postID = ?";
+		try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+			pstmt.setInt(1, post.getPostID());
+			return pstmt.executeUpdate() > 0;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	
+	/*********
 	 * <p> Method: deleteReply() </p>
 	 * 
 	 * <p> Description: Soft deletes a reply in the database. </p>

@@ -152,6 +152,11 @@ public class ControllerViewPost {
             showAlert("Unauthorized", "You can only edit your own replies.");
             return;
         }
+        
+        if (selectedReply.isDeleted()) {
+        	showAlert("Error", "Reply was deleted");
+        	return;
+        }
 
         // Open edit reply page
         guiEditReply.ViewEditReply.displayEditReply(
