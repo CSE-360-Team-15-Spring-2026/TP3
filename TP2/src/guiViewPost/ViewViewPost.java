@@ -51,6 +51,7 @@ public class ViewViewPost {
     protected static TextArea text_ReplyBody = new TextArea();
     protected static Button button_PostReply = new Button("Post Reply");
     protected static Button button_DeleteReply = new Button("Delete Selected Reply");
+    protected static Button button_EditReply = new Button("Edit Selected Reply");
     
     protected static Button button_Return = new Button("Return");
 
@@ -71,6 +72,13 @@ public class ViewViewPost {
         
         if (theView == null) {
             theView = new ViewViewPost();
+        }
+        
+        if (thePost != null && theUser != null) {
+            applicationMain.FoundationsMain.database.markPostAsRead(
+                theUser.getUserName(), 
+                thePost.getPostID()
+            );
         }
         
         label_PostTitle.setText(
@@ -216,6 +224,9 @@ public class ViewViewPost {
         text_ReplyBody.setWrapText(true);
         text_ReplyBody.setPromptText("Type your reply here...");
         
+        setupButtonUI(button_EditReply, "Dialog", 14, 200, Pos.CENTER, 20, 515);
+        button_EditReply.setOnAction((e) -> { ControllerViewPost.performEditReply(); });
+        
         setupButtonUI(button_PostReply, "Dialog", 14, 150, Pos.CENTER, 225, 515);
         button_PostReply.setOnAction((e) -> { ControllerViewPost.performPostReply(); });
         
@@ -229,7 +240,7 @@ public class ViewViewPost {
             label_PostTitle, label_PostMeta, text_PostBody,
             label_Replies, list_Replies,
             label_AddReply, text_ReplyBody,
-            button_PostReply, button_DeleteReply,
+            button_PostReply, button_EditReply, button_DeleteReply,
             button_Return
         );
     }

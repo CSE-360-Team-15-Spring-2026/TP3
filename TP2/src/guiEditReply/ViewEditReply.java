@@ -2,232 +2,181 @@ package guiEditReply;
 
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import database.Database;
 import entityClasses.User;
+import entityClasses.Reply;
+import entityClasses.Post;
 
-
-/*******
- * <p> Title: GUIReviewerHomePage Class. </p>
+/**
+ * <p> Title: ViewEditReply Class </p>
  * 
- * <p> Description: The Java/FX-based Role1 Home Page.  The page is a stub for some role needed for
- * the application.  The widgets on this page are likely the minimum number and kind for other role
- * pages that may be needed.</p>
+ * <p> Description: Edit an existing reply </p>
  * 
  * <p> Copyright: Lynn Robert Carter © 2025 </p>
  * 
  * @author Lynn Robert Carter
- * 
- * @version 1.00		2025-08-20 Initial version
- *  
+ * @version 1.00 2025-03-25 Reply editing functionality
  */
-
 public class ViewEditReply {
-	
-	/*-*******************************************************************************************
+    
+    private static double width = applicationMain.FoundationsMain.WINDOW_WIDTH;
+    private static double height = applicationMain.FoundationsMain.WINDOW_HEIGHT;
 
-	Attributes
-	
-	 */
-	
-	// These are the application values required by the user interface
-	
-	private static double width = applicationMain.FoundationsMain.WINDOW_WIDTH;
-	private static double height = applicationMain.FoundationsMain.WINDOW_HEIGHT;
+    // GUI Area 1: Header
+    protected static Label label_PageTitle = new Label();
+    protected static Label label_UserDetails = new Label();
+    protected static Button button_UpdateThisUser = new Button("Account Update");
+    
+    protected static Line line_Separator1 = new Line(20, 95, width-20, 95);
 
+    // GUI Area 2: Edit Form
+    protected static Label label_OriginalPost = new Label("Original Post:");
+    protected static Label label_OriginalPostText = new Label();
+    
+    protected static Label label_ReplyBody = new Label("Reply Body:");
+    protected static TextArea text_ReplyBody = new TextArea();
+    
+    protected static Button button_SaveChanges = new Button("Save Changes");
+    protected static Button button_Cancel = new Button("Cancel");
+    
+    protected static Line line_Separator4 = new Line(20, 525, width-20, 525);
+    
+    // GUI Area 3: Navigation
+    protected static Button button_Logout = new Button("Logout");
+    protected static Button button_Quit = new Button("Quit");
 
-	// These are the widget attributes for the GUI. There are 3 areas for this GUI.
-	
-	// GUI Area 1: It informs the user about the purpose of this page, whose account is being used,
-	// and a button to allow this user to update the account settings
-	protected static Label label_PageTitle = new Label();
-	protected static Label label_UserDetails = new Label();
-	protected static Button button_UpdateThisUser = new Button("Account Update");
-	
-	// This is a separator and it is used to partition the GUI for various tasks
-	protected static Line line_Separator1 = new Line(20, 95, width-20, 95);
+    private static ViewEditReply theView;
+    private static Database theDatabase = applicationMain.FoundationsMain.database;
 
-	// GUI ARea 2: This is a stub, so there are no widgets here.  For an actual role page, this are
-	// would contain the widgets needed for the user to play the assigned role.
-	
-	
-	
-	// This is a separator and it is used to partition the GUI for various tasks
-	protected static Line line_Separator4 = new Line(20, 525, width-20,525);
-	
-	// GUI Area 3: This is last of the GUI areas.  It is used for quitting the application and for
-	// logging out.
-	protected static Button button_Logout = new Button("Logout");
-	protected static Button button_Quit = new Button("Quit");
+    protected static Stage theStage;
+    protected static Pane theRootPane;
+    protected static User theUser;
+    protected static Reply theReply;  // The reply being edited
+    protected static Post thePost;    // The parent post
 
-	// This is the end of the GUI objects for the page.
-	
-	// These attributes are used to configure the page and populate it with this user's information
-	private static ViewEditReply theView;		// Used to determine if instantiation of the class
-												// is needed
+    private static Scene theViewEditReplyScene;
+    protected static final int theRole = 2;
 
-	// Reference for the in-memory database so this package has access
-	private static Database theDatabase = applicationMain.FoundationsMain.database;
+    /**
+     * Display Edit Reply page with the reply to edit
+     */
+    public static void displayEditReply(Stage ps, User user, Reply reply, Post post) {
+        theStage = ps;
+        theUser = user;
+        theReply = reply;
+        thePost = post;
+        
+        if (theView == null) {
+            theView = new ViewEditReply();
+        }
+        
+        theDatabase.getUserAccountDetails(user.getUserName());
+        applicationMain.FoundationsMain.activeHomePage = theRole;
+        
+        label_UserDetails.setText("User: " + theUser.getUserName());
+        
+        // Show original post context
+        if (thePost != null) {
+            String postTitle = thePost.getTitle() == null ? "(No Title)" : thePost.getTitle();
+            label_OriginalPostText.setText("Replying to: " + postTitle);
+        }
+        
+        // Load existing reply data
+        if (theReply != null) {
+            text_ReplyBody.setText(theReply.getBody() == null ? "" : theReply.getBody());
+        } else {
+            text_ReplyBody.clear();
+        }
+        
+        theStage.setTitle("CSE 360 Foundations: Edit Reply");
+        theStage.setScene(theViewEditReplyScene);
+        theStage.show();
+    }
+    
+    /**
+     * Constructor - creates all GUI elements
+     */
+    private ViewEditReply() {
+        theRootPane = new Pane();
+        theViewEditReplyScene = new Scene(theRootPane, width, height);
+        
+        // GUI Area 1: Header
+        label_PageTitle.setText("Edit Reply");
+        setupLabelUI(label_PageTitle, "Arial", 28, width, Pos.CENTER, 0, 5);
 
-	protected static Stage theStage;			// The Stage that JavaFX has established for us	
-	protected static Pane theRootPane;			// The Pane that holds all the GUI widgets
-	protected static User theUser;				// The current logged in User
-	
-
-	private static Scene theViewEditReplyScene;	// The shared Scene each invocation populates
-	protected static final int theRole = 2;		// Admin: 1; Role1: 2; Role2: 3
-
-	/*-*******************************************************************************************
-
-	Constructors
-	
-	 */
-
-
-	/**********
-	 * <p> Method: displayEditReply(Stage ps, User user) </p>
-	 * 
-	 * <p> Description: This method is the single entry point from outside this package to cause
-	 * the Role1 Home page to be displayed.
-	 * 
-	 * It first sets up every shared attributes so we don't have to pass parameters.
-	 * 
-	 * It then checks to see if the page has been setup.  If not, it instantiates the class, 
-	 * initializes all the static aspects of the GIUI widgets (e.g., location on the page, font,
-	 * size, and any methods to be performed).
-	 * 
-	 * After the instantiation, the code then populates the elements that change based on the user
-	 * and the system's current state.  It then sets the Scene onto the stage, and makes it visible
-	 * to the user.
-	 * 
-	 * @param ps specifies the JavaFX Stage to be used for this GUI and it's methods
-	 * 
-	 * @param user specifies the User for this GUI and it's methods
-	 * 
-	 */
-	public static void displayEditReply(Stage ps, User user) {
-		
-		// Establish the references to the GUI and the current user
-		theStage = ps;
-		theUser = user;
-		
-		// If not yet established, populate the static aspects of the GUI
-		if (theView == null) theView = new ViewEditReply();		// Instantiate singleton if needed
-		
-		// Populate the dynamic aspects of the GUI with the data from the user and the current
-		// state of the system.
-		theDatabase.getUserAccountDetails(user.getUserName());
-		applicationMain.FoundationsMain.activeHomePage = theRole;
-		
-		label_UserDetails.setText("User: " + theUser.getUserName());
-				
-		// Set the title for the window, display the page, and wait for the Admin to do something
-		theStage.setTitle("CSE 360 Foundations: Student Home Page");
-		theStage.setScene(theViewEditReplyScene);
-		theStage.show();
-	}
-	
-	/**********
-	 * <p> Method: ViewEditReply() </p>
-	 * 
-	 * <p> Description: This method initializes all the elements of the graphical user interface.
-	 * This method determines the location, size, font, color, and change and event handlers for
-	 * each GUI object.</p>
-	 * 
-	 * This is a singleton and is only performed once.  Subsequent uses fill in the changeable
-	 * fields using the displayRole2Home method.</p>
-	 * 
-	 */
-	private ViewEditReply() {
-
-		// Create the Pane for the list of widgets and the Scene for the window
-		theRootPane = new Pane();
-		theViewEditReplyScene = new Scene(theRootPane, width, height);	// Create the scene
-		
-		// Set the title for the window
-		
-		// Populate the window with the title and other common widgets and set their static state
-		
-		// GUI Area 1
-		label_PageTitle.setText("Student Home Page");
-		setupLabelUI(label_PageTitle, "Arial", 28, width, Pos.CENTER, 0, 5);
-
-		label_UserDetails.setText("User: " + theUser.getUserName());
-		setupLabelUI(label_UserDetails, "Arial", 20, width, Pos.BASELINE_LEFT, 20, 55);
-		
-		setupButtonUI(button_UpdateThisUser, "Dialog", 18, 170, Pos.CENTER, 610, 45);
-		button_UpdateThisUser.setOnAction((_) -> {ControllerEditReply.performUpdate(); });
-		
-		// GUI Area 2
-		
-			// This is a stub, so this area is empty
-		
-		
-		// GUI Area 3
-        setupButtonUI(button_Logout, "Dialog", 18, 250, Pos.CENTER, 20, 540);
+        label_UserDetails.setText("User: ");
+        setupLabelUI(label_UserDetails, "Arial", 20, width, Pos.BASELINE_LEFT, 20, 55);
+        
+        setupButtonUI(button_UpdateThisUser, "Dialog", 18, 170, Pos.CENTER, 610, 45);
+        button_UpdateThisUser.setOnAction((_) -> {ControllerEditReply.performUpdate(); });
+        
+        // GUI Area 2: Edit Form
+        setupLabelUI(label_OriginalPost, "Arial", 16, 200, Pos.BASELINE_LEFT, 20, 115);
+        
+        label_OriginalPostText.setFont(Font.font("Arial", 14));
+        label_OriginalPostText.setLayoutX(20);
+        label_OriginalPostText.setLayoutY(145);
+        label_OriginalPostText.setPrefWidth(740);
+        label_OriginalPostText.setWrapText(true);
+        
+        setupLabelUI(label_ReplyBody, "Arial", 18, 200, Pos.BASELINE_LEFT, 20, 185);
+        
+        text_ReplyBody.setFont(Font.font("Arial", 16));
+        text_ReplyBody.setLayoutX(20);
+        text_ReplyBody.setLayoutY(215);
+        text_ReplyBody.setMinWidth(740);
+        text_ReplyBody.setMaxWidth(740);
+        text_ReplyBody.setPrefHeight(250);
+        text_ReplyBody.setWrapText(true);
+        text_ReplyBody.setPromptText("Enter reply body...");
+        
+        setupButtonUI(button_SaveChanges, "Dialog", 16, 180, Pos.CENTER, 20, 480);
+        button_SaveChanges.setOnAction((_) -> {ControllerEditReply.performSaveChanges(); });
+        
+        setupButtonUI(button_Cancel, "Dialog", 16, 180, Pos.CENTER, 220, 480);
+        button_Cancel.setOnAction((_) -> {ControllerEditReply.performCancel(); });
+        
+        // GUI Area 3: Navigation
+        setupButtonUI(button_Logout, "Dialog", 18, 210, Pos.CENTER, 20, 540);
         button_Logout.setOnAction((_) -> {ControllerEditReply.performLogout(); });
         
-        setupButtonUI(button_Quit, "Dialog", 18, 250, Pos.CENTER, 300, 540);
+        setupButtonUI(button_Quit, "Dialog", 18, 210, Pos.CENTER, 300, 540);
         button_Quit.setOnAction((_) -> {ControllerEditReply.performQuit(); });
 
-		// This is the end of the GUI initialization code
-		
-		// Place all of the widget items into the Root Pane's list of children
-         theRootPane.getChildren().addAll(
-			label_PageTitle, label_UserDetails, button_UpdateThisUser, line_Separator1,
-	        line_Separator4, button_Logout, button_Quit);
-}
-	
-	
-	/*-********************************************************************************************
-
-	Helper methods to reduce code length
-
-	 */
-	
-	/**********
-	 * Private local method to initialize the standard fields for a label
-	 * 
-	 * @param l		The Label object to be initialized
-	 * @param ff	The font to be used
-	 * @param f		The size of the font to be used
-	 * @param w		The width of the Button
-	 * @param p		The alignment (e.g. left, centered, or right)
-	 * @param x		The location from the left edge (x axis)
-	 * @param y		The location from the top (y axis)
-	 */
-	private static void setupLabelUI(Label l, String ff, double f, double w, Pos p, double x, 
-			double y){
-		l.setFont(Font.font(ff, f));
-		l.setMinWidth(w);
-		l.setAlignment(p);
-		l.setLayoutX(x);
-		l.setLayoutY(y);		
-	}
-	
-	
-	/**********
-	 * Private local method to initialize the standard fields for a button
-	 * 
-	 * @param b		The Button object to be initialized
-	 * @param ff	The font to be used
-	 * @param f		The size of the font to be used
-	 * @param w		The width of the Button
-	 * @param p		The alignment (e.g. left, centered, or right)
-	 * @param x		The location from the left edge (x axis)
-	 * @param y		The location from the top (y axis)
-	 */
-	private static void setupButtonUI(Button b, String ff, double f, double w, Pos p, double x, 
-			double y){
-		b.setFont(Font.font(ff, f));
-		b.setMinWidth(w);
-		b.setAlignment(p);
-		b.setLayoutX(x);
-		b.setLayoutY(y);		
-	}
+        theRootPane.getChildren().addAll(
+            label_PageTitle, label_UserDetails, button_UpdateThisUser, line_Separator1,
+            label_OriginalPost, label_OriginalPostText,
+            label_ReplyBody, text_ReplyBody,
+            button_SaveChanges, button_Cancel,
+            line_Separator4, button_Logout, button_Quit);
+    }
+    
+    private static void setupLabelUI(Label l, String ff, double f, double w, Pos p, double x, double y){
+        l.setFont(Font.font(ff, f));
+        l.setMinWidth(w);
+        l.setAlignment(p);
+        l.setLayoutX(x);
+        l.setLayoutY(y);        
+    }
+    
+    private static void setupButtonUI(Button b, String ff, double f, double w, Pos p, double x, double y){
+        b.setFont(Font.font(ff, f));
+        b.setMinWidth(w);
+        b.setAlignment(p);
+        b.setLayoutX(x);
+        b.setLayoutY(y);        
+    }
+    
+    protected static void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
 }

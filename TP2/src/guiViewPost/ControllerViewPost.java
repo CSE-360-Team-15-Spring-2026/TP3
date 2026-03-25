@@ -1,5 +1,6 @@
 package guiViewPost;
 
+import guiRole1.ControllerRole1Home;
 import guiRole1.ViewRole1Home;
 import guiSearchPosts.ViewSearchPosts;
 import guiSearchPosts.ModelSearchPosts;
@@ -123,7 +124,42 @@ public class ControllerViewPost {
                 ViewViewPost.theStage,
                 ViewViewPost.theUser
             );
+            ControllerRole1Home.loadAllPosts();
         }
+    }
+    
+    /**
+     * 🔹 EDIT REPLY
+     */
+    protected static void performEditReply() {
+
+        int selectedIndex = ViewViewPost.list_Replies.getSelectionModel().getSelectedIndex();
+
+        if (selectedIndex < 0) {
+            showAlert("No Selection", "Select a reply first.");
+            return;
+        }
+
+        if (selectedIndex >= ViewViewPost.currentReplies.size()) {
+            showAlert("Error", "Reply not found.");
+            return;
+        }
+
+        Reply selectedReply = ViewViewPost.currentReplies.get(selectedIndex);
+        String currentUser = ViewViewPost.theUser.getUserName();
+
+        if (!selectedReply.getUsername().equals(currentUser)) {
+            showAlert("Unauthorized", "You can only edit your own replies.");
+            return;
+        }
+
+        // Open edit reply page
+        guiEditReply.ViewEditReply.displayEditReply(
+            ViewViewPost.theStage,
+            ViewViewPost.theUser,
+            selectedReply,
+            ViewViewPost.thePost
+        );
     }
 
     /**
