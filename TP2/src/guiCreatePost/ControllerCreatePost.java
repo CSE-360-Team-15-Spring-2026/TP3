@@ -67,8 +67,8 @@ public class ControllerCreatePost {
 		String body = ViewCreatePost.text_PostBody.getText();
 		String threadName = null;
 
-		if (ViewCreatePost.combobox_Threads != null) {
-			threadName = ViewCreatePost.combobox_Threads.getValue();
+		if (ViewCreatePost.comboBox_ThreadName != null) {
+			threadName = ViewCreatePost.comboBox_ThreadName.getValue();
 		}
 
 		if (title == null || title.trim().isEmpty()) {
