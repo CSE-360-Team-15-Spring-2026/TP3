@@ -28,4 +28,38 @@ public class ModelCreatePost {
 	public ModelCreatePost() {
 	}
 
+	/**********
+	 * <p> Method: createPost(String username, String title, String body, String threadName) </p>
+	 * 
+	 * <p> Description: Creates a new post using the shared database object. </p>
+	 * 
+	 * @param username the logged-in user creating the post
+	 * @param title the title of the post
+	 * @param body the body of the post
+	 * @param threadName the selected thread name
+	 * 
+	 * @return true if successful, else false
+	 * 
+	 */
+	protected static boolean createPost(String username, String title, String body, String threadName) {
+		try {
+			if (username == null || username.isBlank()) return false;
+			if (title == null || title.isBlank()) return false;
+			if (body == null || body.isBlank()) return false;
+			if (threadName == null || threadName.isBlank()) threadName = "General";
+
+			applicationMain.FoundationsMain.database.createPost(
+					username,
+					title.trim(),
+					body.trim(),
+					"",
+					threadName
+			);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
 }

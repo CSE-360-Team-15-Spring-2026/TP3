@@ -47,6 +47,9 @@ public class Database {
 	private Connection connection = null;		// Singleton to access the database 
 	private Statement statement = null;			// The H2 Statement is used to construct queries
 	
+	// Post/reply ID counter
+	private int nextPostID = 1;
+	
 	// These are the easily accessible attributes of the currently logged-in user
 	// This is only useful for single user applications
 	private String currentUsername;
@@ -90,6 +93,8 @@ public class Database {
 			//statement.execute("DROP ALL OBJECTS");
 
 			createTables();  // Create the necessary tables if they don't exist
+			initializeNextPostID();
+			ensureGeneralThreadExists();
 		} catch (ClassNotFoundException e) {
 			System.err.println("JDBC Driver not found: " + e.getMessage());
 		}
@@ -132,6 +137,23 @@ public class Database {
 				+ "otp VARCHAR(255) PRIMARY KEY, "
 				+ "userName VARCHAR(255) UNIQUE)";
 	    statement.execute(otpTable);
+	    
+	    // Create discussion post/reply table
+	    String postTable = "CREATE TABLE IF NOT EXISTS postDB ("
+	    		+ "postID INT PRIMARY KEY, "
+	    		+ "parentPostID INT DEFAULT -1, "
+	    		+ "userName VARCHAR(255), "
+	    		+ "title VARCHAR(255), "
+	    		+ "body CLOB, "
+	    		+ "threadName VARCHAR(255), "
+	    		+ "timeStamp TIMESTAMP, "
+	    		+ "isDeleted BOOL DEFAULT FALSE, "
+	    		+ "keywords VARCHAR(255), "
+	    		+ "feedback CLOB, "
+	    		+ "feedbackAuthor VARCHAR(255), "
+	    		+ "isFlagged BOOL DEFAULT FALSE, "
+	    		+ "reason CLOB)";
+	    statement.execute(postTable);
 	    
 	    // Create thread table
 	 	String threadTable = "CREATE TABLE IF NOT EXISTS threadDB ("
@@ -881,7 +903,7 @@ public class Database {
 	        ResultSet rs = pstmt.executeQuery();
 	        
 	        if (rs.next()) {
-	            return rs.getString("firstName"); // Return the preferred first name if user exists
+	            return rs.getString("preferredFirstName"); // Return the preferred first name if user exists
 	        }
 			
 	    } catch (SQLException e) {
@@ -985,7 +1007,7 @@ public class Database {
 		try (PreparedStatement pstmt = connection.prepareStatement(query)) {
 			pstmt.setString(1, username);
 	        ResultSet rs = pstmt.executeQuery();			
-			rs.next();
+			if (!rs.next()) return false;
 	    	currentUsername = rs.getString(2);
 	    	currentPassword = rs.getString(3);
 	    	currentFirstName = rs.getString(4);
@@ -1335,6 +1357,567 @@ public class Database {
 	    } catch (SQLException e) {
 	        e.printStackTrace();
 	    }
+	}
+	
+	
+	/*********
+	 * <p> Method: initializeNextPostID() </p>
+	 * 
+	 * <p> Description: Sets the next post ID based on the current max ID in the table. </p>
+	 * 
+	 */
+	private void initializeNextPostID() {
+		String query = "SELECT MAX(postID) AS maxID FROM postDB";
+		try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+			ResultSet rs = pstmt.executeQuery();
+			if (rs.next()) {
+				nextPostID = rs.getInt("maxID") + 1;
+				if (nextPostID <= 0) nextPostID = 1;
+			}
+		} catch (SQLException e) {
+			nextPostID = 1;
+		}
+	}
+	
+	
+	/*********
+	 * <p> Method: generatePostID() </p>
+	 * 
+	 * <p> Description: Generates the next post ID. </p>
+	 * 
+	 * @return the next post ID
+	 */
+	public int generatePostID() {
+		return nextPostID++;
+	}
+	
+	
+	/*********
+	 * <p> Method: ensureGeneralThreadExists() </p>
+	 * 
+	 * <p> Description: Makes sure the default General thread always exists. </p>
+	 * 
+	 */
+	private void ensureGeneralThreadExists() {
+		try {
+			String query = "SELECT COUNT(*) AS count FROM threadDB WHERE threadName = ?";
+			try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+				pstmt.setString(1, "General");
+				ResultSet rs = pstmt.executeQuery();
+				if (rs.next() && rs.getInt("count") == 0) {
+					String insert = "INSERT INTO threadDB (threadName, createdBy, createdAt) VALUES (?, ?, ?)";
+					try (PreparedStatement insertStmt = connection.prepareStatement(insert)) {
+						insertStmt.setString(1, "General");
+						insertStmt.setString(2, "System");
+						insertStmt.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
+						insertStmt.executeUpdate();
+					}
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	/*********
+	 * <p> Method: ensureThreadExists(String threadName, String createdBy) </p>
+	 * 
+	 * <p> Description: Ensures a thread exists before using it. </p>
+	 * 
+	 * @param threadName the thread name
+	 * @param createdBy the creator username
+	 */
+	private void ensureThreadExists(String threadName, String createdBy) {
+		try {
+			String query = "SELECT COUNT(*) AS count FROM threadDB WHERE threadName = ?";
+			try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+				pstmt.setString(1, threadName);
+				ResultSet rs = pstmt.executeQuery();
+				if (rs.next() && rs.getInt("count") == 0) {
+					String insert = "INSERT INTO threadDB (threadName, createdBy, createdAt) VALUES (?, ?, ?)";
+					try (PreparedStatement insertStmt = connection.prepareStatement(insert)) {
+						insertStmt.setString(1, threadName);
+						insertStmt.setString(2, createdBy);
+						insertStmt.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
+						insertStmt.executeUpdate();
+					}
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	/*********
+	 * <p> Method: getAllThreads() </p>
+	 * 
+	 * <p> Description: Returns all thread names. </p>
+	 * 
+	 * @return list of thread names
+	 */
+	public List<String> getAllThreads() {
+		List<String> threads = new ArrayList<>();
+		String query = "SELECT threadName FROM threadDB ORDER BY threadName ASC";
+
+		try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+			ResultSet rs = pstmt.executeQuery();
+			while (rs.next()) {
+				threads.add(rs.getString("threadName"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		if (!threads.contains("General")) {
+			threads.add(0, "General");
+		}
+
+		return threads;
+	}
+	
+	
+	/*********
+	 * <p> Method: createThread(String threadName, String createdBy) </p>
+	 * 
+	 * <p> Description: Creates a new thread. </p>
+	 * 
+	 * @param threadName the thread name
+	 * @param createdBy the creator username
+	 * @return true if successful else false
+	 */
+	public boolean createThread(String threadName, String createdBy) {
+		if (threadName == null || threadName.trim().isEmpty()) {
+			return false;
+		}
+
+		String trimmedThreadName = threadName.trim();
+
+		try {
+			String check = "SELECT COUNT(*) AS count FROM threadDB WHERE threadName = ?";
+			try (PreparedStatement checkStmt = connection.prepareStatement(check)) {
+				checkStmt.setString(1, trimmedThreadName);
+				ResultSet rs = checkStmt.executeQuery();
+				if (rs.next() && rs.getInt("count") > 0) {
+					return false;
+				}
+			}
+
+			String insert = "INSERT INTO threadDB (threadName, createdBy, createdAt) VALUES (?, ?, ?)";
+			try (PreparedStatement pstmt = connection.prepareStatement(insert)) {
+				pstmt.setString(1, trimmedThreadName);
+				pstmt.setString(2, createdBy);
+				pstmt.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
+				pstmt.executeUpdate();
+			}
+
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	
+	/*********
+	 * <p> Method: deleteThread(String threadName) </p>
+	 * 
+	 * <p> Description: Deletes a thread and all posts/replies in that thread. </p>
+	 * 
+	 * @param threadName the thread name
+	 * @return true if successful else false
+	 */
+	public boolean deleteThread(String threadName) {
+		if (threadName == null || threadName.trim().isEmpty()) {
+			return false;
+		}
+
+		if (threadName.equals("General")) {
+			return false;
+		}
+
+		try {
+			String deletePosts = "DELETE FROM postDB WHERE threadName = ?";
+			try (PreparedStatement pstmtPosts = connection.prepareStatement(deletePosts)) {
+				pstmtPosts.setString(1, threadName);
+				pstmtPosts.executeUpdate();
+			}
+
+			String deleteReadStatus = "DELETE FROM ReadStatus WHERE postID IN (SELECT postID FROM postDB WHERE threadName = ?)";
+			try (PreparedStatement pstmtRead = connection.prepareStatement(deleteReadStatus)) {
+				pstmtRead.setString(1, threadName);
+				pstmtRead.executeUpdate();
+			}
+
+			String deleteThread = "DELETE FROM threadDB WHERE threadName = ?";
+			try (PreparedStatement pstmtThread = connection.prepareStatement(deleteThread)) {
+				pstmtThread.setString(1, threadName);
+				int rowsAffected = pstmtThread.executeUpdate();
+				return rowsAffected > 0;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	
+	/*********
+	 * <p> Method: getAllPosts() </p>
+	 * 
+	 * <p> Description: Returns all posts and replies in descending timestamp order. </p>
+	 * 
+	 * @return list of posts
+	 */
+	public List<Post> getAllPosts() {
+		List<Post> posts = new ArrayList<>();
+		String query = "SELECT * FROM postDB ORDER BY timeStamp DESC";
+
+		try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+			ResultSet rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				int postID = rs.getInt("postID");
+				int parentPostID = rs.getInt("parentPostID");
+				String userName = rs.getString("userName");
+				String title = rs.getString("title");
+				String body = rs.getString("body");
+				String threadName = rs.getString("threadName");
+				Timestamp timeStamp = rs.getTimestamp("timeStamp");
+				boolean isDeleted = rs.getBoolean("isDeleted");
+				String keywords = rs.getString("keywords");
+				String feedback = rs.getString("feedback");
+				String feedbackAuthor = rs.getString("feedbackAuthor");
+				boolean isFlagged = rs.getBoolean("isFlagged");
+				String reason = rs.getString("reason");
+
+				Post post;
+				if (parentPostID == -1) {
+					post = new Post(userName, title, body, keywords, threadName);
+				} else {
+					post = new Reply(parentPostID, userName, body);
+					post.setThreadName(threadName);
+					post.setKeyWords(keywords);
+				}
+
+				post.setPostID(postID);
+				if (post instanceof Reply) {
+					((Reply) post).setParentPostID(parentPostID);
+				}
+				if (timeStamp != null) {
+					post.setTimestamp(timeStamp.toLocalDateTime());
+				}
+				if (isDeleted) {
+					post.changeDelete();
+				}
+				post.setFeedback(feedback);
+				post.setFeedbackAuthor(feedbackAuthor);
+				post.setFlag(isFlagged);
+				post.setReason(reason);
+
+				posts.add(post);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return posts;
+	}
+	
+	
+	/*********
+	 * <p> Method: getPostByID() </p>
+	 * 
+	 * <p> Description: Fetches one post by ID. </p>
+	 * 
+	 * @param postID the post ID
+	 * @return the post or null
+	 */
+	public Post getPostByID(int postID) {
+		String query = "SELECT * FROM postDB WHERE postID = ?";
+
+		try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+			pstmt.setInt(1, postID);
+			ResultSet rs = pstmt.executeQuery();
+
+			if (rs.next()) {
+				int parentPostID = rs.getInt("parentPostID");
+				String userName = rs.getString("userName");
+				String title = rs.getString("title");
+				String body = rs.getString("body");
+				String threadName = rs.getString("threadName");
+				Timestamp timeStamp = rs.getTimestamp("timeStamp");
+				boolean isDeleted = rs.getBoolean("isDeleted");
+				String keywords = rs.getString("keywords");
+				String feedback = rs.getString("feedback");
+				String feedbackAuthor = rs.getString("feedbackAuthor");
+				boolean isFlagged = rs.getBoolean("isFlagged");
+				String reason = rs.getString("reason");
+
+				Post post;
+				if (parentPostID == -1) {
+					post = new Post(userName, title, body, keywords, threadName);
+				} else {
+					post = new Reply(parentPostID, userName, body);
+					post.setThreadName(threadName);
+					post.setKeyWords(keywords);
+				}
+
+				post.setPostID(postID);
+				if (post instanceof Reply) {
+					((Reply) post).setParentPostID(parentPostID);
+				}
+				if (timeStamp != null) {
+					post.setTimestamp(timeStamp.toLocalDateTime());
+				}
+				if (isDeleted) {
+					post.changeDelete();
+				}
+				post.setFeedback(feedback);
+				post.setFeedbackAuthor(feedbackAuthor);
+				post.setFlag(isFlagged);
+				post.setReason(reason);
+
+				return post;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+	
+	
+	/*********
+	 * <p> Method: getRepliesForPost() </p>
+	 * 
+	 * <p> Description: Returns all replies for a given parent post. </p>
+	 * 
+	 * @param parentPostID the parent post ID
+	 * @return list of replies
+	 */
+	public List<Reply> getRepliesForPost(int parentPostID) {
+		List<Reply> replies = new ArrayList<>();
+		String query = "SELECT * FROM postDB WHERE parentPostID = ? ORDER BY timeStamp ASC";
+
+		try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+			pstmt.setInt(1, parentPostID);
+			ResultSet rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				Reply reply = new Reply(
+						rs.getInt("parentPostID"),
+						rs.getString("userName"),
+						rs.getString("body")
+				);
+
+				reply.setPostID(rs.getInt("postID"));
+				reply.setThreadName(rs.getString("threadName"));
+				reply.setKeyWords(rs.getString("keywords"));
+
+				Timestamp replyTimeStamp = rs.getTimestamp("timeStamp");
+				if (replyTimeStamp != null) {
+					reply.setTimestamp(replyTimeStamp.toLocalDateTime());
+				}
+
+				if (rs.getBoolean("isDeleted")) {
+					reply.changeDelete();
+				}
+				reply.setFeedback(rs.getString("feedback"));
+				reply.setFeedbackAuthor(rs.getString("feedbackAuthor"));
+				reply.setFlag(rs.getBoolean("isFlagged"));
+				reply.setReason(rs.getString("reason"));
+
+				replies.add(reply);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return replies;
+	}
+	
+	
+	/*********
+	 * <p> Method: createPost() </p>
+	 * 
+	 * <p> Description: Creates a post and stores it in the database. </p>
+	 * 
+	 * @param username the username
+	 * @param title the title
+	 * @param body the body
+	 * @param keywords the keywords
+	 * @param threadName the thread name
+	 * @return created post
+	 * @throws SQLException the SQL exception
+	 */
+	public Post createPost(String username, String title, String body, String keywords, String threadName) throws SQLException {
+		if (title == null || title.trim().isEmpty()) {
+			throw new IllegalArgumentException("Post title cannot be empty.");
+		}
+
+		if (body == null || body.trim().isEmpty()) {
+			throw new IllegalArgumentException("Post body cannot be empty.");
+		}
+
+		if (threadName == null || threadName.trim().isEmpty()) {
+			threadName = "General";
+		}
+
+		ensureThreadExists(threadName, username);
+
+		Post post = new Post(username, title.trim(), body.trim(), keywords, threadName);
+		post.setPostID(generatePostID());
+
+		String insertPost = "INSERT INTO postDB "
+				+ "(postID, parentPostID, userName, title, body, threadName, timeStamp, isDeleted, keywords, feedback, feedbackAuthor, isFlagged, reason) "
+				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+		try (PreparedStatement pstmt = connection.prepareStatement(insertPost)) {
+			pstmt.setInt(1, post.getPostID());
+			pstmt.setInt(2, -1);
+			pstmt.setString(3, post.getUsername());
+			pstmt.setString(4, post.getTitle());
+			pstmt.setString(5, post.getBody());
+			pstmt.setString(6, post.getThreadName());
+			pstmt.setTimestamp(7, Timestamp.valueOf(post.getTimestamp()));
+			pstmt.setBoolean(8, post.isDeleted());
+			pstmt.setString(9, post.getKeyWords());
+			pstmt.setString(10, post.getFeedback());
+			pstmt.setString(11, post.getFeedbackAuthor());
+			pstmt.setBoolean(12, post.isFlag());
+			pstmt.setString(13, post.getReason());
+			pstmt.executeUpdate();
+		}
+
+		return post;
+	}
+	
+	
+	/*********
+	 * <p> Method: createReply() </p>
+	 * 
+	 * <p> Description: Creates a reply and stores it in the database. </p>
+	 * 
+	 * @param username the username
+	 * @param body the reply body
+	 * @param keywords the keywords
+	 * @param threadName the thread name
+	 * @param parentPostID the parent post ID
+	 * @return created reply
+	 * @throws SQLException the SQL exception
+	 */
+	public Reply createReply(String username, String body, String keywords, String threadName, int parentPostID) throws SQLException {
+		if (body == null || body.trim().isEmpty()) {
+			throw new IllegalArgumentException("Reply body cannot be empty.");
+		}
+
+		Post parentPost = getPostByID(parentPostID);
+		if (parentPost == null) {
+			throw new IllegalArgumentException("Parent post not found.");
+		}
+
+		Reply reply = new Reply(parentPostID, username, body.trim());
+		reply.setPostID(generatePostID());
+		reply.setThreadName((threadName == null || threadName.isBlank()) ? parentPost.getThreadName() : threadName);
+		reply.setKeyWords(keywords);
+
+		ensureThreadExists(reply.getThreadName(), username);
+
+		String insertReply = "INSERT INTO postDB "
+				+ "(postID, parentPostID, userName, title, body, threadName, timeStamp, isDeleted, keywords, feedback, feedbackAuthor, isFlagged, reason) "
+				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+		try (PreparedStatement pstmt = connection.prepareStatement(insertReply)) {
+			pstmt.setInt(1, reply.getPostID());
+			pstmt.setInt(2, reply.getParentPostID());
+			pstmt.setString(3, reply.getUsername());
+			pstmt.setString(4, reply.getTitle());
+			pstmt.setString(5, reply.getBody());
+			pstmt.setString(6, reply.getThreadName());
+			pstmt.setTimestamp(7, Timestamp.valueOf(reply.getTimestamp()));
+			pstmt.setBoolean(8, reply.isDeleted());
+			pstmt.setString(9, reply.getKeyWords());
+			pstmt.setString(10, reply.getFeedback());
+			pstmt.setString(11, reply.getFeedbackAuthor());
+			pstmt.setBoolean(12, reply.isFlag());
+			pstmt.setString(13, reply.getReason());
+			pstmt.executeUpdate();
+		}
+
+		return reply;
+	}
+	
+	
+	/*********
+	 * <p> Method: deleteReply() </p>
+	 * 
+	 * <p> Description: Soft deletes a reply in the database. </p>
+	 * 
+	 * @param reply the reply
+	 * @return true if successful else false
+	 */
+	public boolean deleteReply(Reply reply) {
+		if (reply == null) {
+			return false;
+		}
+
+		String query = "UPDATE postDB SET isDeleted = TRUE WHERE postID = ?";
+		try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+			pstmt.setInt(1, reply.getPostID());
+			return pstmt.executeUpdate() > 0;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	
+	/*********
+	 * <p> Method: markPostAsRead() </p>
+	 * 
+	 * <p> Description: Marks a post as read for a user. </p>
+	 * 
+	 * @param username the username
+	 * @param postID the post ID
+	 * @return true if successful else false
+	 */
+	public boolean markPostAsRead(String username, int postID) {
+		String query = "MERGE INTO ReadStatus (username, postID) KEY (username, postID) VALUES (?, ?)";
+		try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+			pstmt.setString(1, username);
+			pstmt.setInt(2, postID);
+			return pstmt.executeUpdate() > 0;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	
+	/*********
+	 * <p> Method: isPostRead() </p>
+	 * 
+	 * <p> Description: Checks whether a post is marked as read by a user. </p>
+	 * 
+	 * @param username the username
+	 * @param postID the post ID
+	 * @return true if read else false
+	 */
+	public boolean isPostRead(String username, int postID) {
+		String query = "SELECT COUNT(*) AS count FROM ReadStatus WHERE username = ? AND postID = ?";
+		try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+			pstmt.setString(1, username);
+			pstmt.setInt(2, postID);
+			ResultSet rs = pstmt.executeQuery();
+			if (rs.next()) {
+				return rs.getInt("count") > 0;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 

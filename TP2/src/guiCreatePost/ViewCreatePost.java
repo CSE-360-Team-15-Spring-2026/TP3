@@ -4,6 +4,9 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ComboBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
@@ -55,6 +58,17 @@ public class ViewCreatePost {
 	// GUI ARea 2: This is a stub, so there are no widgets here.  For an actual role page, this are
 	// would contain the widgets needed for the user to play the assigned role.
 	
+	protected static Label label_PostTitle = new Label("Post Title");
+	protected static TextField text_PostTitle = new TextField();
+	
+	protected static Label label_PostBody = new Label("Post Body");
+	protected static TextArea text_PostBody = new TextArea();
+	
+	protected static Label label_ThreadName = new Label("Thread");
+	protected static ComboBox<String> comboBox_ThreadName = new ComboBox<String>();
+	
+	protected static Button button_CreatePost = new Button("Create Post");
+	protected static Button button_Cancel = new Button("Cancel");
 	
 	
 	// This is a separator and it is used to partition the GUI for various tasks
@@ -125,6 +139,10 @@ public class ViewCreatePost {
 		applicationMain.FoundationsMain.activeHomePage = theRole;
 		
 		label_UserDetails.setText("User: " + theUser.getUserName());
+		
+		text_PostTitle.setText("");
+		text_PostBody.setText("");
+		loadThreads();
 				
 		// Set the title for the window, display the page, and wait for the Admin to do something
 		theStage.setTitle("CSE 360 Foundations: Student Home Page");
@@ -157,7 +175,6 @@ public class ViewCreatePost {
 		label_PageTitle.setText("Student Home Page");
 		setupLabelUI(label_PageTitle, "Arial", 28, width, Pos.CENTER, 0, 5);
 
-		label_UserDetails.setText("User: " + theUser.getUserName());
 		setupLabelUI(label_UserDetails, "Arial", 20, width, Pos.BASELINE_LEFT, 20, 55);
 		
 		setupButtonUI(button_UpdateThisUser, "Dialog", 18, 170, Pos.CENTER, 610, 45);
@@ -165,7 +182,20 @@ public class ViewCreatePost {
 		
 		// GUI Area 2
 		
-			// This is a stub, so this area is empty
+		setupLabelUI(label_PostTitle, "Arial", 18, 200, Pos.BASELINE_LEFT, 20, 120);
+		setupTextFieldUI(text_PostTitle, "Arial", 16, 500, Pos.BASELINE_LEFT, 20, 150);
+		
+		setupLabelUI(label_ThreadName, "Arial", 18, 200, Pos.BASELINE_LEFT, 20, 195);
+		setupComboBoxUI(comboBox_ThreadName, "Arial", 16, 250, 20, 225);
+		
+		setupLabelUI(label_PostBody, "Arial", 18, 200, Pos.BASELINE_LEFT, 20, 270);
+		setupTextAreaUI(text_PostBody, "Arial", 16, 740, 180, 20, 300);
+		
+		setupButtonUI(button_CreatePost, "Dialog", 18, 170, Pos.CENTER, 20, 490);
+		button_CreatePost.setOnAction((_) -> {ControllerCreatePost.performCreatePost(); });
+		
+		setupButtonUI(button_Cancel, "Dialog", 18, 170, Pos.CENTER, 210, 490);
+		button_Cancel.setOnAction((_) -> {ControllerCreatePost.performCancel(); });
 		
 		
 		// GUI Area 3
@@ -180,6 +210,10 @@ public class ViewCreatePost {
 		// Place all of the widget items into the Root Pane's list of children
          theRootPane.getChildren().addAll(
 			label_PageTitle, label_UserDetails, button_UpdateThisUser, line_Separator1,
+			label_PostTitle, text_PostTitle,
+			label_ThreadName, comboBox_ThreadName,
+			label_PostBody, text_PostBody,
+			button_CreatePost, button_Cancel,
 	        line_Separator4, button_Logout, button_Quit);
 }
 	
@@ -229,5 +263,78 @@ public class ViewCreatePost {
 		b.setAlignment(p);
 		b.setLayoutX(x);
 		b.setLayoutY(y);		
+	}
+	
+	/**********
+	 * Private local method to initialize the standard fields for a text field
+	 */
+	private static void setupTextFieldUI(TextField t, String ff, double f, double w, Pos p, double x,
+			double y){
+		t.setFont(Font.font(ff, f));
+		t.setMinWidth(w);
+		t.setMaxWidth(w);
+		t.setAlignment(p);
+		t.setLayoutX(x);
+		t.setLayoutY(y);
+	}
+	
+	/**********
+	 * Private local method to initialize the standard fields for a text area
+	 */
+	private static void setupTextAreaUI(TextArea t, String ff, double f, double w, double h, double x,
+			double y){
+		t.setFont(Font.font(ff, f));
+		t.setMinWidth(w);
+		t.setMaxWidth(w);
+		t.setMinHeight(h);
+		t.setMaxHeight(h);
+		t.setLayoutX(x);
+		t.setLayoutY(y);
+		t.setWrapText(true);
+	}
+	
+	/**********
+	 * Private local method to initialize the standard fields for a combo box
+	 */
+	private static void setupComboBoxUI(ComboBox<String> c, String ff, double f, double w, double x,
+			double y){
+		c.setStyle("-fx-font: " + f + " " + ff + ";");
+		c.setMinWidth(w);
+		c.setLayoutX(x);
+		c.setLayoutY(y);
+	}
+	
+	/**********
+	 * Load thread names into the combo box
+	 */
+	protected static void loadThreads() {
+		comboBox_ThreadName.getItems().clear();
+		
+		try {
+			java.util.List<String> threads = applicationMain.FoundationsMain.database.getAllThreads();
+			if (threads != null && !threads.isEmpty()) {
+				comboBox_ThreadName.getItems().addAll(threads);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		if (comboBox_ThreadName.getItems().isEmpty()) {
+			comboBox_ThreadName.getItems().add("General");
+		}
+		
+		comboBox_ThreadName.getSelectionModel().selectFirst();
+	}
+	
+	/**********
+	 * Show alert dialog
+	 */
+	protected static void showAlert(String title, String message) {
+		javafx.scene.control.Alert alert = new javafx.scene.control.Alert(
+				javafx.scene.control.Alert.AlertType.INFORMATION);
+		alert.setTitle(title);
+		alert.setHeaderText(null);
+		alert.setContentText(message);
+		alert.showAndWait();
 	}
 }

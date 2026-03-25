@@ -18,6 +18,7 @@ public class Post {
 	 */
 
 	private int postID;
+	private int parentPostID;
 	private String username;
 	private String title;
 	private String body;
@@ -46,6 +47,7 @@ public class Post {
 	 */
 	public Post() {
 		this.postID = -1;
+		this.parentPostID = -1;
 		this.username = "";
 		this.title = "";
 		this.body = "";
@@ -77,6 +79,7 @@ public class Post {
 	public Post(String username, String title, String body,
 				String keywords, String threadName) {
 		this.postID = -1;
+		this.parentPostID = -1;
 		this.username = username;
 		this.title = title;
 		this.body = body;
@@ -138,6 +141,18 @@ public class Post {
 	 * @param postID the auto-incremented ID assigned by the database
 	 */
 	public void setPostID(int postID) { this.postID = postID; }
+
+	/*****
+	 * <p> Method: getParentPostID() </p>
+	 * @return the parentPostID
+	 */
+	public int getParentPostID() { return parentPostID; }
+
+	/*****
+	 * <p> Method: setParentPostID(int parentPostID) </p>
+	 * @param parentPostID the parent post ID, or -1 for top-level posts
+	 */
+	public void setParentPostID(int parentPostID) { this.parentPostID = parentPostID; }
 
 	/*****
 	 * <p> Method: getUsername() </p>
@@ -209,6 +224,12 @@ public class Post {
 	public boolean isDeleted() { return isDeleted; }
 
 	/*****
+	 * <p> Method: setDeleted(boolean isDeleted) </p>
+	 * @param isDeleted true if deleted
+	 */
+	public void setDeleted(boolean isDeleted) { this.isDeleted = isDeleted; }
+
+	/*****
 	 * <p> Method: getKeyWords() </p>
 	 * @return the keywords
 	 */
@@ -219,6 +240,18 @@ public class Post {
 	 * @param keywords the new comma-separated keywords
 	 */
 	public void setKeyWords(String keywords) { this.keywords = keywords; }
+
+	/*****
+	 * <p> Method: getKeywords() </p>
+	 * @return the keywords
+	 */
+	public String getKeywords() { return keywords; }
+
+	/*****
+	 * <p> Method: setKeywords(String keywords) </p>
+	 * @param keywords the new comma-separated keywords
+	 */
+	public void setKeywords(String keywords) { this.keywords = keywords; }
 
 	/*****
 	 * <p> Method: getFeedback() </p>
@@ -251,10 +284,25 @@ public class Post {
 	public boolean isFlag() { return isFlagged; }
 
 	/*****
+	 * <p> Method: isFlagged() </p>
+	 * @return true if flagged
+	 */
+	public boolean isFlagged() { return isFlagged; }
+
+	/*****
 	 * <p> Method: setFlag(boolean isFlagged) </p>
 	 * @param isFlagged true to flag this post, false to unflag
 	 */
 	public void setFlag(boolean isFlagged) {
+		this.isFlagged = isFlagged;
+		if (!isFlagged) this.reason = "";
+	}
+
+	/*****
+	 * <p> Method: setFlagged(boolean isFlagged) </p>
+	 * @param isFlagged true to flag this post, false to unflag
+	 */
+	public void setFlagged(boolean isFlagged) {
 		this.isFlagged = isFlagged;
 		if (!isFlagged) this.reason = "";
 	}

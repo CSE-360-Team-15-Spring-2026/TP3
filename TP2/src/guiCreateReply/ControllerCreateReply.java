@@ -1,76 +1,130 @@
 package guiCreateReply;
 
-
 /*******
  * <p> Title: ControllerCreateReply Class. </p>
  * 
- * <p> Description: The Java/FX-based Role 1 Home Page.  This class provides the controller
- * actions basic on the user's use of the JavaFX GUI widgets defined by the View class.
- * 
- * This page is a stub for establish future roles for the application.
- * 
- * The class has been written assuming that the View or the Model are the only class methods that
- * can invoke these methods.  This is why each has been declared at "protected".  Do not change any
- * of these methods to public.</p>
+ * <p> Description: The Java/FX-based Create Reply Page controller. This class
+ * provides the controller actions based on the user's use of the JavaFX GUI widgets
+ * defined by the View class.</p>
  * 
  * <p> Copyright: Lynn Robert Carter © 2025 </p>
  * 
- * @author Lynn Robert Carter
+ * @author OpenAI
  * 
- * @version 1.00		2025-08-17 Initial version
- * @version 1.01		2025-09-16 Update Javadoc documentation *  
+ * @version 1.00        2026-03-24 Initial implementation
  */
 
 public class ControllerCreateReply {
 
-	/*-*******************************************************************************************
+    /**
+     * Default constructor is not used.
+     */
+    public ControllerCreateReply() {
+    }
 
-	User Interface Actions for this page
-	
-	This controller is not a class that gets instantiated.  Rather, it is a collection of protected
-	static methods that can be called by the View (which is a singleton instantiated object) and 
-	the Model is often just a stub, or will be a singleton instantiated object.
-	
-	 */
+    /**********
+     * <p> Method: performCreateReply() </p>
+     * 
+     * <p> Description: Validates and submits the reply. </p>
+     * 
+     */
+    protected static void performCreateReply() {
+        if (ViewCreateReply.thePost == null) {
+            ViewCreateReply.showAlert("Error", "No post is selected for reply.");
+            return;
+        }
 
-	/**
-	 * Default constructor is not used.
-	 */
-	public ControllerCreateReply() {
-	}
+        if (ViewCreateReply.theUser == null || ViewCreateReply.theUser.getUserName() == null
+                || ViewCreateReply.theUser.getUserName().isBlank()) {
+            ViewCreateReply.showAlert("Error", "No valid user is logged in.");
+            return;
+        }
 
-	/**********
-	 * <p> Method: performUpdate() </p>
-	 * 
-	 * <p> Description: This method directs the user to the User Update Page so the user can change
-	 * the user account attributes. </p>
-	 * 
-	 */
-	protected static void performUpdate () {
-		guiUserUpdate.ViewUserUpdate.displayUserUpdate(ViewCreateReply.theStage, ViewCreateReply.theUser);
-	}	
+        String replyBody = ViewCreateReply.text_ReplyBody.getText();
 
-	/**********
-	 * <p> Method: performLogout() </p>
-	 * 
-	 * <p> Description: This method logs out the current user and proceeds to the normal login
-	 * page where existing users can log in or potential new users with a invitation code can
-	 * start the process of setting up an account. </p>
-	 * 
-	 */
-	protected static void performLogout() {
-		guiUserLogin.ViewUserLogin.displayUserLogin(ViewCreateReply.theStage);
-	}
-	
-	/**********
-	 * <p> Method: performQuit() </p>
-	 * 
-	 * <p> Description: This method terminates the execution of the program.  It leaves the
-	 * database in a state where the normal login page will be displayed when the application is
-	 * restarted.</p>
-	 * 
-	 */	
-	protected static void performQuit() {
-		System.exit(0);
-	}
+        if (replyBody == null || replyBody.trim().isEmpty()) {
+            ViewCreateReply.showAlert("Validation Error", "Reply body cannot be empty.");
+            return;
+        }
+
+        String threadName = ViewCreateReply.thePost.getThreadName();
+        if (threadName == null || threadName.isBlank()) {
+            threadName = "General";
+        }
+
+        boolean success = ModelCreateReply.createReply(
+                ViewCreateReply.thePost.getPostID(),
+                ViewCreateReply.theUser.getUserName(),
+                replyBody,
+                threadName
+        );
+
+        if (success) {
+            ViewCreateReply.showAlert("Success", "Reply created successfully.");
+            guiViewPost.ViewViewPost.displayViewPost(
+                    ViewCreateReply.theStage,
+                    ViewCreateReply.theUser,
+                    ViewCreateReply.thePost
+            );
+        } else {
+            ViewCreateReply.showAlert("Error", "Failed to create reply.");
+        }
+    }
+
+    /**********
+     * <p> Method: performSubmitReply() </p>
+     * 
+     * <p> Description: Wrapper method used by the View submit button to create the reply. </p>
+     * 
+     */
+    protected static void performSubmitReply() {
+        performCreateReply();
+    }
+
+    /**********
+     * <p> Method: performCancel() </p>
+     * 
+     * <p> Description: Returns the user to the View Post page without creating a reply. </p>
+     * 
+     */
+    protected static void performCancel() {
+        guiViewPost.ViewViewPost.displayViewPost(
+                ViewCreateReply.theStage,
+                ViewCreateReply.theUser,
+                ViewCreateReply.thePost
+        );
+    }
+
+    /**********
+     * <p> Method: performUpdate() </p>
+     * 
+     * <p> Description: Sends the user to the account update page. </p>
+     * 
+     */
+    protected static void performUpdate() {
+        guiUserUpdate.ViewUserUpdate.displayUserUpdate(
+                ViewCreateReply.theStage,
+                ViewCreateReply.theUser
+        );
+    }
+
+    /**********
+     * <p> Method: performLogout() </p>
+     * 
+     * <p> Description: Logs the user out and returns to the login page. </p>
+     * 
+     */
+    protected static void performLogout() {
+        guiUserLogin.ViewUserLogin.displayUserLogin(ViewCreateReply.theStage);
+    }
+
+    /**********
+     * <p> Method: performQuit() </p>
+     * 
+     * <p> Description: Terminates the application. </p>
+     * 
+     */
+    protected static void performQuit() {
+        System.exit(0);
+    }
 }

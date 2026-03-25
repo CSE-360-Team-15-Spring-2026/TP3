@@ -27,6 +27,8 @@ public class Reply extends Post {
 	public Reply() {
 		super();
 		this.parentPostID = -1;
+		super.setParentPostID(-1);
+		super.setTitle(null);
 	}
 
 	/*****
@@ -40,6 +42,9 @@ public class Reply extends Post {
 	public Reply(int parentPostID, String username, String body) {
 		super(username, null, body, null, null);
 		this.parentPostID = parentPostID;
+		super.setParentPostID(parentPostID);
+		super.setTitle(null);
+		super.setThreadName("General");
 	}
 
 
@@ -60,5 +65,8 @@ public class Reply extends Post {
 	 *
 	 * @param parentPostID the postID of the parent Post or Reply
 	 */
-	public void setParentPostID(int parentPostID) { this.parentPostID = parentPostID; }
+	public void setParentPostID(int parentPostID) {
+		this.parentPostID = parentPostID;
+		super.setParentPostID(parentPostID);
+	}
 }

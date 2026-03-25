@@ -4,12 +4,14 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import database.Database;
 import entityClasses.User;
+import entityClasses.Post;
 
 
 /*******
@@ -54,6 +56,13 @@ public class ViewCreateReply {
 
 	// GUI ARea 2: This is a stub, so there are no widgets here.  For an actual role page, this are
 	// would contain the widgets needed for the user to play the assigned role.
+	protected static Label label_ReplySectionTitle = new Label();
+	protected static Label label_OriginalPostTitle = new Label();
+	protected static Label label_OriginalPostBody = new Label();
+	protected static TextArea text_ReplyBody = new TextArea();
+	protected static Button button_SubmitReply = new Button("Submit Reply");
+	protected static Button button_CancelReply = new Button("Cancel");
+	protected static Post thePost;
 	
 	
 	
@@ -125,11 +134,43 @@ public class ViewCreateReply {
 		applicationMain.FoundationsMain.activeHomePage = theRole;
 		
 		label_UserDetails.setText("User: " + theUser.getUserName());
+		label_PageTitle.setText("Create Reply");
+		label_ReplySectionTitle.setText("Write Your Reply");
+		text_ReplyBody.clear();
+
+		if (thePost != null) {
+			String postTitle = thePost.getTitle();
+			String postBody = thePost.getBody();
+
+			if (postTitle == null || postTitle.isBlank()) postTitle = "(No Title)";
+			if (postBody == null || postBody.isBlank()) postBody = "(No content)";
+
+			label_OriginalPostTitle.setText("Replying to: " + postTitle);
+			label_OriginalPostBody.setText(postBody);
+		} else {
+			label_OriginalPostTitle.setText("Replying to: (No post selected)");
+			label_OriginalPostBody.setText("");
+		}
 				
 		// Set the title for the window, display the page, and wait for the Admin to do something
-		theStage.setTitle("CSE 360 Foundations: Student Home Page");
+		theStage.setTitle("CSE 360 Foundations: Create Reply Page");
 		theStage.setScene(theViewCreateReplyScene);
 		theStage.show();
+	}
+	
+	/**********
+	 * <p> Overloaded Method: displayCreateReply(Stage ps, User user, Post post) </p>
+	 * 
+	 * <p> Description: Displays the Create Reply page with the selected post context. </p>
+	 * 
+	 * @param ps specifies the JavaFX Stage to be used for this GUI and its methods
+	 * @param user specifies the User for this GUI and its methods
+	 * @param post specifies the Post being replied to
+	 * 
+	 */
+	public static void displayCreateReply(Stage ps, User user, Post post) {
+		thePost = post;
+		displayCreateReply(ps, user);
 	}
 	
 	/**********
@@ -157,7 +198,7 @@ public class ViewCreateReply {
 		label_PageTitle.setText("Student Home Page");
 		setupLabelUI(label_PageTitle, "Arial", 28, width, Pos.CENTER, 0, 5);
 
-		label_UserDetails.setText("User: " + theUser.getUserName());
+		label_UserDetails.setText("User: ");
 		setupLabelUI(label_UserDetails, "Arial", 20, width, Pos.BASELINE_LEFT, 20, 55);
 		
 		setupButtonUI(button_UpdateThisUser, "Dialog", 18, 170, Pos.CENTER, 610, 45);
@@ -166,6 +207,30 @@ public class ViewCreateReply {
 		// GUI Area 2
 		
 			// This is a stub, so this area is empty
+		label_ReplySectionTitle.setText("Write Your Reply");
+		setupLabelUI(label_ReplySectionTitle, "Arial", 22, 300, Pos.BASELINE_LEFT, 20, 115);
+
+		label_OriginalPostTitle.setText("Replying to:");
+		setupLabelUI(label_OriginalPostTitle, "Arial", 16, 740, Pos.BASELINE_LEFT, 20, 155);
+
+		label_OriginalPostBody.setText("");
+		setupLabelUI(label_OriginalPostBody, "Arial", 14, 740, Pos.BASELINE_LEFT, 20, 185);
+
+		text_ReplyBody.setFont(Font.font("Arial", 16));
+		text_ReplyBody.setLayoutX(20);
+		text_ReplyBody.setLayoutY(240);
+		text_ReplyBody.setMinWidth(740);
+		text_ReplyBody.setMaxWidth(740);
+		text_ReplyBody.setPrefWidth(740);
+		text_ReplyBody.setPrefHeight(220);
+		text_ReplyBody.setWrapText(true);
+		text_ReplyBody.setPromptText("Type your reply here...");
+
+		setupButtonUI(button_SubmitReply, "Dialog", 16, 180, Pos.CENTER, 20, 475);
+		button_SubmitReply.setOnAction((_) -> {ControllerCreateReply.performSubmitReply(); });
+
+		setupButtonUI(button_CancelReply, "Dialog", 16, 180, Pos.CENTER, 220, 475);
+		button_CancelReply.setOnAction((_) -> {ControllerCreateReply.performCancel(); });
 		
 		
 		// GUI Area 3
@@ -180,6 +245,8 @@ public class ViewCreateReply {
 		// Place all of the widget items into the Root Pane's list of children
          theRootPane.getChildren().addAll(
 			label_PageTitle, label_UserDetails, button_UpdateThisUser, line_Separator1,
+			label_ReplySectionTitle, label_OriginalPostTitle, label_OriginalPostBody,
+			text_ReplyBody, button_SubmitReply, button_CancelReply,
 	        line_Separator4, button_Logout, button_Quit);
 }
 	

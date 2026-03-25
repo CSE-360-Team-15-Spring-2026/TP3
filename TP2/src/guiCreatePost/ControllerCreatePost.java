@@ -51,6 +51,75 @@ public class ControllerCreatePost {
 	}	
 
 	/**********
+	 * <p> Method: performCreatePost() </p>
+	 * 
+	 * <p> Description: Validates and creates a new post. </p>
+	 * 
+	 */
+	protected static void performCreatePost() {
+		if (ViewCreatePost.theUser == null || ViewCreatePost.theUser.getUserName() == null
+				|| ViewCreatePost.theUser.getUserName().isBlank()) {
+			ViewCreatePost.showAlert("Error", "No valid user is logged in.");
+			return;
+		}
+
+		String title = ViewCreatePost.text_PostTitle.getText();
+		String body = ViewCreatePost.text_PostBody.getText();
+		String threadName = null;
+
+		if (ViewCreatePost.combobox_Threads != null) {
+			threadName = ViewCreatePost.combobox_Threads.getValue();
+		}
+
+		if (title == null || title.trim().isEmpty()) {
+			ViewCreatePost.showAlert("Validation Error", "Post title cannot be empty.");
+			return;
+		}
+
+		if (body == null || body.trim().isEmpty()) {
+			ViewCreatePost.showAlert("Validation Error", "Post body cannot be empty.");
+			return;
+		}
+
+		if (threadName == null || threadName.isBlank()) {
+			threadName = "General";
+		}
+
+		boolean success = ModelCreatePost.createPost(
+				ViewCreatePost.theUser.getUserName(),
+				title.trim(),
+				body.trim(),
+				threadName
+		);
+
+		if (success) {
+			ViewCreatePost.showAlert("Success", "Post created successfully.");
+
+			if (applicationMain.FoundationsMain.activeHomePage == 3) {
+				guiRole2.ViewRole2Home.displayRole2Home(ViewCreatePost.theStage, ViewCreatePost.theUser);
+			} else {
+				guiRole1.ViewRole1Home.displayRole1Home(ViewCreatePost.theStage, ViewCreatePost.theUser);
+			}
+		} else {
+			ViewCreatePost.showAlert("Error", "Failed to create post.");
+		}
+	}
+
+	/**********
+	 * <p> Method: performCancel() </p>
+	 * 
+	 * <p> Description: Cancels post creation and returns to the correct home page. </p>
+	 * 
+	 */
+	protected static void performCancel() {
+		if (applicationMain.FoundationsMain.activeHomePage == 3) {
+			guiRole2.ViewRole2Home.displayRole2Home(ViewCreatePost.theStage, ViewCreatePost.theUser);
+		} else {
+			guiRole1.ViewRole1Home.displayRole1Home(ViewCreatePost.theStage, ViewCreatePost.theUser);
+		}
+	}
+
+	/**********
 	 * <p> Method: performLogout() </p>
 	 * 
 	 * <p> Description: This method logs out the current user and proceeds to the normal login
