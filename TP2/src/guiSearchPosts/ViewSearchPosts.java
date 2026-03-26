@@ -35,32 +35,64 @@ public class ViewSearchPosts {
     // Attributes
 
     // These define the application window dimensions
-
+    
+    
+    /** Application window width from the main application settings */
     private static double width = applicationMain.FoundationsMain.WINDOW_WIDTH;
+    
+    /** Application window height from the main application settings */
     private static double height = applicationMain.FoundationsMain.WINDOW_HEIGHT;
 
     // The GUI components are organized by their functional area
 
     // GUI Area 1: Search input controls
+
+    /** Label displaying the page title "Search Posts" */
     protected static Label label_PageTitle = new Label();
+    
+    /** Label for the keyword search input field */
     protected static Label label_Keyword = new Label("Keyword:");
+
+    /** Text field for user to enter search keyword */
     protected static TextField textField_Keyword = new TextField();
+
+    /** Label for the optional thread filter input */
     protected static Label label_Thread = new Label("Thread (optional):");
+
+    /** Text field for user to optionally filter search by thread name; null or empty searches all threads */
     protected static TextField textField_Thread = new TextField();
+
+    /** Button to initiate the search operation with the specified keyword and thread filter */
     protected static Button button_Search = new Button("Search");
 
     // GUI Area 2: Results display table
+    
+    /** Table view displaying search results with columns for post ID, title, author, thread, reply count, read status, and timestamp */
     protected static TableView<PostDisplay> table_Results = new TableView<>();
+
+    /** Observable list backing the results table, automatically updates the display when modified */
     protected static ObservableList<PostDisplay> resultData = FXCollections.observableArrayList();
 
     // GUI Area 3: Action buttons
+    
+    /** Button to view the selected post and its replies in detail */
     protected static Button button_ViewPost = new Button("View Post & Replies");
+
+    /** Button to return to the previous page (Role1Home or ViewPost depending on navigation context) */
     protected static Button button_Back = new Button("Back");
 
     // Page management
+
+    /** Singleton instance of ViewSearchPosts for lazy initialization pattern */
     private static ViewSearchPosts theView;
+
+    /** The JavaFX Stage (window) for displaying this search page GUI */
     protected static Stage theStage;
+
+    /** Root pane containing all GUI components for layout management */
     protected static Pane theRootPane;
+
+    /** The Scene for the search posts page containing the root pane */
     private static Scene theSearchScene = null;
 
 
