@@ -65,7 +65,7 @@ public class ViewSearchPosts {
 
 
 
-     */
+
 
     /**********
      * <p> Title: displaySearchPosts(Stage ps) Method. </p>
@@ -142,8 +142,6 @@ public class ViewSearchPosts {
 
     //Helper methods for UI setup
 
-     */
-
     /**********
      * <p>
      *
@@ -204,7 +202,7 @@ public class ViewSearchPosts {
      * @param posts           The list of posts to display in the table
      *
      */
-    protected static void populateResultsTable(List<Post> posts) {
+    public static void populateResultsTable(List<Post> posts) {
         resultData.clear();
         for (Post post : posts) {
             if (!post.isDeleted()) {
