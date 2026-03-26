@@ -2,10 +2,13 @@ package entityClasses;
 
 /*******
  * <p> Title: Reply Class </p>
+ * 
+ * <p> Description: Reply Class is the implementation for the reply aspect of the Student Discussion Post</p>
+ * <p> The Reply class inherits the attributes and methods from the Post Class</p>
  *
  *
  *
- * @version 1.00   2026-03-24   Initial implementation
+ * @version 1.00  
  */
 public class Reply extends Post {
 
@@ -13,6 +16,7 @@ public class Reply extends Post {
 	 * These are the private attributes for this entity object
 	 */
 
+	/**Unique Identifier for the ParentPostID to link to the Post*/
 	private int parentPostID;
 
 
@@ -21,7 +25,7 @@ public class Reply extends Post {
 	 */
 
 	/*****
-	 * <p> Method: Reply() </p>
+	 * <p> Constructs the basic Reply </p>
 	 *
 	 */
 	public Reply() {
@@ -32,7 +36,7 @@ public class Reply extends Post {
 	}
 
 	/*****
-	 * <p> Method: Reply(int parentPostID, String username, String body) </p>
+	 * <p> Constructs a Reply Object with the given paramters </p>
 	 *
 	 *
 	 * @param parentPostID the postID of the Post or Reply being replied to; must be positive
@@ -53,7 +57,7 @@ public class Reply extends Post {
 	 */
 
 	/*****
-	 * <p> Method: getParentPostID() </p>
+	 * <p> Returns the parent post ID </p>
 	 *
 	 *
 	 * @return the postID of the parent
@@ -61,7 +65,7 @@ public class Reply extends Post {
 	public int getParentPostID() { return parentPostID; }
 
 	/*****
-	 * <p> Method: setParentPostID(int parentPostID) </p>
+	 * <p> Sets the Parent Post ID </p>
 	 *
 	 * @param parentPostID the postID of the parent Post or Reply
 	 */
