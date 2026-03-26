@@ -68,18 +68,33 @@ public class ViewEditReply {
     /** Connection to the database */
     private static Database theDatabase = applicationMain.FoundationsMain.database;
 
+    /** JavaFX Stage used to display this page */
     protected static Stage theStage;
+    /** Root pane containing all UI elements */
     protected static Pane theRootPane;
+    /** Currently logged-in user */
     protected static User theUser;
-    protected static Reply theReply;  // The reply being edited
-    protected static Post thePost;    // The parent post
+    /** The reply currently being edited */
+    protected static Reply theReply;
+    /** The parent post associated with the reply */
+    protected static Post thePost;    
 
+    /** Scene used for this page */
     private static Scene theViewEditReplyScene;
+    /** Role identifier (Role1 = Student) */
     protected static final int theRole = 2;
 
-    /**
-     * Display Edit Reply page with the reply to edit
-     */
+    /**********
+    * <p> Method: displayEditReply(Stage ps, User user, Reply reply, Post post) </p>
+    * 
+    * <p> Description: Displays the Edit Reply page. Initializes the stage, user, 
+    * reply, and post context, and populates the UI with existing reply data.</p>
+    * 
+    * @param ps     the JavaFX Stage used to display this page
+    * @param user   the currently logged-in user
+    * @param reply  the reply being edited
+    * @param post   the parent post associated with the reply
+    */
     public static void displayEditReply(Stage ps, User user, Reply reply, Post post) {
         theStage = ps;
         theUser = user;
@@ -113,9 +128,13 @@ public class ViewEditReply {
         theStage.show();
     }
     
-    /**
-     * Constructor - creates all GUI elements
-     */
+    /**********
+    * <p> Constructor: ViewEditReply() </p>
+    * 
+    * <p> Description: Builds and initializes all GUI components for the Edit Reply page.
+    * Sets layout, styling, and event handlers for all UI elements. This constructor 
+    * follows the singleton pattern and is only executed once.</p>
+    */
     private ViewEditReply() {
         theRootPane = new Pane();
         theViewEditReplyScene = new Scene(theRootPane, width, height);
@@ -169,8 +188,19 @@ public class ViewEditReply {
             label_ReplyBody, text_ReplyBody,
             button_SaveChanges, button_Cancel,
             line_Separator4, button_Logout, button_Quit);
-    }
+    } 
     
+    /**********
+    * Private local method to initialize the standard fields for a label
+    *
+    * @param l   the Label to configure
+    * @param ff  the font family
+    * @param f   the font size
+    * @param w   the width of the label
+    * @param p   the alignment
+    * @param x   the x-coordinate (horizontal position)
+    * @param y   the y-coordinate (vertical position)
+    */
     private static void setupLabelUI(Label l, String ff, double f, double w, Pos p, double x, double y){
         l.setFont(Font.font(ff, f));
         l.setMinWidth(w);
@@ -178,6 +208,17 @@ public class ViewEditReply {
         l.setLayoutX(x);
         l.setLayoutY(y);        
     }
+    /**********
+    * Private local method to initialize the standard fields for a button
+    *
+    * @param b   the Button to configure
+    * @param ff  the font family
+    * @param f   the font size
+    * @param w   the width of the button
+    * @param p   the alignment
+    * @param x   the x-coordinate (horizontal position)
+    * @param y   the y-coordinate (vertical position)
+    */
     
     private static void setupButtonUI(Button b, String ff, double f, double w, Pos p, double x, double y){
         b.setFont(Font.font(ff, f));
@@ -186,7 +227,13 @@ public class ViewEditReply {
         b.setLayoutX(x);
         b.setLayoutY(y);        
     }
-    
+
+    /**********
+    * Displays an informational alert dialog
+    *
+    * @param title   the title of the alert window
+    * @param message the message displayed in the alert
+    */ 
     protected static void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
