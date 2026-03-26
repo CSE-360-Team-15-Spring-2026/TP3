@@ -18,8 +18,6 @@ import java.util.List;
  *
  * @author Lynn Robert Carter
  *
- * @version 1.00        2026-03-23 Initial implementation for Read & Search functionality
- *
  */
 public class ControllerSearchPosts {
 
