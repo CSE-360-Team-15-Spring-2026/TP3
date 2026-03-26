@@ -330,6 +330,8 @@ public class ViewCreatePost {
 	
 	/**********
 	 * Displays an alert dialog to the user.
+	 * @param title   the title of the alert dialog
+ 	 * @param message the message content displayed in the alert
 	 */
 	protected static void showAlert(String title, String message) {
 		javafx.scene.control.Alert alert = new javafx.scene.control.Alert(
