@@ -15,46 +15,66 @@ import guiRole1.ModelRole1Home;
 
 import java.util.List;
 
-/**
+/*******
  * <p> Title: ViewSearchPosts Class </p>
  *
- * <p> Description: Search Posts GUI - allows user to search posts by keyword
- * and thread </p>
+ * <p> Description: The Java/FX page allows users to search for posts within discussion threads
+ * by keyword and optionally by thread name. It serves as a central interface for discovering
+ * and viewing posts relevant to their interests. </p>
  *
  * <p> Copyright: Lynn Robert Carter © 2025 </p>
  *
- * @version 1.00 2026-03-23 Initial implementation for Read & Search functionality
+ * @author Lynn Robert Carter
+ *
+ * @version 1.00        2026-03-23 Initial implementation for Read & Search functionality
+ *
  */
 public class ViewSearchPosts {
+
+
+    // Attributes
+
+    // These define the application window dimensions
 
     private static double width = applicationMain.FoundationsMain.WINDOW_WIDTH;
     private static double height = applicationMain.FoundationsMain.WINDOW_HEIGHT;
 
-    // Page title
-    protected static Label label_PageTitle = new Label();
+    // The GUI components are organized by their functional area
 
-    // Search fields
+    // GUI Area 1: Search input controls
+    protected static Label label_PageTitle = new Label();
     protected static Label label_Keyword = new Label("Keyword:");
     protected static TextField textField_Keyword = new TextField();
     protected static Label label_Thread = new Label("Thread (optional):");
     protected static TextField textField_Thread = new TextField();
     protected static Button button_Search = new Button("Search");
 
-    // Results table
+    // GUI Area 2: Results display table
     protected static TableView<PostDisplay> table_Results = new TableView<>();
     protected static ObservableList<PostDisplay> resultData = FXCollections.observableArrayList();
 
-    // Action buttons
+    // GUI Area 3: Action buttons
     protected static Button button_ViewPost = new Button("View Post & Replies");
     protected static Button button_Back = new Button("Back");
 
+    // Page management
     private static ViewSearchPosts theView;
     protected static Stage theStage;
     protected static Pane theRootPane;
     private static Scene theSearchScene = null;
 
-    /**
-     * Entry point to display search posts page
+
+
+     */
+
+    /**********
+     * <p> Title: displaySearchPosts(Stage ps) Method. </p>
+     *
+     * <p> Description: Entry point to display the Search Posts page. Initializes the view if
+     * needed and sets the scene on the stage for display to the user. </p>
+     *
+     * @param ps              The JavaFX Stage for this GUI
+     *
      */
     public static void displaySearchPosts(Stage ps) {
         theStage = ps;
@@ -68,8 +88,13 @@ public class ViewSearchPosts {
         theStage.show();
     }
 
-    /**
-     * Constructor - creates all GUI elements
+    /**********
+     * <p> Title: ViewSearchPosts() Constructor. </p>
+     *
+     * <p> Description: Initializes all GUI components, including layout, styling, and event handlers.
+     * This constructor runs only once (singleton pattern), establishing the visual structure of
+     * the search page. Dynamic data is updated separately when the page is displayed. </p>
+     *
      */
     private ViewSearchPosts() {
         theRootPane = new Pane();
@@ -114,8 +139,20 @@ public class ViewSearchPosts {
         );
     }
 
-    /**
-     * Setup the TableView with columns
+
+    //Helper methods for UI setup
+
+     */
+
+    /**********
+     * <p>
+     *
+     * Title: setupTableView() Method. </p>
+     *
+     * <p> Description: Private method that configures the results table with columns for
+     * displaying post information. The table includes columns for ID, Title, Author, Thread,
+     * Reply Count, Read Status, and Timestamp to provide comprehensive post information to the user. </p>
+     *
      */
     private void setupTableView() {
         TableColumn<PostDisplay, Integer> idCol = new TableColumn<>("ID");
@@ -157,10 +194,17 @@ public class ViewSearchPosts {
         table_Results.setPrefHeight(350);
     }
 
-    /**
-     * Populates the table with search results
+    /**********
+     * <p> Title: populateResultsTable(List<Post> posts) Method. </p>
+     * 
+     * <p> Description: Protected method that populates the results table with the provided list
+     * of posts, displaying only non-deleted posts with their metadata including title, author,
+     * thread, reply count, and read status. </p>
+     *
+     * @param posts           The list of posts to display in the table
+     *
      */
-    public static void populateResultsTable(List<Post> posts) {
+    protected static void populateResultsTable(List<Post> posts) {
         resultData.clear();
         for (Post post : posts) {
             if (!post.isDeleted()) {
@@ -169,8 +213,15 @@ public class ViewSearchPosts {
         }
     }
 
-    /**
-     * Show alert dialog
+    /**********
+     * <p> Title: showAlert(String title, String message) Method. </p>
+     *
+     * <p> Description: Protected method that displays an information alert dialog with the
+     * specified title and message to communicate important information to the user. </p>
+     *
+     * @param title           The alert dialog title
+     * @param message         The alert message content
+     *
      */
     protected static void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -180,7 +231,19 @@ public class ViewSearchPosts {
         alert.showAndWait();
     }
 
-    // Helper methods
+    /**********
+     * <p> Title: setupLabelUI() Method. </p>
+     *
+     * <p> Description: Private local method to initialize the standard fields for a label. </p>
+     *
+     * @param l               The Label to configure
+     * @param ff              The font family
+     * @param f               The font size
+     * @param w               The width of the label
+     * @param p               The alignment (left, center, right)
+     * @param x               The x-coordinate (horizontal position)
+     * @param y               The y-coordinate (vertical position)
+     */
     private static void setupLabelUI(Label l, String ff, double f, double w,
                                      Pos p, double x, double y) {
         l.setFont(Font.font(ff, f));
@@ -190,6 +253,19 @@ public class ViewSearchPosts {
         l.setLayoutY(y);
     }
 
+    /**********
+     * <p> Title: setupButtonUI() Method. </p>
+     * 
+     * <p> Description: Private local method to initialize the standard fields for a button. </p>
+     *
+     * @param b               The Button to configure
+     * @param ff              The font family
+     * @param f               The font size
+     * @param w               The button width
+     * @param p               The alignment (left, center, right)
+     * @param x               The x-coordinate (horizontal position)
+     * @param y               The y-coordinate (vertical position)
+     */
     private static void setupButtonUI(Button b, String ff, double f, double w,
                                       Pos p, double x, double y) {
         b.setFont(Font.font(ff, f));
@@ -199,6 +275,18 @@ public class ViewSearchPosts {
         b.setLayoutY(y);
     }
 
+    /**********
+     * <p> Title: setupTextFieldUI() Method. </p>
+     * <p> Description: Private local method to initialize the standard fields for a text field. </p>
+     *
+     * @param t               The TextField to configure
+     * @param ff              The font family
+     * @param f               The font size
+     * @param w               The width of the text field
+     * @param p               The alignment (left, center, right)
+     * @param x               The x-coordinate (horizontal position)
+     * @param y               The y-coordinate (vertical position)
+     */
     private static void setupTextFieldUI(TextField t, String ff, double f,
                                          double w, Pos p, double x, double y) {
         t.setFont(Font.font(ff, f));
@@ -209,8 +297,13 @@ public class ViewSearchPosts {
         t.setLayoutY(y);
     }
 
-    /**
-     * Inner class for TableView display
+    /**********
+     * <p> Title: PostDisplay Inner Class. </p>
+     * 
+     * <p> Description: A wrapper class that adapts Post objects for display in the results
+     * TableView, using JavaFX properties for automatic table updates and refreshes. This class
+     * provides a structured representation of post data suitable for TableView display. </p>
+     *
      */
     public static class PostDisplay {
         private final javafx.beans.property.SimpleIntegerProperty postId;
@@ -221,6 +314,12 @@ public class ViewSearchPosts {
         private final javafx.beans.property.SimpleStringProperty status;
         private final javafx.beans.property.SimpleStringProperty timestamp;
 
+        /**
+         * Constructs a PostDisplay from a Post object, extracting all relevant fields for table
+         * display including read status and reply count from the associated post.
+         *
+         * @param post            The Post object to wrap for display
+         */
         public PostDisplay(Post post) {
             this.postId = new javafx.beans.property.SimpleIntegerProperty(post.getPostID());
             this.title = new javafx.beans.property.SimpleStringProperty(post.getTitle());
