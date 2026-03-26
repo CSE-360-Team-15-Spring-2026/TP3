@@ -250,13 +250,9 @@ public class ViewEditPost {
     /**
      * <p> show and alert </p>
      *
-     * @param l    label
-     * @param ff   font family
-     * @param f    font size
-     * @param w    width
-     * @param p    alignment
-     * @param x    x coordinate
-     * @param y    y coordinate
+     * @param title    title of pop up window
+     * @param message    message of pop up
+     * 
      */
     protected static void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
