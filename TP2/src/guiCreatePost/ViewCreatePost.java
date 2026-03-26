@@ -16,11 +16,10 @@ import entityClasses.User;
 
 
 /*******
- * <p> Title: GUIReviewerHomePage Class. </p>
+ * <p> Title: GUIcreatepost Class. </p>
  * 
- * <p> Description: The Java/FX-based Role1 Home Page.  The page is a stub for some role needed for
- * the application.  The widgets on this page are likely the minimum number and kind for other role
- * pages that may be needed.</p>
+ * <p> Description: The Java/FX page allows users to view posts and create new posts or replies 
+ * within discussion threads.It serves as a central interface for browsing and contributing to this GUI</p>
  * 
  * <p> Copyright: Lynn Robert Carter © 2025 </p>
  * 
@@ -38,25 +37,23 @@ public class ViewCreatePost {
 	
 	 */
 	
-	// These are the application values required by the user interface
+	// These define the application window dimensions
 	
 	private static double width = applicationMain.FoundationsMain.WINDOW_WIDTH;
 	private static double height = applicationMain.FoundationsMain.WINDOW_HEIGHT;
 
 
-	// These are the widget attributes for the GUI. There are 3 areas for this GUI.
+	// The GUI components are organized into 3 main sections
 	
-	// GUI Area 1: It informs the user about the purpose of this page, whose account is being used,
-	// and a button to allow this user to update the account settings
+	// GUI Area 1: Displays page title, current user info, and account update option
 	protected static Label label_PageTitle = new Label();
 	protected static Label label_UserDetails = new Label();
 	protected static Button button_UpdateThisUser = new Button("Account Update");
 	
-	// This is a separator and it is used to partition the GUI for various tasks
+	// Separator line between sections
 	protected static Line line_Separator1 = new Line(20, 95, width-20, 95);
 
-	// GUI ARea 2: This is a stub, so there are no widgets here.  For an actual role page, this are
-	// would contain the widgets needed for the user to play the assigned role.
+	// GUI ARea 2: Allows the user to create a new post
 	
 	protected static Label label_PostTitle = new Label("Post Title");
 	protected static TextField text_PostTitle = new TextField();
@@ -71,11 +68,10 @@ public class ViewCreatePost {
 	protected static Button button_Cancel = new Button("Cancel");
 	
 	
-	// This is a separator and it is used to partition the GUI for various tasks
+	// Separator line between the footer section
 	protected static Line line_Separator4 = new Line(20, 525, width-20,525);
 	
-	// GUI Area 3: This is last of the GUI areas.  It is used for quitting the application and for
-	// logging out.
+	// GUI Area 3: Provides logout and application exit options
 	protected static Button button_Logout = new Button("Logout");
 	protected static Button button_Quit = new Button("Quit");
 
@@ -104,48 +100,38 @@ public class ViewCreatePost {
 
 
 	/**********
-	 * <p> Method: displayCreatePost(Stage ps, User user) </p>
-	 * 
-	 * <p> Description: This method is the single entry point from outside this package to cause
-	 * the Role1 Home page to be displayed.
-	 * 
-	 * It first sets up every shared attributes so we don't have to pass parameters.
-	 * 
-	 * It then checks to see if the page has been setup.  If not, it instantiates the class, 
-	 * initializes all the static aspects of the GIUI widgets (e.g., location on the page, font,
-	 * size, and any methods to be performed).
-	 * 
-	 * After the instantiation, the code then populates the elements that change based on the user
-	 * and the system's current state.  It then sets the Scene onto the stage, and makes it visible
-	 * to the user.
-	 * 
-	 * @param ps specifies the JavaFX Stage to be used for this GUI and it's methods
-	 * 
-	 * @param user specifies the User for this GUI and it's methods
-	 * 
-	 */
+ * <p> Method: displayCreatePost(Stage ps, User user) </p>
+ * 
+ * <p> Description: Entry point to display the Create Post page. Initializes the view if needed,
+ * updates user-specific data, and sets the scene on the stage.</p>
+ * 
+ * @param ps the JavaFX Stage for this GUI
+ * @param user the current logged-in User
+ * 
+ */
 	public static void displayCreatePost(Stage ps, User user) {
 		
-		// Establish the references to the GUI and the current user
+		// Set the current stage and user
 		theStage = ps;
 		theUser = user;
 		
-		// If not yet established, populate the static aspects of the GUI
+		// Initialize the view only once 
 		if (theView == null) theView = new ViewCreatePost();		// Instantiate singleton if needed
 		
-		// Populate the dynamic aspects of the GUI with the data from the user and the current
-		// state of the system.
+		// Load user data and update application status
 		theDatabase.getUserAccountDetails(user.getUserName());
 		applicationMain.FoundationsMain.activeHomePage = theRole;
-		
+
+		// Display current user info on the page
 		label_UserDetails.setText("User: " + theUser.getUserName());
 		
+		// Reset input fields for creating a new post
 		text_PostTitle.setText("");
 		text_PostBody.setText("");
 		loadThreads();
 				
-		// Set the title for the window, display the page, and wait for the Admin to do something
-		theStage.setTitle("CSE 360 Foundations: Student Home Page");
+		// Set up and display the scene
+		theStage.setTitle("Student Home Page");
 		theStage.setScene(theViewCreatePostScene);
 		theStage.show();
 	}
@@ -153,25 +139,19 @@ public class ViewCreatePost {
 	/**********
 	 * <p> Method: ViewCreatePost() </p>
 	 * 
-	 * <p> Description: This method initializes all the elements of the graphical user interface.
-	 * This method determines the location, size, font, color, and change and event handlers for
-	 * each GUI object.</p>
-	 * 
-	 * This is a singleton and is only performed once.  Subsequent uses fill in the changeable
-	 * fields using the displayRole2Home method.</p>
+	 * <p> Description: Initializes all GUI components, including layout, styling, and event handlers.
+     * This constructor runs only once (singleton pattern), while dynamic data is updated separately
+     * when the page is displayed.</p>
 	 * 
 	 */
 	private ViewCreatePost() {
 
-		// Create the Pane for the list of widgets and the Scene for the window
+		// Initialize the main layout container and sceneInitialize the main layout container and scene
 		theRootPane = new Pane();
 		theViewCreatePostScene = new Scene(theRootPane, width, height);	// Create the scene
+	
 		
-		// Set the title for the window
-		
-		// Populate the window with the title and other common widgets and set their static state
-		
-		// GUI Area 1
+		// GUI Area 1:Page title and user info section
 		label_PageTitle.setText("Student Home Page");
 		setupLabelUI(label_PageTitle, "Arial", 28, width, Pos.CENTER, 0, 5);
 
@@ -180,8 +160,7 @@ public class ViewCreatePost {
 		setupButtonUI(button_UpdateThisUser, "Dialog", 18, 170, Pos.CENTER, 610, 45);
 		button_UpdateThisUser.setOnAction((_) -> {ControllerCreatePost.performUpdate(); });
 		
-		// GUI Area 2
-		
+		// GUI Area 2: Post creation form
 		setupLabelUI(label_PostTitle, "Arial", 18, 200, Pos.BASELINE_LEFT, 20, 120);
 		setupTextFieldUI(text_PostTitle, "Arial", 16, 500, Pos.BASELINE_LEFT, 20, 150);
 		
@@ -198,7 +177,7 @@ public class ViewCreatePost {
 		button_Cancel.setOnAction((_) -> {ControllerCreatePost.performCancel(); });
 		
 		
-		// GUI Area 3
+		// GUI Area 3: Logout and exit controls
         setupButtonUI(button_Logout, "Dialog", 18, 250, Pos.CENTER, 20, 540);
         button_Logout.setOnAction((_) -> {ControllerCreatePost.performLogout(); });
         
@@ -207,7 +186,7 @@ public class ViewCreatePost {
 
 		// This is the end of the GUI initialization code
 		
-		// Place all of the widget items into the Root Pane's list of children
+		// Add all UI elements to the root pane
          theRootPane.getChildren().addAll(
 			label_PageTitle, label_UserDetails, button_UpdateThisUser, line_Separator1,
 			label_PostTitle, text_PostTitle,
@@ -220,20 +199,20 @@ public class ViewCreatePost {
 	
 	/*-********************************************************************************************
 
-	Helper methods to reduce code length
+	Helper methods for UI setup
 
 	 */
 	
 	/**********
 	 * Private local method to initialize the standard fields for a label
 	 * 
-	 * @param l		The Label object to be initialized
-	 * @param ff	The font to be used
-	 * @param f		The size of the font to be used
-	 * @param w		The width of the Button
-	 * @param p		The alignment (e.g. left, centered, or right)
-	 * @param x		The location from the left edge (x axis)
-	 * @param y		The location from the top (y axis)
+	 * @param l   the Label to configure
+	 * @param ff  the font family
+	 * @param f   the font size
+	 * @param w   the width of the label
+	 * @param p   the alignment (left, center, right)
+	 * @param x   the x-coordinate (horizontal position)
+	 * @param y   the y-coordinate (vertical position)
 	 */
 	private static void setupLabelUI(Label l, String ff, double f, double w, Pos p, double x, 
 			double y){
@@ -243,31 +222,39 @@ public class ViewCreatePost {
 		l.setLayoutX(x);
 		l.setLayoutY(y);		
 	}
-	
-	
+
 	/**********
-	 * Private local method to initialize the standard fields for a button
-	 * 
-	 * @param b		The Button object to be initialized
-	 * @param ff	The font to be used
-	 * @param f		The size of the font to be used
-	 * @param w		The width of the Button
-	 * @param p		The alignment (e.g. left, centered, or right)
-	 * @param x		The location from the left edge (x axis)
-	 * @param y		The location from the top (y axis)
-	 */
+ 	* Private local method to initialize the standard fields for a button
+    * 
+	* @param b   the Button to configure
+    * @param ff  the font family
+    * @param f   the font size
+    * @param w   the button width
+    * @param p   the alignment (left, center, right)
+    * @param x   the x-coordinate (horizontal position)
+    * @param y   the y-coordinate (vertical position)
+    */
+	
 	private static void setupButtonUI(Button b, String ff, double f, double w, Pos p, double x, 
 			double y){
 		b.setFont(Font.font(ff, f));
 		b.setMinWidth(w);
 		b.setAlignment(p);
 		b.setLayoutX(x);
-		b.setLayoutY(y);		
-	}
-	
+		b.setLayoutY(y);	
+		
 	/**********
-	 * Private local method to initialize the standard fields for a text field
-	 */
+    * Private local method to initialize the standard fields for a text field
+	*
+    * @param t   the TextField to configure
+    * @param ff  the font family
+    * @param f   the font size
+    * @param w   the width of the text field
+    * @param p   the alignment
+    * @param x   the x-coordinate (horizontal position)
+    * @param y   the y-coordinate (vertical position)
+    */
+	
 	private static void setupTextFieldUI(TextField t, String ff, double f, double w, Pos p, double x,
 			double y){
 		t.setFont(Font.font(ff, f));
@@ -279,8 +266,16 @@ public class ViewCreatePost {
 	}
 	
 	/**********
-	 * Private local method to initialize the standard fields for a text area
-	 */
+    * Private local method to initialize the standard fields for a text area
+    *
+    * @param t   the TextArea to configure
+    * @param ff  the font family
+    * @param f   the font size
+    * @param w   the width of the text area
+    * @param h   the height of the text area
+    * @param x   the x-coordinate (horizontal position)
+    * @param y   the y-coordinate (vertical position)
+    */
 	private static void setupTextAreaUI(TextArea t, String ff, double f, double w, double h, double x,
 			double y){
 		t.setFont(Font.font(ff, f));
@@ -294,8 +289,15 @@ public class ViewCreatePost {
 	}
 	
 	/**********
-	 * Private local method to initialize the standard fields for a combo box
-	 */
+ 	* Private local method to initialize the standard fields for a combo box
+ 	*
+ 	* @param c   the ComboBox to configure
+ 	* @param ff  the font family
+ 	* @param f   the font size
+ 	* @param w   the width of the combo box
+ 	* @param x   the x-coordinate (horizontal position)
+ 	* @param y   the y-coordinate (vertical position)
+ 	*/
 	private static void setupComboBoxUI(ComboBox<String> c, String ff, double f, double w, double x,
 			double y){
 		c.setStyle("-fx-font: " + f + " " + ff + ";");
@@ -305,7 +307,7 @@ public class ViewCreatePost {
 	}
 	
 	/**********
-	 * Load thread names into the combo box
+	 * Loads the available thread names into the GUI.
 	 */
 	protected static void loadThreads() {
 		comboBox_ThreadName.getItems().clear();
@@ -327,7 +329,7 @@ public class ViewCreatePost {
 	}
 	
 	/**********
-	 * Show alert dialog
+	 * Displays an alert dialog to the user.
 	 */
 	protected static void showAlert(String title, String message) {
 		javafx.scene.control.Alert alert = new javafx.scene.control.Alert(
