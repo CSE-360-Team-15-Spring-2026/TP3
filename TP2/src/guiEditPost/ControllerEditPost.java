@@ -1,19 +1,19 @@
 package guiEditPost;
 
-/**
+/*******
  * <p> Title: ControllerEditPost Class </p>
  *
- * <p> Description: Controller for Edit Post page </p>
- *
- * <p> Copyright: Lynn Robert Carter © 2025 </p>
- *
- * @author Lynn Robert Carter
- * @version 2.00 2025-03-25 Complete edit functionality
+ * <p> Description: A class under the guiEditPost package which holds the funcionality needed to allow students to edit posts.</p>
+ * <p> The operations in the class save the changes that students would like to make that were saved into database.</p>
+ * <p> All the attributes and functionality was decided and implemented using the Student User Stories as well as the Staff EPICS</p>
+ * 
+ * @version 1.00    
  */
 public class ControllerEditPost {
 
-    /**
-     * Save changes to the post
+    /*****
+     * <p> Save changes made to the post into the database: if title and body are not empty.</p>
+     * <p> Thread name defaults to "General" if empty.</p>
      */
     protected static void performSaveChanges() {
         String title = ViewEditPost.text_PostTitle.getText();
@@ -49,8 +49,8 @@ public class ControllerEditPost {
         }
     }
     
-    /**
-     * Cancel editing and return to home
+    /*****
+     * <p> Cancel editing and return to home depending on role of user.</p>
      */
     protected static void performCancel() {
         if (applicationMain.FoundationsMain.activeHomePage == 2) {
@@ -65,18 +65,24 @@ public class ControllerEditPost {
             );
         }
     }
-    
+    /*****
+     * <p> Updates Display.</p>
+     */
     protected static void performUpdate() {
         guiUserUpdate.ViewUserUpdate.displayUserUpdate(
             ViewEditPost.theStage,
             ViewEditPost.theUser
         );
     }
-
+    /*****
+     * <p> logout current User.</p>
+     */
     protected static void performLogout() {
         guiUserLogin.ViewUserLogin.displayUserLogin(ViewEditPost.theStage);
     }
-
+    /*****
+     * <p> Will shutdown program.</p>
+     */
     protected static void performQuit() {
         System.exit(0);
     }
