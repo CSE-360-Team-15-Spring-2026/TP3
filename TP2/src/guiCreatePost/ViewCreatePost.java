@@ -47,25 +47,35 @@ public class ViewCreatePost {
 	
 	// GUI Area 1: Displays page title, current user info, and account update option
 	protected static Label label_PageTitle = new Label();
+	// Displays the page
 	protected static Label label_UserDetails = new Label();
+	// Displays logged-in user info
 	protected static Button button_UpdateThisUser = new Button("Account Update");
+	// Opens account update page 
 	
 	// Separator line between sections
 	protected static Line line_Separator1 = new Line(20, 95, width-20, 95);
 
-	// GUI ARea 2: Allows the user to create a new post
-	
+	// GUI Area 2: Allows the user to create a new post
 	protected static Label label_PostTitle = new Label("Post Title");
+	// Label for post title 
 	protected static TextField text_PostTitle = new TextField();
+	// Input field for post title 
 	
 	protected static Label label_PostBody = new Label("Post Body");
+	// Label for post content
 	protected static TextArea text_PostBody = new TextArea();
+	// Input area for post content
 	
 	protected static Label label_ThreadName = new Label("Thread");
+	// Label for thread selection
 	protected static ComboBox<String> comboBox_ThreadName = new ComboBox<String>();
+	// Dropdown for threads
 	
 	protected static Button button_CreatePost = new Button("Create Post");
+	// Submits the post
 	protected static Button button_Cancel = new Button("Cancel");
+	// Cancels post creation
 	
 	
 	// Separator line between the footer section
@@ -73,24 +83,33 @@ public class ViewCreatePost {
 	
 	// GUI Area 3: Provides logout and application exit options
 	protected static Button button_Logout = new Button("Logout");
+	// Logs out current user
 	protected static Button button_Quit = new Button("Quit");
+	// Exits the application
+
 
 	// This is the end of the GUI objects for the page.
 	
 	// These attributes are used to configure the page and populate it with this user's information
-	private static ViewCreatePost theView;		// Used to determine if instantiation of the class
-												// is needed
+	private static ViewCreatePost theView;		
+	// Used to determine if instantiation of the class
+	// is needed
 
 	// Reference for the in-memory database so this package has access
 	private static Database theDatabase = applicationMain.FoundationsMain.database;
-
-	protected static Stage theStage;			// The Stage that JavaFX has established for us	
-	protected static Pane theRootPane;			// The Pane that holds all the GUI widgets
-	protected static User theUser;				// The current logged in User
 	
-
-	private static Scene theViewCreatePostScene;	// The shared Scene each invocation populates
-	protected static final int theRole = 2;		// Admin: 1; Role1: 2; Role2: 3
+	// The Stage that JavaFX has established for us	
+	protected static Stage theStage;			
+	// The Pane that holds all the GUI widgets
+	protected static Pane theRootPane;			
+	// The current logged in User
+	protected static User theUser;				
+	// The current logged in User
+	
+	// Scene associated with this view
+	private static Scene theViewCreatePostScene;	
+	// Role identifier for this page (Role1 = Student)
+	protected static final int theRole = 2;		
 
 	/*-*******************************************************************************************
 
