@@ -52,7 +52,7 @@ public class ViewCreatePost {
 	/** Button to open the Account Update page */
 	protected static Button button_UpdateThisUser = new Button("Account Update");
 	
-	//** Separator line between sections */
+	/** Separator line between sections */
 	protected static Line line_Separator1 = new Line(20, 95, width-20, 95);
 
 	// GUI Area 2: Allows the user to create a new post
