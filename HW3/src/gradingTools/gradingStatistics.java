@@ -12,12 +12,24 @@ import java.util.Set;
  * <p> Title: Grading Statistics Class </p>
  * 
  * <p> Description: To be able to compute the statistics regarding student Participation. </p>
- * <p> Takes in the list of posts and returns the number of times each user have replied to posts uniquely and also not to their own posts. </p>
+ * <p> This class has multiple functionality like: Checking for whether grading requirements were met, calculating the number of replies a student did (where only unique replies are counted: No Self-Replies, No Deleted Messages, No mutliple replies to the same person) </p>
  * @author Fauzan Amaan Mohammed
  * 
  *  */
 public class gradingStatistics{
 	
+	/**
+	 * <p> Default Constructor for the class => Unused in the program </p>
+	 */
+	public gradingStatistics() {}
+	
+	/**
+	 * <p> Computes the number of people a user replied to and also excluding self-replies, multiple replies to the same author and deleted messages </p>
+	 *
+	 * @param studentUsername the student username
+	 * @param listOfAllPosts the list of all posts
+	 * @return the int
+	 */
 	public static int countUniqueAuthors(String studentUsername, List<Post> listOfAllPosts) {
 		
 		// Username empty check
@@ -72,6 +84,13 @@ public class gradingStatistics{
 		
 	}
 	
+	/**
+	 * Finds the username of the post
+	 *
+	 * @param parentPostID the parent post ID
+	 * @param listOfAllPosts the list of all posts
+	 * @return the string
+	 */
 	private static String findParentAuthor(int parentPostID, List<Post> listOfAllPosts) {
 		for (int i = 0; i < listOfAllPosts.size(); i++) {
 			Post tempPost = listOfAllPosts.get(i);
@@ -85,7 +104,14 @@ public class gradingStatistics{
 		return null;
 	}
 	
+	/**
+	 * <p> Computes whether the student had replied to atleast 3 people </p>
+	 *
+	 * @param uniqueCount the unique count
+	 * @return true, if successful
+	 */
 	public static boolean minimumRequirement(int uniqueCount) {
+		// Fulfills requirement listed in HW3
 		if (uniqueCount >= 3) {
 			return true;
 		}
@@ -94,6 +120,13 @@ public class gradingStatistics{
 		}
 	}
 	
+	/**
+	 * <p> Returns the list of all the qualified replied students made </p>
+	 *
+	 * @param studentUsername the student username
+	 * @param listOfAllPosts the list of all posts
+	 * @return the replies by student
+	 */
 	public static List<String> getRepliesByStudent(String studentUsername, List<Post> listOfAllPosts){
 		List<String> possibleReplies = new ArrayList<>();
 		
@@ -149,6 +182,12 @@ public class gradingStatistics{
 		return possibleReplies;
 	}
 	
+	/**
+	 * <p> Lists all of the usernames of people who made posts </p>
+	 *
+	 * @param listOfAllPosts the list of all posts
+	 * @return the all student usernames
+	 */
 	public static List<String> getAllStudentUsernames(List<Post> listOfAllPosts){
 		List<String> listOfUsernames = new ArrayList<>();
 		Set<String> setOfUsernames = new HashSet<>();

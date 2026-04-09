@@ -5,11 +5,6 @@ import entityClasses.Post;
 import gradingTools.gradingStatistics;
 
 
-/**
- * The Class ModelRole2Home.
- */
-public class ModelGradingStats {
-
 /*******
  * <p> Title: ModelGradingStats Class. </p>
  * 
@@ -17,15 +12,15 @@ public class ModelGradingStats {
  * 
  * This class is not used as there is no unique data manipulation for this GUI page.</p>
  * 
- * <p> Copyright: Lynn Robert Carter © 2025 </p>
  * 
  * @author Lynn Robert Carter
  * @author Fauzan Amaan Mohammed
  * 
- * @version 1.00		2025-08-15 Initial version
- * @version 1.01		2025-09-13 Updated JavaDoc description
  *  
  */
+public class ModelGradingStats {
+
+
 	/**
 	 * Default constructor. This Model class is a stub; no data is
 	 * directly managed by this MVC component beyond what the database handles.
@@ -33,10 +28,22 @@ public class ModelGradingStats {
 	public ModelGradingStats() {
 	}
 	
+	/**
+	 * <p> Loads every post via the database class </p>
+	 *
+	 * @return the list
+	 */
 	public static List<Post> loadAllPosts(){
 		return applicationMain.FoundationsMain.database.getAllPosts();
 	}
 	
+	/**
+	 * <p> Generates a string that summarizes each students participation statistic </p>
+	 *
+	 * @param username the username
+	 * @param listOfAllPosts the list of all posts
+	 * @return the student statistics summary
+	 */
 	public static String getStudentStatisticsSummary(String username, List<Post> listOfAllPosts) {
 		int count = gradingStatistics.countUniqueAuthors(username, listOfAllPosts);
 		boolean check = gradingStatistics.minimumRequirement(count);
@@ -64,6 +71,13 @@ public class ModelGradingStats {
 		return output;
 	}
 	
+	/**
+	 * <p> Gets the student replies via the gradingStatistics class </p>
+	 *
+	 * @param username the username
+	 * @param listOfAllPosts the list of all posts
+	 * @return the user replies
+	 */
 	public static List<String> getUserReplies(String username, List<Post> listOfAllPosts){
 		return gradingStatistics.getRepliesByStudent(username, listOfAllPosts);
 	}

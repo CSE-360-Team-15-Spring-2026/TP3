@@ -30,12 +30,10 @@ import java.util.ArrayList;
  * the application.  The widgets on this page are likely the minimum number and kind for other role
  * pages that may be needed.</p>
  * 
- * <p> Copyright: Lynn Robert Carter © 2025 </p>
  * 
  * @author Lynn Robert Carter
  * @author Fauzan Amaan Mohammed
  * 
- * @version 1.00		2025-04-20 Initial version
  *  
  */
 
@@ -49,70 +47,100 @@ public class ViewGradingStats {
 	
 	// These are the application values required by the user interface
 	
+	/** The width. */
 	private static double width = applicationMain.FoundationsMain.WINDOW_WIDTH;
+	
+	/** The height. */
 	private static double height = applicationMain.FoundationsMain.WINDOW_HEIGHT;
 
 
 	// These are the widget attributes for the GUI. There are 3 areas for this GUI.
 	
 	// GUI Area 1: It informs the user about the purpose of this page, whose account is being used,
+	/** The label page title. */
 	// and a button to allow this user to update the account settings
 	protected static Label label_PageTitle = new Label();
+	
+	/** The label user details. */
 	protected static Label label_UserDetails = new Label();
+	
+	/** The button update this user. */
 	protected static Button button_UpdateThisUser = new Button("Account Update");
 		
-	// This is a separator and it is used to partition the GUI for various tasks
+	/** The line separator 1. */
 	protected static Line line_Separator1 = new Line(20, 95, width-20, 95);
 
 	// GUI ARea 2: Contains widgets that display statistics to the user. 
 	// Only Applicable to the Staff Role!
 	
+	/** Label for the Student List View */
 	protected static Label label_StudentList = new Label();
 	
+	/** List View for the Student List */
 	protected static ListView<String> list_Students = new ListView<>();
 	
+	/** The student data. */
 	protected static ObservableList<String> studentData = FXCollections.observableArrayList();
 	
+	/** Label for the List View of the Replies */
 	protected static Label label_ReplyExpansion = new Label();
 	
+	/** The List View of the Replies for a specific student */
 	protected static ListView<String> list_Replies = new ListView<>();
 	
+	/** Replies Data */
 	protected static ObservableList<String> repliesData = FXCollections.observableArrayList();
 	
+	/** The button refresh. */
 	protected static Button button_Refresh = new Button("Refresh");
 	
+	/** A temporary stored List of Posts */
 	protected static List<Post> tempPosts = new ArrayList<>();
 	
+	/** A temporary stored list of usernames  */
 	protected static List<String> tempUsernames = new ArrayList<>();
 	
+	/** The button back. */
 	protected static Button button_back = new Button("Back to Staff Home Page");
 	
 	
 	
 	
 	
-	// This is a separator and it is used to partition the GUI for various tasks
+	/** The line separator 4. */
 	protected static Line line_Separator4 = new Line(20, 525, width-20,525);
 	
 	// GUI Area 3: This is last of the GUI areas.  It is used for quitting the application and for
-	// logging out.
+	/** The button logout. */
 	protected static Button button_Logout = new Button("Logout");
+	
+	/** The button quit. */
 	protected static Button button_Quit = new Button("Quit");
 
 	// This is the end of the GUI objects for the page.
 	
+	/** The view. */
 	// These attributes are used to configure the page and populate it with this user's information
 	private static ViewGradingStats theView;		// Used to determine if instantiation of the class
 												// is needed
 
-	// Reference for the in-memory database so this package has access
+	/** The database. */
+												// Reference for the in-memory database so this package has access
 	private static Database theDatabase = applicationMain.FoundationsMain.database;
 
+	/** The stage. */
 	protected static Stage theStage;			// The Stage that JavaFX has established for us	
+	
+	/** The root pane. */
 	protected static Pane theRootPane;			// The Pane that holds all the GUI widgets
+	
+	/** The user. */
 	protected static User theUser;				// The current logged in User
 	
+	/** The grading stats scene. */
 	private static Scene theGradingStatsScene;		// The shared Scene each invocation populates
+	
+	/** The role. */
 	protected static final int theRole = 3;		// Admin: 1; Student: 2; Staff: 3
 
 	/*-*******************************************************************************************
@@ -173,8 +201,6 @@ public class ViewGradingStats {
 	 * This method determines the location, size, font, color, and change and event handlers for
 	 * each GUI object. </p>
 	 * 
-	 * This is a singleton and is only performed once.  Subsequent uses fill in the changeable
-	 * fields using the displayGradingStats method.</p>
 	 * 
 	 */
 	private ViewGradingStats() {
@@ -243,16 +269,17 @@ public class ViewGradingStats {
 
 	 */
 	
-	/**********
-	 * Private local method to initialize the standard fields for a label
+	/**
 	 * 
-	 * @param l		The Label object to be initialized
-	 * @param ff	The font to be used
-	 * @param f		The size of the font to be used
-	 * @param w		The width of the Button
-	 * @param p		The alignment (e.g. left, centered, or right)
-	 * @param x		The location from the left edge (x axis)
-	 * @param y		The location from the top (y axis)
+	 * <p> Private local method to initialize the standard fields for a label </p>.
+	 *
+	 * @param l 	The Label object to be initialized
+	 * @param ff The font to be used
+	 * @param f 	The size of the font to be used
+	 * @param w 	The width of the Button
+	 * @param p 	The alignment (e.g. left, centered, or right)
+	 * @param x 	The location from the left edge (x axis)
+	 * @param y 	The location from the top (y axis)
 	 */
 	private static void setupLabelUI(Label l, String ff, double f, double w, Pos p, double x, 
 			double y){
@@ -264,16 +291,17 @@ public class ViewGradingStats {
 	}
 	
 	
-	/**********
-	 * Private local method to initialize the standard fields for a button
+	/**
 	 * 
-	 * @param b		The Button object to be initialized
-	 * @param ff	The font to be used
-	 * @param f		The size of the font to be used
-	 * @param w		The width of the Button
-	 * @param p		The alignment (e.g. left, centered, or right)
-	 * @param x		The location from the left edge (x axis)
-	 * @param y		The location from the top (y axis)
+	 * <p> Private local method to initialize the standard fields for a button </p>.
+	 *
+	 * @param b 	The Button object to be initialized
+	 * @param ff The font to be used
+	 * @param f 	The size of the font to be used
+	 * @param w 	The width of the Button
+	 * @param p 	The alignment (e.g. left, centered, or right)
+	 * @param x 	The location from the left edge (x axis)
+	 * @param y 	The location from the left edge (x axis)
 	 */
 	private static void setupButtonUI(Button b, String ff, double f, double w, Pos p, double x, 
 			double y){
@@ -284,6 +312,15 @@ public class ViewGradingStats {
 		b.setLayoutY(y);		
 	}
 	
+	/**
+	 * <p> Private local method to initialize the standard fields for a List View </p>.
+	 *
+	 * @param lv The List object to be initialised
+	 * @param w The width of the List View
+	 * @param h The height of the List View
+	 * @param x The location from the left edge (x axis)
+	 * @param y The location from the left edge (x axis)
+	 */
 	private static void setupListViewUI(ListView<String> lv, double w, double h, double x, double y) {
 	    lv.setPrefSize(w, h);
 	    lv.setLayoutX(x);

@@ -10,16 +10,15 @@ import gradingTools.gradingStatistics;
  * 
  * <p> Description: Copied File from Role 2 with more functionality for the Grading Statistics Functionality
  * 
+ * Provides GUI implementation and controls for loading all the necessary statistics via the other View, Model and the seperate gradingStatistic package.
+ * 
  * 
  * </p>
  * 
- * <p> Copyright: Lynn Robert Carter © 2025 </p>
  * 
  * @author Lynn Robert Carter
  * @author Fauzan Amaan Mohammed
  * 
- * @version 1.00		2025-08-17 Initial version
- * @version 1.01		2025-09-16 Update Javadoc documentation *  
  */
 
 public class ControllerGradingStats {
@@ -35,7 +34,7 @@ public class ControllerGradingStats {
 	 */
 
 	/**
-	 * Default constructor is not used.
+	 * <p> Default constructor is not used. </p>
 	 */
 	public ControllerGradingStats() {
 	}
@@ -75,10 +74,23 @@ public class ControllerGradingStats {
 		System.exit(0);
 	}
 	
+	/**
+	 * <p> Method: PerformBack() </p>
+	 * 
+	 * <p> Description: This method directs the user back to the guiRole2Home page to the user will be able to go back to navigation portal for more info. </p>
+	 */
 	protected static void performBack() {
 		guiRole2.ViewRole2Home.displayRole2Home(ViewGradingStats.theStage, ViewGradingStats.theUser);
 	}
 	
+	/**
+	 * <p> Method: loadStatistics() </p>
+	 * 
+	 * <p> Description: This method loads all the statistics for every line of the ListView. 
+	 * The method will get string to be listed in every row through a generated string method from the Model class. </p>
+	 * 
+	 * 
+	 */
 	protected static void loadStatistics() {
 		List<Post> listOfAllPosts = ModelGradingStats.loadAllPosts();
 		
@@ -103,6 +115,12 @@ public class ControllerGradingStats {
 	}
 	
 	
+	/**
+	 * <p> Method: selectStudent() </p>
+	 * 
+	 * <p> Description: This method checks whether the user has clicked on a row of the ListView.
+	 * If the user has clicked, the second ListView for the replies will be updated with all the qualifying replies for that particular student </p>
+	 */
 	protected static void selectStudent() {
 		int selectedIndex = ViewGradingStats.list_Students.getSelectionModel().getSelectedIndex();
 		

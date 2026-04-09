@@ -192,7 +192,7 @@ public class ViewRole2Home {
 	 */
 	
 	/**********
-	 * Private local method to initialize the standard fields for a label
+	 * <p> Private local method to initialize the standard fields for a label </p>
 	 * 
 	 * @param l		The Label object to be initialized
 	 * @param ff	The font to be used
@@ -213,7 +213,7 @@ public class ViewRole2Home {
 	
 	
 	/**********
-	 * Private local method to initialize the standard fields for a button
+	 * <p> Private local method to initialize the standard fields for a button </p>
 	 * 
 	 * @param b		The Button object to be initialized
 	 * @param ff	The font to be used
