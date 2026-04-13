@@ -1,15 +1,9 @@
 # Eclipse - keep .classpath but ignore machine-specific settings
+bin/
+*.class
+.DS_Store
+Thumbs.db
 .project
 .classpath
 .settings/
-
-# Mac junk
-.DS_Store
-__MACOSX/
-
-# Compiled files
-*.class
-bin/
-
-# Build output
-out/
+EOF
