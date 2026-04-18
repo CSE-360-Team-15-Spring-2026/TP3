@@ -177,7 +177,7 @@ public class ViewRole2Home {
         // Refresh dynamic content
         label_UserDetails.setText("User: " + theUser.getUserName());
         ModelRole2Home.initialize(theUser.getUserName());
-        ControllerRole2Home.loadAllPosts();
+        populatePostTable(ModelRole2Home.getAllPosts());
 
         theStage.setTitle("CSE 360 Foundations: Staff Home Page");
         theStage.setScene(theRole2HomeScene);

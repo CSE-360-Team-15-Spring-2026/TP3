@@ -44,11 +44,11 @@ public class ControllerRole2Home {
      */
 
     /**
-     * <p> Loads every top-level post into the staff post table. </p>
+     * <p> Opens the Staff View Post page which shows all posts with flag management. </p>
      */
     public static void loadAllPosts() {
-        List<Post> posts = ModelRole2Home.getAllPosts();
-        ViewRole2Home.populatePostTable(posts);
+        guiStaffViewPost.ViewStaffViewPost.displayViewStaffViewPost(
+                ViewRole2Home.theStage, ViewRole2Home.theUser);
     }
 
     /*-*******************************************************************************************
