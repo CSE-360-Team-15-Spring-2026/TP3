@@ -1,171 +1,153 @@
 package guiRole2;
 
-import entityClasses.Post;  
+import entityClasses.Post;
 import entityClasses.Reply;
 import java.util.ArrayList;
 import java.util.List;
-import database.Database;
-/**
- * The Class ModelRole2Home.
- */
-public class ModelRole2Home {
 
 /*******
  * <p> Title: ModelRole2Home Class. </p>
- * 
- * <p> Description: The Role2Home Page Model.  This class is a stub for future expansion.
- * 
- * This class is not used as there is no unique data manipulation for this GUI page.</p>
- * 
+ *
+ * <p> Description: The Role2 (Staff) Home Page Model. Provides data-access helpers for the
+ * staff home page. Staff members can view, create, edit, and delete any post or thread —
+ * they are not restricted to their own content the way students are.</p>
+ *
  * <p> Copyright: Lynn Robert Carter © 2025 </p>
- * 
- * @author Lynn Robert Carter
- * 
- * @version 1.00		2025-08-15 Initial version
- * @version 1.01		2025-09-13 Updated JavaDoc description
- *  
+ *
+ * @author Agastya Raghav Iyengar
+ *
+ * @version 1.00    2025-04-20 Initial version for TP3
  */
-	/**
-	 * Default constructor. This Model class is a stub; no data is
-	 * directly managed by this MVC component beyond what the database handles.
-	 */
-	public ModelRole2Home() {
-	}
-	
-	/** An empty string variable for the current username */
+public class ModelRole2Home {
+
+    /** The username of the currently logged-in staff member. */
     private static String currentUser = "";
 
     /**
-     * <p> Initializes the model with current user </p>
-     * @param username: the username of the current user
+     * Default constructor – not used directly (all methods are static).
+     */
+    public ModelRole2Home() {
+    }
+
+    /**
+     * <p> Stores the current staff user's username for later use in data-access methods. </p>
+     * @param username the username of the logged-in staff member
      */
     public static void initialize(String username) {
         currentUser = username;
     }
 
     /**
-     * <p> Gets the current user </p>
-     * @return username of the current user
+     * <p> Returns the currently stored staff username. </p>
+     * @return the current staff member's username
      */
     public static String getCurrentUser() {
         return currentUser;
     }
-	
-	/**
-     * <p> Gets all the posts from the database </p>
-     * @return the ArrayList of posts
+
+    /**
+     * <p> Retrieves all top-level posts from the database. Staff can see every post. </p>
+     * @return a list of top-level Post objects
      */
     public static List<Post> getAllPosts() {
         database.Database db = applicationMain.FoundationsMain.database;
         List<Post> allPosts = db.getAllPosts();
-        
-        // Filter out replies (only show top-level posts)
-        List<Post> topLevelPosts = new ArrayList<>();
-        for (Post post : allPosts) {
-            
-            if (post.getParentPostID() == -1) {  // -1 means top-level post
-                topLevelPosts.add(post);
+        List<Post> topLevel = new ArrayList<>();
+        for (Post p : allPosts) {
+            if (p.getParentPostID() == -1) {
+                topLevel.add(p);
             }
         }
-        return topLevelPosts;
+        return topLevel;
     }
-    
+
     /**
-     * <p> Gets a specific post by PostID from the database </p> 
-     * @param postId: the unique id of the post to be found
-     * @return the post that the database was searched through for
+     * <p> Fetches a single post by its unique ID. </p>
+     * @param postId the postID to look up
+     * @return the matching Post, or null if not found
      */
     public static Post getPostById(int postId) {
-        database.Database db = applicationMain.FoundationsMain.database;
-        return db.getPostByID(postId);
+        return applicationMain.FoundationsMain.database.getPostByID(postId);
     }
 
     /**
-     * <p> Gets posts by current user from the database </p>
-     * @return a list of the posts by the current user
-     */
-    public static List<Post> getMyPosts() {
-        List<Post> allPosts = getAllPosts();
-        List<Post> myPosts = new ArrayList<>();
-        for (Post post : allPosts) {
-            if (post.getUsername().equals(currentUser)) {
-                myPosts.add(post);
-            }
-        }
-        return myPosts;
-    }
-
-    /**
-     * <p> Deletes a post in the database </p>
-     * @param postId: unique id of the post to be deleted
-     * @return true if the post gets deleted successfully, false if it fails to delete or is cancelled
+     * <p> Soft-deletes any post. Staff can delete posts authored by any user. </p>
+     * @param postId the postID of the post to delete
+     * @return true if the delete succeeded, false otherwise
      */
     public static boolean deletePost(int postId) {
         Post post = getPostById(postId);
-        if (post == null) {
+        if (post == null || post.isDeleted()) {
             return false;
         }
-        if (!post.getUsername().equals(currentUser)) {
-            return false;
-        }
-        
         post.changeDelete();
         return applicationMain.FoundationsMain.database.deletePost(post);
     }
 
     /**
-     * <p> Gets replies for a specific post from database </p>
-     * @param postId: unique id of the post and its replies
-     * @return list of the post's replies
-     */
-    public static List<Reply> getRepliesForPost(int postId) {
-        database.Database db = applicationMain.FoundationsMain.database;
-        return db.getRepliesForPost(postId);
-    }
-    
-    /**
-     * <p> Gets the reply count for a post from the database </p>
-     * @param postId: unique id of the post and its replies
-     * @return the number of replies under the post
+     * <p> Returns the number of replies attached to the given post. </p>
+     * @param postId the postID whose replies should be counted
+     * @return the reply count
      */
     public static int getReplyCount(int postId) {
-        List<Reply> replies = getRepliesForPost(postId);
+        List<Reply> replies =
+                applicationMain.FoundationsMain.database.getRepliesForPost(postId);
         return replies.size();
     }
-    
+
     /**
-     * <p> Helper function to get a formatted timestamp </p>
-     * @param post: the object of the post
-     * @return the formatted timestamp or if no timestamp exists, an empty string 
+     * <p> Formats the post's timestamp as a human-readable string. </p>
+     * @param post the post whose timestamp should be formatted
+     * @return a formatted date-time string, or an empty string if no timestamp exists
      */
     public static String getFormattedTimestamp(Post post) {
         if (post.getTimestamp() == null) {
             return "";
         }
-        java.time.format.DateTimeFormatter formatter =
-            java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        return post.getTimestamp().format(formatter);
+        java.time.format.DateTimeFormatter fmt =
+                java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        return post.getTimestamp().format(fmt);
     }
 
     /**
-     * <p> Checks if the current user has read a post </p>
-     * @param postId: unique id of the post being checked
-     * @return true if the post has been read, false if the post is unread
+     * <p> Checks whether the current staff user has already read the specified post. </p>
+     * @param postId the postID to check
+     * @return true if the post has been marked read for this user
      */
     public static boolean isRead(int postId) {
-        database.Database db = applicationMain.FoundationsMain.database;
-        return db.isPostRead(currentUser, postId);
+        return applicationMain.FoundationsMain.database.isPostRead(currentUser, postId);
     }
 
     /**
-     * <p> Searches posts by keyword, optionally filtered by thread </p>
-     * @param keyword: the keyword to be found in any post
-     * @param thread: optional parameter, limits the result to the specific thread
-     * @return list of posts that contain the keyword and are a part of the specified thread
+     * <p> Creates a new discussion thread in the database. </p>
+     * @param threadName the name for the new thread (must be unique and non-blank)
+     * @return true if the thread was created, false if it already exists or is invalid
      */
-    public static List<Post> searchPosts(String keyword, String thread) {
-        database.Database db = applicationMain.FoundationsMain.database;
-        return db.searchPosts(keyword, thread);
+    public static boolean createThread(String threadName) {
+        if (threadName == null || threadName.isBlank()) {
+            return false;
+        }
+        return applicationMain.FoundationsMain.database.createThread(threadName.trim(), currentUser);
     }
 
+    /**
+     * <p> Deletes a thread and all of its posts from the database.
+     * The "General" thread cannot be deleted. </p>
+     * @param threadName the name of the thread to delete
+     * @return true if the thread was deleted, false otherwise
+     */
+    public static boolean deleteThread(String threadName) {
+        if (threadName == null || threadName.equals("General")) {
+            return false;
+        }
+        return applicationMain.FoundationsMain.database.deleteThread(threadName);
+    }
+
+    /**
+     * <p> Returns all thread names currently in the database. </p>
+     * @return a list of thread name strings
+     */
+    public static List<String> getAllThreads() {
+        return applicationMain.FoundationsMain.database.getAllThreads();
+    }
 }
