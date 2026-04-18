@@ -2035,7 +2035,35 @@ public class Database {
 	    }
 	}
 
-
+	/**
+	 * flags a post within the database
+	 */
+	public boolean flagPost(Post post) {
+	    if (post == null) {
+	        return false;
+	    }
+	    
+	    try {
+	        String sql = "UPDATE postDB SET " 
+	    + "isFlagged = ?, "
+	    + "reason = ? "
+	    + "WHERE postID = ?";
+	        
+	        PreparedStatement pstmt = connection.prepareStatement(sql);
+	        pstmt.setBoolean(1, post.isFlagged());
+	        pstmt.setString(2, post.getReason());
+	        pstmt.setInt(3, post.getPostID());
+	        
+	        int rowsAffected = pstmt.executeUpdate();
+	        return rowsAffected > 0;
+	        
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        return false;
+	    }
+	}
+	
+	
 	/*******
 	 * <p> Method: void closeConnection()</p>
 	 * 
