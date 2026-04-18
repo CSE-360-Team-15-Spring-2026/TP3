@@ -1,6 +1,6 @@
 package guiRole2;
 
-import javafx.collections.FXCollections; 
+import javafx.collections.FXCollections;  
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -14,6 +14,7 @@ import database.Database;
 import entityClasses.User;
 import entityClasses.Post;
 import java.util.List;
+import java.util.Optional;
 
 
 
@@ -65,9 +66,11 @@ public class ViewRole2Home {
 	
 	protected static Button button_GradingStatistics = new Button("Grading Statistics");
 	protected static Button button_ViewPosts = new Button("View Posts");
-	
+	//sends user to feedback area
 	protected static Button button_feedbackPost = new Button("Post Feedback");
-	
+	//send requests button
+	protected static Button button_SendRequest = new Button("Send Requests");
+	//table
 	protected static TableView<PostDisplay> table_Posts = new TableView<>();
 	protected static ObservableList<PostDisplay> postData = FXCollections.observableArrayList();
 	// This is a separator and it is used to partition the GUI for various tasks
@@ -185,10 +188,24 @@ public class ViewRole2Home {
 		button_ViewPosts.setOnAction((_) -> {ControllerRole2Home.performViewPosts(); });
 		
 		setupButtonUI(button_feedbackPost, "Dialog", 18, 220, Pos.CENTER, 20, 155);
-		button_feedbackPost.setOnAction((_) -> {
-			ControllerRole2Home.performFeedback();
-		});
+		button_feedbackPost.setOnAction((_) -> { ControllerRole2Home.performFeedback(); });
 		
+		setupButtonUI(button_SendRequest, "Dialog", 18, 220, Pos.CENTER, 260, 155);
+		button_SendRequest.setOnAction((_) -> {
+		    TextInputDialog dialog = new TextInputDialog();
+		    dialog.setHeaderText("Enter Request Description");
+
+		    Optional<String> result = dialog.showAndWait();
+
+		    result.ifPresent(desc -> {
+		        String admin = "admin"; // or dropdown later
+		        applicationMain.FoundationsMain.database.createRequest(
+		            theUser.getUserName(),
+		            admin,
+		            desc
+		        );
+		    });
+		});
 		
 		// GUI Area 3
         setupButtonUI(button_Logout, "Dialog", 18, 250, Pos.CENTER, 20, 520);
@@ -204,6 +221,7 @@ public class ViewRole2Home {
 			label_PageTitle, label_UserDetails, button_UpdateThisUser, line_Separator1,
 	        button_GradingStatistics, button_ViewPosts,
 	        button_feedbackPost,
+	        button_SendRequest,
 	        table_Posts,
 			line_Separator4, button_Logout, button_Quit);
 	}

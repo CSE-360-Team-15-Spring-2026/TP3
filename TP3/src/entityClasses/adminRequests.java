@@ -51,6 +51,10 @@ public class adminRequests {
 		this.requestID = ID;
 	}
 	
+	public Integer getFirstRequestID() {
+		return firstRequestID;
+	}
+	
 	public void setFirstRequestID(int firstID) {
 		this.firstRequestID = firstID;
 	}
