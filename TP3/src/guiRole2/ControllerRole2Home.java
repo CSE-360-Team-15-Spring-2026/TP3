@@ -4,6 +4,8 @@ import java.util.List;
 
 import entityClasses.Post;
 
+import guiStaffViewPost.*;
+
 /*******
  * <p> Title: ControllerRole2Home Class. </p>
  * 
@@ -100,5 +102,9 @@ public class ControllerRole2Home {
 		Post post = selected.getPost();
 		
 		guiGraderFeedback.ViewGraderFeedback.display(ViewRole2Home.theStage, ViewRole2Home.theUser, post);
+	}
+	
+	protected static void performViewPosts() {
+		guiStaffViewPost.ViewStaffViewPost.displayViewStaffViewPost(ViewRole2Home.theStage, ViewRole2Home.theUser);
 	}
 }

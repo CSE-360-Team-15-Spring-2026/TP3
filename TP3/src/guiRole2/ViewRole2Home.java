@@ -64,7 +64,7 @@ public class ViewRole2Home {
 	
 	
 	protected static Button button_GradingStatistics = new Button("Grading Statistics");
-	
+	protected static Button button_ViewPosts = new Button("View Posts");
 	
 	protected static Button button_feedbackPost = new Button("Post Feedback");
 	
@@ -181,6 +181,9 @@ public class ViewRole2Home {
 		setupButtonUI(button_GradingStatistics, "Dialog", 18, 220, Pos.CENTER, 20, 110);
 		button_GradingStatistics.setOnAction((_) -> {ControllerRole2Home.performGradingStats(); });
 		
+		setupButtonUI(button_ViewPosts, "Dialog", 18, 220, Pos.CENTER, 260, 110);
+		button_ViewPosts.setOnAction((_) -> {ControllerRole2Home.performViewPosts(); });
+		
 		setupButtonUI(button_feedbackPost, "Dialog", 18, 220, Pos.CENTER, 20, 155);
 		button_feedbackPost.setOnAction((_) -> {
 			ControllerRole2Home.performFeedback();
@@ -199,7 +202,7 @@ public class ViewRole2Home {
 		// Place all of the widget items into the Root Pane's list of children
         theRootPane.getChildren().addAll(
 			label_PageTitle, label_UserDetails, button_UpdateThisUser, line_Separator1,
-	        button_GradingStatistics,
+	        button_GradingStatistics, button_ViewPosts,
 	        button_feedbackPost,
 	        table_Posts,
 			line_Separator4, button_Logout, button_Quit);
