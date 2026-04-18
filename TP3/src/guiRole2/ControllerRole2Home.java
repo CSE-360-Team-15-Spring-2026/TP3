@@ -279,12 +279,29 @@ public class ControllerRole2Home {
      */
 
     /**
-     * <p> Placeholder for the Private Feedback feature.
-     * Shows a "Not Implemented" alert until the back-end is ready. </p>
+     * <p> Opens the Grader Feedback page for the selected post so the staff member can
+     * write or update private feedback for the post's author. </p>
      */
     protected static void performPrivateFeedback() {
-        showNotImplemented("Private Feedback",
-                "Providing private feedback to students has not been implemented yet.");
+        ViewRole2Home.PostDisplay selected =
+                ViewRole2Home.table_Posts.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            showAlert("No Selection", "Please select a post from the table first.");
+            return;
+        }
+
+        Post post = ModelRole2Home.getPostById(selected.getPostId());
+        if (post == null) {
+            showAlert("Error", "Could not retrieve the selected post.");
+            return;
+        }
+        if (post.isDeleted()) {
+            showAlert("Deleted Post", "Cannot give feedback on a deleted post.");
+            return;
+        }
+
+        guiGraderFeedback.ViewGraderFeedback.display(
+                ViewRole2Home.theStage, ViewRole2Home.theUser, post);
     }
 
     /**

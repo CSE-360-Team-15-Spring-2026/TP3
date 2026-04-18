@@ -108,7 +108,7 @@ public class ViewRole2Home {
     /** Opens the Grading Statistics page (implemented). */
     protected static Button button_GradingStats        = new Button("Grading Statistics");
     /** Placeholder – Private Feedback (not implemented). */
-    protected static Button button_PrivateFeedback     = new Button("Private Feedback *");
+    protected static Button button_PrivateFeedback     = new Button("Private Feedback");
     /** Placeholder – Grading Parameters CRUD (not implemented). */
     protected static Button button_GradingParameters   = new Button("Grading Parameters *");
     /** Placeholder – Admin Requests (not implemented). */
@@ -247,9 +247,8 @@ public class ViewRole2Home {
         button_GradingParameters.setOnAction((_) -> { ControllerRole2Home.performGradingParameters();  });
         button_AdminRequests    .setOnAction((_) -> { ControllerRole2Home.performAdminRequests();       });
 
-        // Style the stub buttons slightly differently so it's obvious they are placeholders
+        // Style the remaining stub buttons so it's obvious they are placeholders
         String stubStyle = "-fx-text-fill: gray; -fx-font-style: italic;";
-        button_PrivateFeedback  .setStyle(stubStyle);
         button_GradingParameters.setStyle(stubStyle);
         button_AdminRequests    .setStyle(stubStyle);
 
