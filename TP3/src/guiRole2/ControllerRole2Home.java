@@ -1,5 +1,8 @@
 package guiRole2;
 
+import java.util.List;
+
+import entityClasses.Post;
 
 /*******
  * <p> Title: ControllerRole2Home Class. </p>
@@ -48,7 +51,15 @@ public class ControllerRole2Home {
 	 */
 	protected static void performUpdate () {
 		guiUserUpdate.ViewUserUpdate.displayUserUpdate(ViewRole2Home.theStage, ViewRole2Home.theUser);
-	}	
+	}
+	
+	/**
+     * <p> Loads all the posts into the table </p>
+     */
+    public static void loadAllPosts() {
+        List<Post> posts = ModelRole2Home.getAllPosts();
+        ViewRole2Home.populatePostTable(posts);
+    }
 
 	/**********
 	 * <p> Method: performLogout() </p>
@@ -76,5 +87,18 @@ public class ControllerRole2Home {
 	
 	protected static void performGradingStats() {
 		guiGradingStats.ViewGradingStats.displayGradingStats(ViewRole2Home.theStage, ViewRole2Home.theUser);
+	}
+	
+	protected static void performFeedback() {
+		ViewRole2Home.PostDisplay selected = ViewRole2Home.table_Posts.getSelectionModel().getSelectedItem();
+		
+		if (selected == null) {
+			ViewRole2Home.showAlert("Error", "No post was selected");
+			return;
+		}
+		
+		Post post = selected.getPost();
+		
+		guiGraderFeedback.ViewGraderFeedback.display(ViewRole2Home.theStage, ViewRole2Home.theUser, post);
 	}
 }

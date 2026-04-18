@@ -2006,13 +2006,25 @@ public class Database {
 	    }
 	    
 	    try {
-	        String sql = "UPDATE postDB SET title = ?, body = ?, threadName = ? WHERE postID = ?";
+	        String sql = "UPDATE postDB SET " 
+	    + "title = ?, " 
+	    + "body = ?, " 
+	    + "threadName = ?, " 
+	    + "feedback = ?, " 
+	    + "feedbackAuthor = ?, "
+	    + "isFlagged = ?, "
+	    + "reason = ? "
+	    + "WHERE postID = ?";
 	        
 	        PreparedStatement pstmt = connection.prepareStatement(sql);
 	        pstmt.setString(1, post.getTitle());
 	        pstmt.setString(2, post.getBody());
 	        pstmt.setString(3, post.getThreadName());
-	        pstmt.setInt(4, post.getPostID());
+	        pstmt.setString(4, post.getFeedback());
+	        pstmt.setString(5, post.getFeedbackAuthor());
+	        pstmt.setBoolean(6, post.isFlagged());
+	        pstmt.setString(7, post.getReason());
+	        pstmt.setInt(8, post.getPostID());
 	        
 	        int rowsAffected = pstmt.executeUpdate();
 	        return rowsAffected > 0;

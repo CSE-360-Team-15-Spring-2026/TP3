@@ -63,6 +63,10 @@ public class ViewViewPost {
     protected static Button button_DeleteReply = new Button("Delete Selected Reply");
     /** Button to edit the selected reply */
     protected static Button button_EditReply = new Button("Edit Selected Reply");
+    //** label for feedback */
+    protected static Label label_Feedback = new Label("Feedback:");
+    //** Text area for feedback */
+    protected static TextArea text_Feedback = new TextArea();
 
     /** Button to return to the previous page */
     protected static Button button_Return = new Button("Return");
@@ -137,6 +141,23 @@ public class ViewViewPost {
         );
         
         text_PostBody.setText(post.getBody() == null ? "" : post.getBody());
+        
+        String currentUser = user.getUserName();
+        
+        if (post.getFeedback() != null && !post.getFeedback().isBlank()) {
+        	if (currentUser.equals(post.getUsername()) || currentUser.equals(post.getFeedbackAuthor())) {
+        		label_Feedback.setText("Feedback from " + post.getFeedbackAuthor() + ":");
+        		text_Feedback.setText(post.getFeedback());
+        		label_Feedback.setVisible(true);
+        		text_Feedback.setVisible(true);
+        	} else {
+        		label_Feedback.setVisible(false);
+        		text_Feedback.setVisible(false);
+        	}
+        } else {
+        	label_Feedback.setVisible(false);
+    		text_Feedback.setVisible(false);
+        }
         text_ReplyBody.clear();
         
         if(post.isDeleted()) 
@@ -248,45 +269,55 @@ public class ViewViewPost {
         text_PostBody.setLayoutX(20);
         text_PostBody.setLayoutY(80);
         text_PostBody.setPrefWidth(660);
-        text_PostBody.setPrefHeight(120);
+        text_PostBody.setPrefHeight(90);
         text_PostBody.setWrapText(true);
         text_PostBody.setEditable(false);
         
         // Replies section
-        setupLabelUI(label_Replies, "Arial", 16, 200, Pos.BASELINE_LEFT, 20, 215);
+        setupLabelUI(label_Replies, "Arial", 16, 200, Pos.BASELINE_LEFT, 20, 310);
         
         list_Replies.setItems(replyData);
         list_Replies.setLayoutX(20);
-        list_Replies.setLayoutY(245);
+        list_Replies.setLayoutY(340);
         list_Replies.setPrefWidth(660);
-        list_Replies.setPrefHeight(150);
+        list_Replies.setPrefHeight(110);
         
         // Add reply section
-        setupLabelUI(label_AddReply, "Arial", 16, 200, Pos.BASELINE_LEFT, 20, 410);
+        setupLabelUI(label_AddReply, "Arial", 16, 200, Pos.BASELINE_LEFT, 20, 460);
         
         text_ReplyBody.setFont(Font.font("Arial", 14));
         text_ReplyBody.setLayoutX(20);
-        text_ReplyBody.setLayoutY(440);
+        text_ReplyBody.setLayoutY(490);
         text_ReplyBody.setPrefWidth(660);
-        text_ReplyBody.setPrefHeight(60);
+        text_ReplyBody.setPrefHeight(50);
         text_ReplyBody.setWrapText(true);
         text_ReplyBody.setPromptText("Type your reply here...");
         
-        setupButtonUI(button_EditReply, "Dialog", 14, 200, Pos.CENTER, 20, 515);
+        setupLabelUI(label_Feedback, "Arial", 16, 200, Pos.BASELINE_LEFT, 20, 190);
+        
+        text_Feedback.setLayoutX(20);
+        text_Feedback.setLayoutY(220);
+        text_Feedback.setPrefWidth(660);
+        text_Feedback.setPrefHeight(50);
+        text_Feedback.setEditable(false);
+        text_Feedback.setWrapText(true);
+        
+        setupButtonUI(button_EditReply, "Dialog", 14, 200, Pos.CENTER, 20, 540);
         button_EditReply.setOnAction((e) -> { ControllerViewPost.performEditReply(); });
         
-        setupButtonUI(button_PostReply, "Dialog", 14, 150, Pos.CENTER, 225, 515);
+        setupButtonUI(button_PostReply, "Dialog", 14, 150, Pos.CENTER, 225, 540);
         button_PostReply.setOnAction((e) -> { ControllerViewPost.performPostReply(); });
         
-        setupButtonUI(button_DeleteReply, "Dialog", 14, 200, Pos.CENTER, 425, 515);
+        setupButtonUI(button_DeleteReply, "Dialog", 14, 200, Pos.CENTER, 425, 540);
         button_DeleteReply.setOnAction((e) -> { ControllerViewPost.performDeleteReply(); });
         
-        setupButtonUI(button_Return, "Dialog", 16, 150, Pos.CENTER, 275, 555);
+        setupButtonUI(button_Return, "Dialog", 16, 150, Pos.CENTER, 275, 575);
         button_Return.setOnAction((e) -> { ControllerViewPost.performReturn(); });
         
         theRootPane.getChildren().addAll(
             label_PostTitle, label_PostMeta, text_PostBody,
             label_Replies, list_Replies,
+            label_Feedback, text_Feedback,
             label_AddReply, text_ReplyBody,
             button_PostReply, button_EditReply, button_DeleteReply,
             button_Return

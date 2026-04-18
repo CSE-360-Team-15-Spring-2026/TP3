@@ -1,6 +1,6 @@
 package guiRole1;
 
-import entityClasses.Post;
+import entityClasses.Post; 
 import java.util.List;
 
 /**

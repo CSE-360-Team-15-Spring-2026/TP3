@@ -58,6 +58,7 @@ public class Post {
 
 	/** Reason for staff flagging. */
 	private String reason;
+	
 
 
 
@@ -407,6 +408,20 @@ public class Post {
 	public void setReason(String reason) { 
 		this.reason = reason; 
 		}
+	
+	/*****
+	 * <p> Checks to see whos allowed to see grader feedback </p>
+	 * <p> Staff EPICS Functionality </p>
+	 * @param current user
+	 */
+	public boolean feedbackVisibility(String currentUser) {
+	    if (feedback == null || feedback.isBlank()) {
+	    	return true;
+	    }
+
+	    return currentUser.equals(this.username) ||   // student
+	           currentUser.equals(this.feedbackAuthor); // staff
+	}
 	
 	
 }
