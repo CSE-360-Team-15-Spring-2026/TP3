@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Optional;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.TextInputDialog;
 
 /*******
  * <p> Title: ControllerRole2Home Class. </p>
@@ -170,92 +169,12 @@ public class ControllerRole2Home {
      */
 
     /**
-     * <p> Prompts the staff member to create a new thread or delete an existing one.
-     * Uses simple text-input dialogs backed by the fully implemented thread CRUD in Database. </p>
+     * <p> Placeholder for the Manage Threads feature.
+     * Shows a "Not Implemented" alert until the back-end is ready. </p>
      */
     protected static void performManageThreads() {
-        // Ask what they want to do
-        Alert choice = new Alert(Alert.AlertType.CONFIRMATION);
-        choice.setTitle("Manage Threads");
-        choice.setHeaderText("What would you like to do?");
-        choice.setContentText("Choose an action for discussion threads.");
-        ButtonType btnCreate = new ButtonType("Create Thread");
-        ButtonType btnDelete = new ButtonType("Delete Thread");
-        ButtonType btnCancel = ButtonType.CANCEL;
-        choice.getButtonTypes().setAll(btnCreate, btnDelete, btnCancel);
-
-        Optional<ButtonType> action = choice.showAndWait();
-        if (action.isEmpty() || action.get() == btnCancel) {
-            return;
-        }
-
-        if (action.get() == btnCreate) {
-            // Create a new thread
-            TextInputDialog nameDialog = new TextInputDialog();
-            nameDialog.setTitle("Create Thread");
-            nameDialog.setHeaderText("Enter a name for the new thread:");
-            nameDialog.setContentText("Thread name:");
-            Optional<String> name = nameDialog.showAndWait();
-            if (name.isEmpty() || name.get().isBlank()) {
-                return;
-            }
-            boolean created = ModelRole2Home.createThread(name.get().trim());
-            if (created) {
-                showAlert("Success", "Thread \"" + name.get().trim() + "\" created.");
-            } else {
-                showAlert("Failed",
-                        "Could not create thread. It may already exist or the name is invalid.");
-            }
-
-        } else {
-            // Delete an existing thread
-            List<String> threads = ModelRole2Home.getAllThreads();
-            threads.remove("General"); // General cannot be deleted
-
-            if (threads.isEmpty()) {
-                showAlert("No Threads", "There are no deletable threads (the General thread cannot be removed).");
-                return;
-            }
-
-            // Show the list as a comma-separated hint
-            TextInputDialog delDialog = new TextInputDialog();
-            delDialog.setTitle("Delete Thread");
-            delDialog.setHeaderText("Available threads (excluding General):\n"
-                    + String.join(", ", threads));
-            delDialog.setContentText("Thread to delete (exact name):");
-            Optional<String> delName = delDialog.showAndWait();
-            if (delName.isEmpty() || delName.get().isBlank()) {
-                return;
-            }
-
-            String target = delName.get().trim();
-            if (target.equals("General")) {
-                showAlert("Not Allowed", "The General thread cannot be deleted.");
-                return;
-            }
-            if (!threads.contains(target)) {
-                showAlert("Not Found", "No thread named \"" + target + "\" exists.");
-                return;
-            }
-
-            Alert confirmDel = new Alert(Alert.AlertType.CONFIRMATION);
-            confirmDel.setTitle("Confirm Delete Thread");
-            confirmDel.setHeaderText(null);
-            confirmDel.setContentText(
-                    "Delete thread \"" + target + "\"?\n\nAll posts and replies in that thread will also be permanently removed.");
-            Optional<ButtonType> confResult = confirmDel.showAndWait();
-            if (confResult.isEmpty() || confResult.get() != ButtonType.OK) {
-                return;
-            }
-
-            boolean deleted = ModelRole2Home.deleteThread(target);
-            if (deleted) {
-                showAlert("Deleted", "Thread \"" + target + "\" deleted.");
-                loadAllPosts();
-            } else {
-                showAlert("Error", "Failed to delete thread \"" + target + "\".");
-            }
-        }
+        showNotImplemented("Manage Threads",
+                "Creating and deleting discussion threads has not been implemented yet.");
     }
 
     /*-*******************************************************************************************

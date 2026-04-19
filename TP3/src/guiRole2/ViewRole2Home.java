@@ -249,6 +249,7 @@ public class ViewRole2Home {
 
         // Style the remaining stub buttons so it's obvious they are placeholders
         String stubStyle = "-fx-text-fill: gray; -fx-font-style: italic;";
+        button_ManageThreads    .setStyle(stubStyle);
         button_GradingParameters.setStyle(stubStyle);
         button_AdminRequests    .setStyle(stubStyle);
 
