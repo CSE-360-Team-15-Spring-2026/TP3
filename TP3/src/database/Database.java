@@ -174,7 +174,6 @@ public class Database {
 		    		+ "requestSubmiter VARCHAR(255), "
 		    		+ "recievingAdmin VARCHAR(255), "
 		    		+ "body CLOB, "
-		    		+ "adminActions CLOB, "
 		    		+ "completed BOOL DEFAULT FALSE, "
 		    		+ "firstRequestID INT DEFAULT -1, "
 		    		+ "timestamp TIMESTAMP)";
@@ -1862,18 +1861,19 @@ public class Database {
 	}
 	
 	public adminRequests createRequest(String requester, String admin, String body) {
-		adminRequests requests = new adminRequests(requester, admin, body);
+		adminRequests requests = new adminRequests(requester, body, admin);
 		String sql = "INSERT INTO requestDB "
-				+ "(requestSubmiter, recievingAdmin, body, adminActions, completed, timestamp) "
-				+ "VALUES (?, ?, ?, ?, ?, ?)";
+				+ "(requestSubmiter, recievingAdmin, body, adminActions, completed, firstRequestID, timestamp) "
+				+ "VALUES (?, ?, ?, ?, ?, ?, ?)";
 		try (PreparedStatement pstmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 			pstmt.setString(1, requester);
 			pstmt.setString(2, admin);
 			pstmt.setString(3, body);
 			pstmt.setString(4, "");
 			pstmt.setBoolean(5, false);
-			pstmt.setTimestamp(6, Timestamp.valueOf(requests.getTimeStamp()));
-			pstmt.execute();
+			pstmt.setInt(6, -1);
+			pstmt.setTimestamp(7, Timestamp.valueOf(requests.getTimeStamp()));
+			pstmt.executeUpdate();
 			
 			ResultSet rs = pstmt.getGeneratedKeys();
 			if (rs.next()) {
@@ -1888,18 +1888,66 @@ public class Database {
 		return requests;
 	}
 	
-	public List<adminRequests> getRequests(String admin) {
-		List<adminRequests> list = new ArrayList<>();
-		String sql = "SELECT * FROM requestDB WHERE recievingAdmin = ? AND completed = FALSE";
+	public List<adminRequests> getRequestsForAdmin(String admin) {
+
+	    List<adminRequests> list = new ArrayList<>();
+
+	    String sql = "SELECT * FROM requestDB WHERE recievingAdmin = ?";
+
+	    try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+	        pstmt.setString(1, admin);
+	        ResultSet rs = pstmt.executeQuery();
+	        while (rs.next()) {
+	            adminRequests request = new adminRequests();
+
+	            request.setRequestID(rs.getInt("requestID"));
+	            request.setRequestSubmiter(rs.getString("requestSubmiter"));
+	            request.setRecievingAdmin(rs.getString("recievingAdmin"));
+	            request.setBody(rs.getString("body"));
+	            request.setCompleted(rs.getBoolean("completed"));
+	            request.setTimeStamp(rs.getTimestamp("timestamp").toLocalDateTime());
+
+	            list.add(request);
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+
+	    return list;
+	}
+	
+	public void requestCompletion(int RequestID) {
+		String sql = "UPDATE requestDB SET completed = ? WHERE requestID = ?";
 		
 		try(PreparedStatement pstmt = connection.prepareStatement(sql)) {
-			pstmt.setString(1, admin);
+			pstmt.setBoolean(1, true);
+			pstmt.setInt(2, RequestID);
+			pstmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public List<adminRequests> getRequests(String user) {
+		List<adminRequests> list = new ArrayList<>();
+		String sql = "SELECT * FROM requestDB WHERE requestSubmiter = ?";
+		
+		try(PreparedStatement pstmt = connection.prepareStatement(sql)) {
+			pstmt.setString(1, user);
 			ResultSet rs = pstmt.executeQuery();
 			while (rs.next()) {
 				adminRequests request = new adminRequests();
+				
 				request.setRequestID(rs.getInt("requestID"));
 				request.setFirstRequestID(rs.getInt("firstRequestID"));
-				
+				request.setRequestSubmiter(rs.getString("requestSubmiter"));
+				request.setRecievingAdmin(rs.getString("recievingAdmin"));
+				request.setBody(rs.getString("body"));
+				request.setCompleted(rs.getBoolean("completed"));
+				request.setTimeStamp(rs.getTimestamp("timestamp").toLocalDateTime());
+						
 				list.add(request);
 			}
 		} catch (SQLException e) {
@@ -1910,17 +1958,33 @@ public class Database {
 	}
 	
 	public void updateRequest(adminRequests request) {
-		String sql = "UPDATE requestDB SET body=?, adminActions=?, completed=?  WHERE requestID=?";
+		String sql = "UPDATE requestDB SET body=?, completed=?  WHERE requestID=?";
 		try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
 			pstmt.setString(1, request.getBody());
-			pstmt.setString(2, request.getAdminActions());
-			pstmt.setBoolean(3, request.getCompleted());
-			pstmt.setInt(4, request.getRequestID());
+			pstmt.setBoolean(2, request.getCompleted());
+			pstmt.setInt(3, request.getRequestID());
 			
 			pstmt.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public List<String> getAllAdmins() {
+		List<String> admins = new ArrayList<>();
+		String sql = "SELECT userName FROM userDB WHERE adminROle = TRUE";
+		
+		try(PreparedStatement pstmt = connection.prepareStatement(sql)) {
+			ResultSet rs = pstmt.executeQuery();
+			
+			while (rs.next()) {
+				admins.add(rs.getString("userName"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return admins;
 	}
 	
 	
