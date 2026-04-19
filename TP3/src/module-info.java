@@ -6,6 +6,7 @@ module FoundationsF25 {
 	requires java.sql;
 	requires org.junit.jupiter.api;
 	requires javafx.base;
+	requires javafx.graphics;
 	
 	opens applicationMain to javafx.graphics, javafx.fxml;
 	exports applicationMain;
@@ -21,4 +22,6 @@ module FoundationsF25 {
     opens guiRole2 to javafx.base;
     opens guiStaffViewPost to javafx.base;
     opens guiParticipationReport to javafx.base;
+    opens guiStaffRequests to javafx.base;
+    opens guiAdminRequests to javafx.base;
 }

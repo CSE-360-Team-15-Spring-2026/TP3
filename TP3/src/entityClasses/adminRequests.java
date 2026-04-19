@@ -8,7 +8,6 @@ public class adminRequests {
 	private String body;
 	private String requestSubmiter;
 	private String recievingAdmin;
-	private String adminActions;
 	private boolean completed;
 	private LocalDateTime timestamp;
 	private Integer firstRequestID;
@@ -18,7 +17,6 @@ public class adminRequests {
 		this.body = "";
 		this.requestSubmiter = "";
 		this.recievingAdmin = "";
-		this.adminActions = "";
 		this.completed = false;
 		this.timestamp = LocalDateTime.now();
 		this.firstRequestID = null;
@@ -29,14 +27,9 @@ public class adminRequests {
 		this.body = body;
 		this.requestSubmiter = requestSubmiter;
 		this.recievingAdmin = admin;
-		this.adminActions = "";
 		this.completed = false;
 		this.timestamp = LocalDateTime.now();
 		this.firstRequestID = null;
-	}
-	
-	public void actions(String actions, String admin) {
-		this.adminActions += admin + ": " + actions + "\n";
 	}
 	
 	public void completeRequests() {
@@ -63,29 +56,40 @@ public class adminRequests {
 		return body;
 	}
 	
+	public void setBody(String body) {
+		this.body = body;
+	}
+	
 	public String getRequestSubmiter() {
 		return requestSubmiter;
+	}
+	
+	public void setRequestSubmiter(String submiter) {
+		this.requestSubmiter = submiter;
 	}
 	
 	public String getRecievingAdmin() {
 		return recievingAdmin;
 	}
 	
-	public String getAdminActions() {
-		return adminActions;
+	public void setRecievingAdmin(String admin) {
+		this.recievingAdmin = admin;
 	}
 	
 	public boolean getCompleted() {
 		return completed;
 	}
 	
+	public void setCompleted(boolean complete) {
+		this.completed = complete;
+	}
+	
 	public LocalDateTime getTimeStamp() {
 		return timestamp;
 	}
 	
-	public void reviewRequest(int firstRequestID, String nBody) {
-		this.firstRequestID = firstRequestID;
-		this.body = nBody;
-		this.completed = false;
+	public void setTimeStamp(LocalDateTime timeStamp) {
+		this.timestamp = timeStamp;
 	}
+	
 }
