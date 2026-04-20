@@ -12,11 +12,6 @@ import java.util.List;
  * staff home page. Staff members can view, create, edit, and delete any post or thread —
  * they are not restricted to their own content the way students are.</p>
  *
- * <p> Copyright: Lynn Robert Carter © 2025 </p>
- *
- * @author Agastya Raghav Iyengar
- *
- * @version 1.00    2025-04-20 Initial version for TP3
  */
 public class ModelRole2Home {
 

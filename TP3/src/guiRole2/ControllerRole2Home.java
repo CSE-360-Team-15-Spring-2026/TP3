@@ -15,33 +15,16 @@ import javafx.scene.control.ButtonType;
  * Staff-specific actions that are connected to fully implemented back-end code are wired through;
  * features that have not yet been implemented by the team show a "Not Implemented" alert instead
  * of silently doing nothing.</p>
- *
- * <p> Copyright: Lynn Robert Carter © 2025 </p>
- *
- * @author Agastya Raghav Iyengar
- *
- * @version 1.00    2025-04-20 Initial version for TP3
+ * 
  */
 public class ControllerRole2Home {
-
-    /*-*******************************************************************************************
-
-    Constructor
-
-     */
 
     /**
      * Default constructor is not used (all methods are static).
      */
     public ControllerRole2Home() {
     }
-
-    /*-*******************************************************************************************
-
-    Post-table loading
-
-     */
-
+    
     /**
      * <p> Opens the Staff View Post page which shows all posts with flag management. </p>
      */
@@ -49,12 +32,6 @@ public class ControllerRole2Home {
         guiStaffViewPost.ViewStaffViewPost.displayViewStaffViewPost(
                 ViewRole2Home.theStage, ViewRole2Home.theUser);
     }
-
-    /*-*******************************************************************************************
-
-    Post CRUD actions (implemented)
-
-     */
 
     /**
      * <p> Opens the Create Post page so the staff member can write a new discussion post. </p>
@@ -162,12 +139,6 @@ public class ControllerRole2Home {
         }
     }
 
-    /*-*******************************************************************************************
-
-    Thread management (implemented)
-
-     */
-
     /**
      * <p> Placeholder for the Manage Threads feature.
      * Shows a "Not Implemented" alert until the back-end is ready. </p>
@@ -177,12 +148,6 @@ public class ControllerRole2Home {
                 "Creating and deleting discussion threads has not been implemented yet.");
     }
 
-    /*-*******************************************************************************************
-
-    Staff tools — implemented
-
-     */
-
     /**
      * <p> Opens the Grading Statistics page, already implemented by a teammate. </p>
      */
@@ -190,12 +155,6 @@ public class ControllerRole2Home {
         guiGradingStats.ViewGradingStats.displayGradingStats(
                 ViewRole2Home.theStage, ViewRole2Home.theUser);
     }
-
-    /*-*******************************************************************************************
-
-    Staff tools — not yet implemented (show informational alert)
-
-     */
 
     /**
      * <p> Opens the Grader Feedback page for the selected post so the staff member can
@@ -250,12 +209,6 @@ public class ControllerRole2Home {
                 ViewRole2Home.theStage, ViewRole2Home.theUser);
     }
 
-    /*-*******************************************************************************************
-
-    Navigation
-
-     */
-
     /**
      * <p> Opens the User Update page so the staff member can change account settings. </p>
      */
@@ -277,12 +230,6 @@ public class ControllerRole2Home {
     protected static void performQuit() {
         System.exit(0);
     }
-
-    /*-*******************************************************************************************
-
-    Private helpers
-
-     */
 
     /**
      * <p> Displays a standard informational alert. </p>

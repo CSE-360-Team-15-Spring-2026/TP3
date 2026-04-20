@@ -20,33 +20,10 @@ import java.util.List;
  *
  * <p> Description: The Java/FX-based Staff Home Page.  Staff members can browse all discussion
  * posts, perform full CRUD on any post or thread, search content, view grading statistics, and
- * access future staff-only features.  Buttons for features that are not yet implemented display
- * a clear "Not Implemented" message rather than failing silently. </p>
- *
- * <p> Layout (top to bottom): </p>
- * <ul>
- *   <li> Area 1 – page title, logged-in user, Account Update button </li>
- *   <li> Area 2 – post-management action row (Create, View All, Search, Manage Threads) </li>
- *   <li> Area 3 – post table </li>
- *   <li> Area 4 – post-level action row (View Post, Edit Post, Delete Post) </li>
- *   <li> Area 5 – staff-tools row (Grading Stats, Private Feedback*, Grading Params*, Admin Requests*) </li>
- *   <li> Area 6 – Logout / Quit </li>
- * </ul>
- * <p> * = not yet implemented </p>
- *
- * <p> Copyright: Lynn Robert Carter © 2025 </p>
- *
- * @author Agastya Raghav Iyengar
- *
- * @version 1.00    2025-04-20 Initial version for TP3
+ * access future staff-only features. </p>
+ * 
  */
 public class ViewRole2Home {
-
-    /*-*******************************************************************************************
-
-    Attributes – application dimensions
-
-     */
 
     /** Window width, shared from the main application. */
     private static double width  = applicationMain.FoundationsMain.WINDOW_WIDTH;
@@ -54,13 +31,6 @@ public class ViewRole2Home {
     /** Window height, shared from the main application. */
     private static double height = applicationMain.FoundationsMain.WINDOW_HEIGHT;
 
-    /*-*******************************************************************************************
-
-    Attributes – GUI widgets
-
-     */
-
-    // --- Area 1: Header ---
     /** Page title label. */
     protected static Label  label_PageTitle      = new Label();
     /** Displays the logged-in staff user's username. */
@@ -71,7 +41,6 @@ public class ViewRole2Home {
     /** Horizontal separator below the header. */
     protected static Line line_Separator1 = new Line(20, 95, width - 20, 95);
 
-    // --- Area 2: Post management row ---
     /** Opens the Create Post page. */
     protected static Button button_CreatePost    = new Button("Create Post");
     /** Opens the Flagging and Thread Management page. */
@@ -82,7 +51,6 @@ public class ViewRole2Home {
     /** Horizontal separator between the action row and the post table. */
     protected static Line line_Separator2 = new Line(20, 150, width - 20, 150);
 
-    // --- Area 3: Post table ---
     /** Table showing all discussion posts. */
     protected static TableView<PostDisplay>      table_Posts = new TableView<>();
     /** Backing list for the post table. */
@@ -91,7 +59,6 @@ public class ViewRole2Home {
     /** Horizontal separator between the table and the post-action row. */
     protected static Line line_Separator3 = new Line(20, 430, width - 20, 430);
 
-    // --- Area 4: Per-post action row ---
     /** Opens the View Post and Replies page for the selected post. */
     protected static Button button_ViewPost   = new Button("View Post & Replies");
     /** Opens the Edit Post page for the selected post (staff may edit any post). */
@@ -102,7 +69,6 @@ public class ViewRole2Home {
     /** Horizontal separator between post actions and staff tools. */
     protected static Line line_Separator4 = new Line(20, 475, width - 20, 475);
 
-    // --- Area 5: Staff tools row ---
     /** Opens the Grading Statistics page (implemented). */
     protected static Button button_GradingStats        = new Button("Grading Statistics");
     /** Opens the Private Feedback page for the selected post. */
@@ -115,17 +81,11 @@ public class ViewRole2Home {
     /** Horizontal separator above the Logout / Quit row. */
     protected static Line line_Separator5 = new Line(20, 525, width - 20, 525);
 
-    // --- Area 6: Navigation ---
     /** Logs out the current user. */
     protected static Button button_Logout = new Button("Logout");
     /** Terminates the application. */
     protected static Button button_Quit   = new Button("Quit");
 
-    /*-*******************************************************************************************
-
-    Singleton bookkeeping
-
-     */
 
     /** Singleton guard – null until first instantiation. */
     private static ViewRole2Home theView = null;
@@ -145,11 +105,6 @@ public class ViewRole2Home {
     /** Role identifier: Admin=1, Student=2, Staff=3. */
     protected static final int theRole = 3;
 
-    /*-*******************************************************************************************
-
-    Public entry point
-
-     */
 
     /**
      * <p> Method: displayRole2Home(Stage ps, User user) </p>
@@ -182,12 +137,6 @@ public class ViewRole2Home {
         theStage.show();
     }
 
-    /*-*******************************************************************************************
-
-    Constructor (singleton – called at most once)
-
-     */
-
     /**
      * <p> Method: ViewRole2Home() </p>
      *
@@ -199,7 +148,6 @@ public class ViewRole2Home {
         theRootPane        = new Pane();
         theRole2HomeScene  = new Scene(theRootPane, width, height);
 
-        // ── Area 1: Header ────────────────────────────────────────────────────────
         label_PageTitle.setText("Staff Home Page");
         setupLabelUI(label_PageTitle, "Arial", 28, width, Pos.CENTER, 0, 5);
 
@@ -209,7 +157,6 @@ public class ViewRole2Home {
         setupButtonUI(button_UpdateThisUser, "Dialog", 16, 170, Pos.CENTER, 610, 45);
         button_UpdateThisUser.setOnAction((_) -> { ControllerRole2Home.performUpdate(); });
 
-        // ── Area 2: Post-management action row ────────────────────────────────────
         setupButtonUI(button_CreatePost,   "Dialog", 14, 172, Pos.CENTER,  20, 108);
         setupButtonUI(button_ViewAllPosts, "Dialog", 14, 172, Pos.CENTER, 207, 108);
         setupButtonUI(button_SearchPosts,  "Dialog", 14, 172, Pos.CENTER, 454, 108);
@@ -218,10 +165,8 @@ public class ViewRole2Home {
         button_ViewAllPosts.setOnAction((_) -> { ControllerRole2Home.loadAllPosts();       });
         button_SearchPosts .setOnAction((_) -> { ControllerRole2Home.performSearch();      });
 
-        // ── Area 3: Post table ────────────────────────────────────────────────────
         setupTableView();
 
-        // ── Area 4: Per-post action row ───────────────────────────────────────────
         setupButtonUI(button_ViewPost,   "Dialog", 14, 220, Pos.CENTER,  20, 440);
         setupButtonUI(button_EditPost,   "Dialog", 14, 220, Pos.CENTER, 260, 440);
         setupButtonUI(button_DeletePost, "Dialog", 14, 220, Pos.CENTER, 500, 440);
@@ -230,7 +175,6 @@ public class ViewRole2Home {
         button_EditPost  .setOnAction((_) -> { ControllerRole2Home.performEditPost();   });
         button_DeletePost.setOnAction((_) -> { ControllerRole2Home.performDeletePost(); });
 
-        // ── Area 5: Staff-tools row ───────────────────────────────────────────────
         setupButtonUI(button_GradingStats,      "Dialog", 13, 172, Pos.CENTER,  20, 484);
         setupButtonUI(button_PrivateFeedback,   "Dialog", 13, 172, Pos.CENTER, 207, 484);
         setupButtonUI(button_GradingParameters, "Dialog", 13, 172, Pos.CENTER, 394, 484);
@@ -241,14 +185,12 @@ public class ViewRole2Home {
         button_GradingParameters.setOnAction((_) -> { ControllerRole2Home.performGradingParameters(); });
         button_AdminRequests    .setOnAction((_) -> { ControllerRole2Home.performAdminRequests();      });
 
-        // ── Area 6: Navigation ────────────────────────────────────────────────────
         setupButtonUI(button_Logout, "Dialog", 18, 250, Pos.CENTER,  20, 535);
         setupButtonUI(button_Quit,   "Dialog", 18, 250, Pos.CENTER, 300, 535);
 
         button_Logout.setOnAction((_) -> { ControllerRole2Home.performLogout(); });
         button_Quit  .setOnAction((_) -> { ControllerRole2Home.performQuit();   });
 
-        // ── Assemble root pane ────────────────────────────────────────────────────
         theRootPane.getChildren().addAll(
                 label_PageTitle, label_UserDetails, button_UpdateThisUser,
                 line_Separator1,
@@ -264,12 +206,6 @@ public class ViewRole2Home {
                 button_Logout, button_Quit
         );
     }
-
-    /*-*******************************************************************************************
-
-    Table setup & population
-
-     */
 
     /**
      * <p> Configures the post TableView with columns for ID, Title, Thread, Author,
@@ -327,12 +263,6 @@ public class ViewRole2Home {
         }
     }
 
-    /*-*******************************************************************************************
-
-    Helper methods – UI setup
-
-     */
-
     /**
      * <p> Initialises a Label's font, minimum width, alignment, and position. </p>
      *
@@ -373,12 +303,6 @@ public class ViewRole2Home {
         b.setLayoutY(y);
     }
 
-    /*-*******************************************************************************************
-
-    Inner class – PostDisplay (wraps Post for TableView binding)
-
-     */
-
     /**
      * <p> Wraps a Post object for display in the staff post table.
      * Provides JavaFX-compatible property getters for each column. </p>
@@ -418,7 +342,6 @@ public class ViewRole2Home {
             this.timestamp  = ModelRole2Home.getFormattedTimestamp(post);
         }
 
-        // --- Getters for TableView PropertyValueFactory ---
 
         /**
          * <p> Returns the unique ID of this post. </p>
