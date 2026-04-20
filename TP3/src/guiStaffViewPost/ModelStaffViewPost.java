@@ -43,6 +43,10 @@ public class ModelStaffViewPost {
         return topLevelPosts;
     }
     
+    public static List<Post> filter(String thread) {
+        return applicationMain.FoundationsMain.database.searchPosts(thread);
+    }
+    
 	/**
 	 * flags an existing post in the database and inputs a reason
 	 */
@@ -57,7 +61,37 @@ public class ModelStaffViewPost {
         return applicationMain.FoundationsMain.database.flagPost(post);
     }
     
+    public static boolean deletePost(int postId) {
+        Post post = getPostById(postId);
+        if (post == null) {
+            return false;
+        }
+        
+        post.changeDelete();
+        return applicationMain.FoundationsMain.database.deletePost(post);
+    }
     
+    public static boolean removePost(int postId) {
+        Post post = getPostById(postId);
+        if (post == null) {
+            return false;
+        }
+        
+        post.changeDelete();
+        return applicationMain.FoundationsMain.database.removePost(post);
+    }
+    
+	/**
+	 * Creates a new thread and inputs it in the database
+	 */
+    protected static boolean createThread(String name) {
+    	
+    	return applicationMain.FoundationsMain.database.createThread(name, currentUser);
+    }
+    
+    protected static boolean deleteThread(String thread) {
+    	return applicationMain.FoundationsMain.database.deleteThread(thread);
+    }
     
     public static boolean isRead(int postId) {
         database.Database db = applicationMain.FoundationsMain.database;

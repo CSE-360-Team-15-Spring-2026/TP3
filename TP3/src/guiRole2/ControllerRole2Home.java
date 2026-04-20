@@ -224,12 +224,12 @@ public class ControllerRole2Home {
     }
 
     /**
-     * <p> Placeholder for the Grading Parameters CRUD feature.
-     * Shows a "Not Implemented" alert until the back-end is ready. </p>
+     * <p> Opens the Grading Rubric page where staff can select a student,
+     * assign points per rubric criterion, and save the total grade. </p>
      */
     protected static void performGradingParameters() {
-        showNotImplemented("Grading Parameters",
-                "Creating and managing grading parameters has not been implemented yet.");
+        guiGradingRubric.ViewGradingRubric.displayGradingRubric(
+                ViewRole2Home.theStage, ViewRole2Home.theUser);
     }
 
     /**
@@ -246,8 +246,8 @@ public class ControllerRole2Home {
      * Shows a "Not Implemented" alert until the back-end is ready. </p>
      */
     protected static void performAdminRequests() {
-        showNotImplemented("Admin Requests",
-                "Submitting and viewing admin requests has not been implemented yet.");
+        guiParticipationReport.ViewParticipationReport.displayParticipationReport(
+                ViewRole2Home.theStage, ViewRole2Home.theUser);
     }
 
     /*-*******************************************************************************************

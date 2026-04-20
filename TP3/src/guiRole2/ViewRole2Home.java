@@ -111,8 +111,8 @@ public class ViewRole2Home {
     protected static Button button_PrivateFeedback     = new Button("Private Feedback");
     /** Placeholder – Grading Parameters CRUD (not implemented). */
     protected static Button button_GradingParameters   = new Button("Grading Parameters *");
-    /** Placeholder – Admin Requests (not implemented). */
-    protected static Button button_AdminRequests       = new Button("Admin Requests *");
+    /** Opens the Student Participation Report page. */
+    protected static Button button_AdminRequests       = new Button("Student Report");
 
     /** Horizontal separator above the Logout / Quit row. */
     protected static Line line_Separator5 = new Line(20, 525, width - 20, 525);
@@ -251,7 +251,6 @@ public class ViewRole2Home {
         String stubStyle = "-fx-text-fill: gray; -fx-font-style: italic;";
         button_ManageThreads    .setStyle(stubStyle);
         button_GradingParameters.setStyle(stubStyle);
-        button_AdminRequests    .setStyle(stubStyle);
 
         // ── Area 6: Navigation ────────────────────────────────────────────────────
         setupButtonUI(button_Logout, "Dialog", 18, 250, Pos.CENTER,  20, 535);
