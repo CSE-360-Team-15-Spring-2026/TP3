@@ -1,6 +1,6 @@
 package guiRole2;
 
-import javafx.collections.FXCollections; 
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -15,403 +15,437 @@ import entityClasses.User;
 import entityClasses.Post;
 import java.util.List;
 
-
-
-
 /*******
  * <p> Title: ViewRole2Home Class. </p>
- * 
- * <p> Description: The Java/FX-based Role2 Home Page.  The page is a stub for some role needed for
- * the application.  The widgets on this page are likely the minimum number and kind for other role
- * pages that may be needed.</p>
- * 
+ *
+ * <p> Description: The Java/FX-based Staff Home Page.  Staff members can browse all discussion
+ * posts, perform full CRUD on any post or thread, search content, view grading statistics, and
+ * access future staff-only features.  Buttons for features that are not yet implemented display
+ * a clear "Not Implemented" message rather than failing silently. </p>
+ *
+ * <p> Layout (top to bottom): </p>
+ * <ul>
+ *   <li> Area 1 – page title, logged-in user, Account Update button </li>
+ *   <li> Area 2 – post-management action row (Create, View All, Search, Manage Threads) </li>
+ *   <li> Area 3 – post table </li>
+ *   <li> Area 4 – post-level action row (View Post, Edit Post, Delete Post) </li>
+ *   <li> Area 5 – staff-tools row (Grading Stats, Private Feedback*, Grading Params*, Admin Requests*) </li>
+ *   <li> Area 6 – Logout / Quit </li>
+ * </ul>
+ * <p> * = not yet implemented </p>
+ *
  * <p> Copyright: Lynn Robert Carter © 2025 </p>
- * 
- * @author Lynn Robert Carter
- * 
- * @version 1.00		2025-04-20 Initial version
- *  
+ *
+ * @author Agastya Raghav Iyengar
+ *
+ * @version 1.00    2025-04-20 Initial version for TP3
  */
-
 public class ViewRole2Home {
-	
-	/*-*******************************************************************************************
 
-	Attributes
-	
-	 */
-	
-	// These are the application values required by the user interface
-	
-	private static double width = applicationMain.FoundationsMain.WINDOW_WIDTH;
-	private static double height = applicationMain.FoundationsMain.WINDOW_HEIGHT;
+    /*-*******************************************************************************************
 
+    Attributes – application dimensions
 
-	// These are the widget attributes for the GUI. There are 3 areas for this GUI.
-	
-	// GUI Area 1: It informs the user about the purpose of this page, whose account is being used,
-	// and a button to allow this user to update the account settings
-	protected static Label label_PageTitle = new Label();
-	protected static Label label_UserDetails = new Label();
-	protected static Button button_UpdateThisUser = new Button("Account Update");
-		
-	// This is a separator and it is used to partition the GUI for various tasks
-	protected static Line line_Separator1 = new Line(20, 95, width-20, 95);
+     */
 
-	// GUI ARea 2: This is a stub, so there are no widgets here.  For an actual role page, this are
-	// would contain the widgets needed for the user to play the assigned role.
-	
-	
-	
-	protected static Button button_GradingStatistics = new Button("Grading Statistics");
-	protected static Button button_ViewPosts = new Button("View Posts");
-	
-	protected static Button button_feedbackPost = new Button("Post Feedback");
-	
-	protected static TableView<PostDisplay> table_Posts = new TableView<>();
-	protected static ObservableList<PostDisplay> postData = FXCollections.observableArrayList();
-	// This is a separator and it is used to partition the GUI for various tasks
-	protected static Line line_Separator4 = new Line(20, 500, width-20,500);
-	
-	// GUI Area 3: This is last of the GUI areas.  It is used for quitting the application and for
-	// logging out.
-	protected static Button button_Logout = new Button("Logout");
-	protected static Button button_Quit = new Button("Quit");
+    /** Window width, shared from the main application. */
+    private static double width  = applicationMain.FoundationsMain.WINDOW_WIDTH;
 
-	// This is the end of the GUI objects for the page.
-	
-	// These attributes are used to configure the page and populate it with this user's information
-	private static ViewRole2Home theView;		// Used to determine if instantiation of the class
-												// is needed
+    /** Window height, shared from the main application. */
+    private static double height = applicationMain.FoundationsMain.WINDOW_HEIGHT;
 
-	// Reference for the in-memory database so this package has access
-	private static Database theDatabase = applicationMain.FoundationsMain.database;
+    /*-*******************************************************************************************
 
-	protected static Stage theStage;			// The Stage that JavaFX has established for us	
-	protected static Pane theRootPane;			// The Pane that holds all the GUI widgets
-	protected static User theUser;				// The current logged in User
-	
-	private static Scene theRole2HomeScene;		// The shared Scene each invocation populates
-	protected static final int theRole = 3;		// Admin: 1; Role1: 2; Role2: 3
+    Attributes – GUI widgets
 
-	/*-*******************************************************************************************
+     */
 
-	Constructors
-	
-	 */
+    // --- Area 1: Header ---
+    /** Page title label. */
+    protected static Label  label_PageTitle      = new Label();
+    /** Displays the logged-in staff user's username. */
+    protected static Label  label_UserDetails    = new Label();
+    /** Opens the Account Update page. */
+    protected static Button button_UpdateThisUser = new Button("Account Update");
 
-	/**********
-	 * <p> Method: displayRole2Home(Stage ps, User user) </p>
-	 * 
-	 * <p> Description: This method is the single entry point from outside this package to cause
-	 * the Role2 Home page to be displayed.
-	 * 
-	 * It first sets up every shared attributes so we don't have to pass parameters.
-	 * 
-	 * It then checks to see if the page has been setup.  If not, it instantiates the class, 
-	 * initializes all the static aspects of the GIUI widgets (e.g., location on the page, font,
-	 * size, and any methods to be performed).
-	 * 
-	 * After the instantiation, the code then populates the elements that change based on the user
-	 * and the system's current state.  It then sets the Scene onto the stage, and makes it visible
-	 * to the user.
-	 * 
-	 * @param ps specifies the JavaFX Stage to be used for this GUI and it's methods
-	 * 
-	 * @param user specifies the User for this GUI and it's methods
-	 * 
-	 */
-	public static void displayRole2Home(Stage ps, User user) {
-		
-		// Establish the references to the GUI and the current user
-		theStage = ps;
-		theUser = user;
-		
-		// If not yet established, populate the static aspects of the GUI
-		if (theView == null) theView = new ViewRole2Home();		// Instantiate singleton if needed
-		
-		ControllerRole2Home.loadAllPosts();
-		// Populate the dynamic aspects of the GUI with the data from the user and the current
-		// state of the system.
-		theDatabase.getUserAccountDetails(user.getUserName());
-		applicationMain.FoundationsMain.activeHomePage = theRole;
-		
-		label_UserDetails.setText("User: " + theUser.getUserName());// Set the username
+    /** Horizontal separator below the header. */
+    protected static Line line_Separator1 = new Line(20, 95, width - 20, 95);
 
-		// Set the title for the window, display the page, and wait for the Admin to do something
-		theStage.setTitle("CSE 360 Foundations: Staff Home Page");
-		theStage.setScene(theRole2HomeScene);						// Set this page onto the stage
-		theStage.show();											// Display it to the user
-	}
-	
-	/**********
-	 * <p> Method: ViewRole2Home() </p>
-	 * 
-	 * <p> Description: This method initializes all the elements of the graphical user interface.
-	 * This method determines the location, size, font, color, and change and event handlers for
-	 * each GUI object. </p>
-	 * 
-	 * This is a singleton and is only performed once.  Subsequent uses fill in the changeable
-	 * fields using the displayRole2Home method.</p>
-	 * 
-	 */
-	private ViewRole2Home() {
-		
-		// Create the Pane for the list of widgets and the Scene for the window
-		theRootPane = new Pane();
-		theRole2HomeScene = new Scene(theRootPane, width, height);	// Create the scene
-		
-		// Set the title for the window
-		
-		// Populate the window with the title and other common widgets and set their static state
-		setupTableView();
-		
-		// GUI Area 1
-		label_PageTitle.setText("Staff Home Page");
-		setupLabelUI(label_PageTitle, "Arial", 28, width, Pos.CENTER, 0, 5);
+    // --- Area 2: Post management row ---
+    /** Opens the Create Post page. */
+    protected static Button button_CreatePost    = new Button("Create Post");
+    /** Reloads all posts into the table. */
+    protected static Button button_ViewAllPosts  = new Button("View All Posts");
+    /** Opens the Search Posts page. */
+    protected static Button button_SearchPosts   = new Button("Search Posts");
+    /** Allows creating or deleting discussion threads. */
+    protected static Button button_ManageThreads = new Button("Manage Threads");
 
-		label_UserDetails.setText("User: " + theUser.getUserName());
-		setupLabelUI(label_UserDetails, "Arial", 20, width, Pos.BASELINE_LEFT, 20, 55);
-		
-		setupButtonUI(button_UpdateThisUser, "Dialog", 18, 170, Pos.CENTER, 610, 45);
-		button_UpdateThisUser.setOnAction((_) -> {ControllerRole2Home.performUpdate(); });
-		
-		// GUI Area 2
-		
-		setupButtonUI(button_GradingStatistics, "Dialog", 18, 220, Pos.CENTER, 20, 110);
-		button_GradingStatistics.setOnAction((_) -> {ControllerRole2Home.performGradingStats(); });
-		
-		setupButtonUI(button_ViewPosts, "Dialog", 18, 220, Pos.CENTER, 260, 110);
-		button_ViewPosts.setOnAction((_) -> {ControllerRole2Home.performViewPosts(); });
-		
-		setupButtonUI(button_feedbackPost, "Dialog", 18, 220, Pos.CENTER, 20, 155);
-		button_feedbackPost.setOnAction((_) -> {
-			ControllerRole2Home.performFeedback();
-		});
-		
-		
-		// GUI Area 3
-        setupButtonUI(button_Logout, "Dialog", 18, 250, Pos.CENTER, 20, 520);
-        button_Logout.setOnAction((_) -> {ControllerRole2Home.performLogout(); });
-        
-        setupButtonUI(button_Quit, "Dialog", 18, 250, Pos.CENTER, 300, 520);
-        button_Quit.setOnAction((_) -> {ControllerRole2Home.performQuit(); });
+    /** Horizontal separator between the action row and the post table. */
+    protected static Line line_Separator2 = new Line(20, 150, width - 20, 150);
 
-		// This is the end of the GUI initialization code
-		
-		// Place all of the widget items into the Root Pane's list of children
-        theRootPane.getChildren().addAll(
-			label_PageTitle, label_UserDetails, button_UpdateThisUser, line_Separator1,
-	        button_GradingStatistics, button_ViewPosts,
-	        button_feedbackPost,
-	        table_Posts,
-			line_Separator4, button_Logout, button_Quit);
-	}
-	
-	
-	/*-********************************************************************************************
+    // --- Area 3: Post table ---
+    /** Table showing all discussion posts. */
+    protected static TableView<PostDisplay>      table_Posts = new TableView<>();
+    /** Backing list for the post table. */
+    protected static ObservableList<PostDisplay> postData    = FXCollections.observableArrayList();
 
-	Helper methods to reduce code length
+    /** Horizontal separator between the table and the post-action row. */
+    protected static Line line_Separator3 = new Line(20, 430, width - 20, 430);
 
-	 */
-	
-	/**********
-	 * <p> Private local method to initialize the standard fields for a label </p>
-	 * 
-	 * @param l		The Label object to be initialized
-	 * @param ff	The font to be used
-	 * @param f		The size of the font to be used
-	 * @param w		The width of the Button
-	 * @param p		The alignment (e.g. left, centered, or right)
-	 * @param x		The location from the left edge (x axis)
-	 * @param y		The location from the top (y axis)
-	 */
-	private static void setupLabelUI(Label l, String ff, double f, double w, Pos p, double x, 
-			double y){
-		l.setFont(Font.font(ff, f));
-		l.setMinWidth(w);
-		l.setAlignment(p);
-		l.setLayoutX(x);
-		l.setLayoutY(y);		
-	}
-	
-	
-	/**********
-	 * <p> Private local method to initialize the standard fields for a button </p>
-	 * 
-	 * @param b		The Button object to be initialized
-	 * @param ff	The font to be used
-	 * @param f		The size of the font to be used
-	 * @param w		The width of the Button
-	 * @param p		The alignment (e.g. left, centered, or right)
-	 * @param x		The location from the left edge (x axis)
-	 * @param y		The location from the top (y axis)
-	 */
-	private static void setupButtonUI(Button b, String ff, double f, double w, Pos p, double x, 
-			double y){
-		b.setFont(Font.font(ff, f));
-		b.setMinWidth(w);
-		b.setAlignment(p);
-		b.setLayoutX(x);
-		b.setLayoutY(y);		
-	}
-	
+    // --- Area 4: Per-post action row ---
+    /** Opens the View Post & Replies page for the selected post. */
+    protected static Button button_ViewPost   = new Button("View Post & Replies");
+    /** Opens the Edit Post page for the selected post (staff may edit any post). */
+    protected static Button button_EditPost   = new Button("Edit Post");
+    /** Soft-deletes the selected post (staff may delete any post). */
+    protected static Button button_DeletePost = new Button("Delete Post");
+
+    /** Horizontal separator between post actions and staff tools. */
+    protected static Line line_Separator4 = new Line(20, 475, width - 20, 475);
+
+    // --- Area 5: Staff tools row ---
+    /** Opens the Grading Statistics page (implemented). */
+    protected static Button button_GradingStats        = new Button("Grading Statistics");
+    /** Placeholder – Private Feedback (not implemented). */
+    protected static Button button_PrivateFeedback     = new Button("Private Feedback");
+    /** Placeholder – Grading Parameters CRUD (not implemented). */
+    protected static Button button_GradingParameters   = new Button("Grading Parameters *");
+    /** Opens the Student Participation Report page. */
+    protected static Button button_AdminRequests       = new Button("Student Report");
+
+    /** Horizontal separator above the Logout / Quit row. */
+    protected static Line line_Separator5 = new Line(20, 525, width - 20, 525);
+
+    // --- Area 6: Navigation ---
+    /** Logs out the current user. */
+    protected static Button button_Logout = new Button("Logout");
+    /** Terminates the application. */
+    protected static Button button_Quit   = new Button("Quit");
+
+    /*-*******************************************************************************************
+
+    Singleton bookkeeping
+
+     */
+
+    /** Singleton guard – null until first instantiation. */
+    private static ViewRole2Home theView = null;
+
+    /** Reference to the in-memory H2 database. */
+    private static Database theDatabase = applicationMain.FoundationsMain.database;
+
+    /** The JavaFX Stage owned by the application. */
+    protected static Stage theStage;
+    /** Root pane containing all widgets. */
+    protected static Pane  theRootPane;
+    /** The currently logged-in staff User. */
+    public static User  theUser;
+
+    /** Scene reused across invocations. */
+    private static Scene theRole2HomeScene = null;
+    /** Role identifier: Admin=1, Student=2, Staff=3. */
+    protected static final int theRole = 3;
+
+    /*-*******************************************************************************************
+
+    Public entry point
+
+     */
+
     /**
-     * <p> Setups the TableView with columns: ID, Title, Thread, Author, Replies, Status and Date. </p>
+     * <p> Method: displayRole2Home(Stage ps, User user) </p>
+     *
+     * <p> Description: Single entry point from outside this package.  Sets up shared state,
+     * instantiates the singleton on first call, refreshes dynamic content (user label, post
+     * table), then places the scene on the stage and shows it. </p>
+     *
+     * @param ps   the JavaFX Stage to display this page on
+     * @param user the currently logged-in staff User
+     */
+    public static void displayRole2Home(Stage ps, User user) {
+        theStage = ps;
+        theUser  = user;
+
+        if (theView == null) {
+            theView = new ViewRole2Home();
+        }
+
+        theDatabase.getUserAccountDetails(user.getUserName());
+        applicationMain.FoundationsMain.activeHomePage = theRole;
+
+        // Refresh dynamic content
+        label_UserDetails.setText("User: " + theUser.getUserName());
+        ModelRole2Home.initialize(theUser.getUserName());
+        populatePostTable(ModelRole2Home.getAllPosts());
+
+        theStage.setTitle("CSE 360 Foundations: Staff Home Page");
+        theStage.setScene(theRole2HomeScene);
+        theStage.show();
+    }
+
+    /*-*******************************************************************************************
+
+    Constructor (singleton – called at most once)
+
+     */
+
+    /**
+     * <p> Method: ViewRole2Home() </p>
+     *
+     * <p> Description: Initialises every widget: position, font, size, and event handler.
+     * Runs exactly once; subsequent calls to displayRole2Home() only update the dynamic fields. </p>
+     */
+    private ViewRole2Home() {
+
+        theRootPane        = new Pane();
+        theRole2HomeScene  = new Scene(theRootPane, width, height);
+
+        // ── Area 1: Header ────────────────────────────────────────────────────────
+        label_PageTitle.setText("Staff Home Page");
+        setupLabelUI(label_PageTitle, "Arial", 28, width, Pos.CENTER, 0, 5);
+
+        label_UserDetails.setText("User: ");
+        setupLabelUI(label_UserDetails, "Arial", 20, width, Pos.BASELINE_LEFT, 20, 55);
+
+        setupButtonUI(button_UpdateThisUser, "Dialog", 16, 170, Pos.CENTER, 610, 45);
+        button_UpdateThisUser.setOnAction((_) -> { ControllerRole2Home.performUpdate(); });
+
+        // ── Area 2: Post-management action row ────────────────────────────────────
+        // Four buttons evenly across the window
+        setupButtonUI(button_CreatePost,    "Dialog", 14, 172, Pos.CENTER,  20, 108);
+        setupButtonUI(button_ViewAllPosts,  "Dialog", 14, 172, Pos.CENTER, 207, 108);
+        setupButtonUI(button_SearchPosts,   "Dialog", 14, 172, Pos.CENTER, 394, 108);
+        setupButtonUI(button_ManageThreads, "Dialog", 14, 172, Pos.CENTER, 581, 108);
+
+        button_CreatePost   .setOnAction((_) -> { ControllerRole2Home.performCreatePost();    });
+        button_ViewAllPosts .setOnAction((_) -> { ControllerRole2Home.loadAllPosts();          });
+        button_SearchPosts  .setOnAction((_) -> { ControllerRole2Home.performSearch();         });
+        button_ManageThreads.setOnAction((_) -> { ControllerRole2Home.performManageThreads(); });
+
+        // ── Area 3: Post table ────────────────────────────────────────────────────
+        setupTableView();
+
+        // ── Area 4: Per-post action row ───────────────────────────────────────────
+        setupButtonUI(button_ViewPost,   "Dialog", 14, 220, Pos.CENTER,  20, 440);
+        setupButtonUI(button_EditPost,   "Dialog", 14, 220, Pos.CENTER, 260, 440);
+        setupButtonUI(button_DeletePost, "Dialog", 14, 220, Pos.CENTER, 500, 440);
+
+        button_ViewPost  .setOnAction((_) -> { ControllerRole2Home.performViewPost();   });
+        button_EditPost  .setOnAction((_) -> { ControllerRole2Home.performEditPost();   });
+        button_DeletePost.setOnAction((_) -> { ControllerRole2Home.performDeletePost(); });
+
+        // ── Area 5: Staff-tools row ───────────────────────────────────────────────
+        // Grading Statistics is implemented; the other three are stubs
+        setupButtonUI(button_GradingStats,      "Dialog", 13, 172, Pos.CENTER,  20, 484);
+        setupButtonUI(button_PrivateFeedback,   "Dialog", 13, 172, Pos.CENTER, 207, 484);
+        setupButtonUI(button_GradingParameters, "Dialog", 13, 172, Pos.CENTER, 394, 484);
+        setupButtonUI(button_AdminRequests,      "Dialog", 13, 172, Pos.CENTER, 581, 484);
+
+        button_GradingStats     .setOnAction((_) -> { ControllerRole2Home.performGradingStats();        });
+        button_PrivateFeedback  .setOnAction((_) -> { ControllerRole2Home.performPrivateFeedback();     });
+        button_GradingParameters.setOnAction((_) -> { ControllerRole2Home.performGradingParameters();  });
+        button_AdminRequests    .setOnAction((_) -> { ControllerRole2Home.performAdminRequests();       });
+
+        // Style the remaining stub buttons so it's obvious they are placeholders
+        String stubStyle = "-fx-text-fill: gray; -fx-font-style: italic;";
+        button_ManageThreads    .setStyle(stubStyle);
+        button_GradingParameters.setStyle(stubStyle);
+
+        // ── Area 6: Navigation ────────────────────────────────────────────────────
+        setupButtonUI(button_Logout, "Dialog", 18, 250, Pos.CENTER,  20, 535);
+        setupButtonUI(button_Quit,   "Dialog", 18, 250, Pos.CENTER, 300, 535);
+
+        button_Logout.setOnAction((_) -> { ControllerRole2Home.performLogout(); });
+        button_Quit  .setOnAction((_) -> { ControllerRole2Home.performQuit();   });
+
+        // ── Assemble root pane ────────────────────────────────────────────────────
+        theRootPane.getChildren().addAll(
+                label_PageTitle, label_UserDetails, button_UpdateThisUser,
+                line_Separator1,
+                button_CreatePost, button_ViewAllPosts, button_SearchPosts, button_ManageThreads,
+                line_Separator2,
+                table_Posts,
+                line_Separator3,
+                button_ViewPost, button_EditPost, button_DeletePost,
+                line_Separator4,
+                button_GradingStats, button_PrivateFeedback,
+                button_GradingParameters, button_AdminRequests,
+                line_Separator5,
+                button_Logout, button_Quit
+        );
+    }
+
+    /*-*******************************************************************************************
+
+    Table setup & population
+
+     */
+
+    /**
+     * <p> Configures the post TableView with columns for ID, Title, Thread, Author,
+     * Replies, Status, and Date. </p>
      */
     private void setupTableView() {
-    	// ID Column (50px)
-    	TableColumn<PostDisplay, Integer> colId = new TableColumn<>("ID");
-    	colId.setCellValueFactory(new PropertyValueFactory<>("postId"));
-    	colId.setPrefWidth(50);
-    	colId.setMaxWidth(50);
-    	colId.setMinWidth(50);
+        TableColumn<PostDisplay, Integer> colId = new TableColumn<>("ID");
+        colId.setCellValueFactory(new PropertyValueFactory<>("postId"));
+        colId.setPrefWidth(45);
+        colId.setMaxWidth(45);
+        colId.setMinWidth(45);
 
-    	// Title Column (350px -> reduce this to make room for Thread)
-    	TableColumn<PostDisplay, String> colTitle = new TableColumn<>("Title");
-    	colTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
-    	colTitle.setPrefWidth(250);  // CHANGED from 350 to 250
+        TableColumn<PostDisplay, String> colTitle = new TableColumn<>("Title");
+        colTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
+        colTitle.setPrefWidth(230);
 
-    	// Thread Column (100px) - NEW!
-    	TableColumn<PostDisplay, String> colThread = new TableColumn<>("Thread");
-    	colThread.setCellValueFactory(new PropertyValueFactory<>("thread"));
-    	colThread.setPrefWidth(100);
+        TableColumn<PostDisplay, String> colThread = new TableColumn<>("Thread");
+        colThread.setCellValueFactory(new PropertyValueFactory<>("thread"));
+        colThread.setPrefWidth(100);
 
-    	// Author Column (120px)
-    	TableColumn<PostDisplay, String> colAuthor = new TableColumn<>("Author");
-    	colAuthor.setCellValueFactory(new PropertyValueFactory<>("author"));
-    	colAuthor.setPrefWidth(120);
+        TableColumn<PostDisplay, String> colAuthor = new TableColumn<>("Author");
+        colAuthor.setCellValueFactory(new PropertyValueFactory<>("author"));
+        colAuthor.setPrefWidth(120);
 
-    	// Replies Column (80px)
-    	TableColumn<PostDisplay, Integer> colReplies = new TableColumn<>("Replies");
-    	colReplies.setCellValueFactory(new PropertyValueFactory<>("replyCount"));
-    	colReplies.setPrefWidth(80);
+        TableColumn<PostDisplay, Integer> colReplies = new TableColumn<>("Replies");
+        colReplies.setCellValueFactory(new PropertyValueFactory<>("replyCount"));
+        colReplies.setPrefWidth(65);
 
-    	// Status Column (80px)
-    	TableColumn<PostDisplay, String> colStatus = new TableColumn<>("Status");
-    	colStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
-    	colStatus.setPrefWidth(80);
+        TableColumn<PostDisplay, String> colStatus = new TableColumn<>("Status");
+        colStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
+        colStatus.setPrefWidth(70);
 
-    	// Date Column (160px)
-    	TableColumn<PostDisplay, String> colDate = new TableColumn<>("Date");
-    	colDate.setCellValueFactory(new PropertyValueFactory<>("timestamp"));
-    	colDate.setPrefWidth(160);
+        TableColumn<PostDisplay, String> colDate = new TableColumn<>("Date");
+        colDate.setCellValueFactory(new PropertyValueFactory<>("timestamp"));
+        colDate.setPrefWidth(130);
 
-    	// Add all columns to the table
-    	table_Posts.getColumns().addAll(colId, colTitle, colThread, colAuthor, colReplies, colStatus, colDate);
+        table_Posts.getColumns().addAll(
+                colId, colTitle, colThread, colAuthor, colReplies, colStatus, colDate);
         table_Posts.setItems(postData);
-        
         table_Posts.setLayoutX(20);
-        table_Posts.setLayoutY(210);
+        table_Posts.setLayoutY(160);
         table_Posts.setPrefWidth(760);
-        table_Posts.setPrefHeight(260);
+        table_Posts.setPrefHeight(255);
     }
-    
+
     /**
-     * <p> Populates the table with all the posts. </p>
-     * @param posts: ArrayList of Posts to be displayed
+     * <p> Populates the post table from the supplied list, wrapping each Post in a PostDisplay. </p>
+     *
+     * @param posts the list of posts to show (may include deleted posts, shown as [Deleted])
      */
     protected static void populatePostTable(List<Post> posts) {
-        
         postData.clear();
         for (Post post : posts) {
-               postData.add(new PostDisplay(post));
+            postData.add(new PostDisplay(post));
         }
     }
-    
+
+    /*-*******************************************************************************************
+
+    Helper methods – UI setup
+
+     */
+
     /**
-     * Inner class for TableView display
-     * 
+     * <p> Initialises a Label's font, minimum width, alignment, and position. </p>
+     *
+     * @param l  the Label to configure
+     * @param ff font family name
+     * @param f  font size
+     * @param w  minimum width
+     * @param p  text alignment
+     * @param x  left edge (x-axis)
+     * @param y  top edge (y-axis)
+     */
+    private static void setupLabelUI(Label l, String ff, double f, double w,
+                                     Pos p, double x, double y) {
+        l.setFont(Font.font(ff, f));
+        l.setMinWidth(w);
+        l.setAlignment(p);
+        l.setLayoutX(x);
+        l.setLayoutY(y);
+    }
+
+    /**
+     * <p> Initialises a Button's font, minimum width, alignment, and position. </p>
+     *
+     * @param b  the Button to configure
+     * @param ff font family name
+     * @param f  font size
+     * @param w  minimum width
+     * @param p  text alignment
+     * @param x  left edge (x-axis)
+     * @param y  top edge (y-axis)
+     */
+    private static void setupButtonUI(Button b, String ff, double f, double w,
+                                      Pos p, double x, double y) {
+        b.setFont(Font.font(ff, f));
+        b.setMinWidth(w);
+        b.setAlignment(p);
+        b.setLayoutX(x);
+        b.setLayoutY(y);
+    }
+
+    /*-*******************************************************************************************
+
+    Inner class – PostDisplay (wraps Post for TableView binding)
+
+     */
+
+    /**
+     * <p> Wraps a Post object for display in the staff post table.
+     * Provides JavaFX-compatible property getters for each column. </p>
      */
     public static class PostDisplay {
-    	/** Unique ID for the post */
-        private final int postId;
-        /** Title of the post */
-        private String title;
-        /** Thread the post is a part of */
-        private final String thread;    
-        /** Username of the author of the post */
+        /** Unique post ID. */
+        private final int    postId;
+        /** Title shown in the table (or "[Deleted]"). */
+        private String       title;
+        /** Thread the post belongs to. */
+        private final String thread;
+        /** Username of the post's author. */
         private final String author;
-        /** Number of replies to the post */
-        private final int replyCount;
-        /** Status of the post relative to the user viewing it */
+        /** Number of replies on this post. */
+        private final int    replyCount;
+        /** "READ" or "UNREAD" from the current staff user's perspective. */
         private final String status;
-        /** Time and date the post was posted on */
+        /** Formatted creation timestamp. */
         private final String timestamp;
-        /** The Post object */
-        private final Post post;
+        /** The underlying Post object. */
+        private final Post   post;
 
         /**
-         * <p> Gets all the details of the Posts for the TableVie>w </p>
-         * @param post: object of the current post
+         * <p> Constructs a PostDisplay from the given Post, pulling all display data
+         * from the model. </p>
+         *
+         * @param post the Post to wrap
          */
         public PostDisplay(Post post) {
-            this.post = post;
-            this.postId = post.getPostID();
-            this.thread = post.getThreadName();  // NEW!
-            if(post.isDeleted()) this.title = "[Deleted]";
-            else 				 this.title = post.getTitle();
-            this.author = post.getUsername();
+            this.post       = post;
+            this.postId     = post.getPostID();
+            this.thread     = post.getThreadName();
+            this.title      = post.isDeleted() ? "[Deleted]" : post.getTitle();
+            this.author     = post.getUsername();
             this.replyCount = ModelRole2Home.getReplyCount(post.getPostID());
-            this.status = ModelRole2Home.isRead(post.getPostID()) ? "READ" : "UNREAD";
-            this.timestamp = ModelRole2Home.getFormattedTimestamp(post);
+            this.status     = ModelRole2Home.isRead(post.getPostID()) ? "READ" : "UNREAD";
+            this.timestamp  = ModelRole2Home.getFormattedTimestamp(post);
         }
 
-        // Getters
-        /** 
-         * <p> Gets PostID </p> 
-         * @return PostID
-         */
-        public int getPostId() { return postId; }
-        /** 
-         * <p> Gets Post Title </p> 
-         * @return Title
-         */
-        public String getTitle() { return title; }
-        /** 
-         * <p> Gets the Thread </p> 
-         * @return thread name
-         */
-        public String getThread() { return thread; } 
-        /** 
-         * <p> Gets the Username of the author </p> 
-         * @return username of the author
-         */
-        public String getAuthor() { return author; }
-        /** 
-         * <p> Gets the number of replies </p> 
-         * @return number of replies
-         */
-        public int getReplyCount() { return replyCount; }
-        /** 
-         * <p> Gets status: if read or unread </p> 
-         * @return if the post has been read or not
-         */
-        public String getStatus() { return status; }
-        /** 
-         * <p> Gets Date and time of posting </p> 
-         * @return date and time of posting
-         */
-        public String getTimestamp() { return timestamp; }
-        /** 
-         * <p> Gets the current Post's object </p> 
-         * @return the post object
-         */
-        public Post getPost() { return post; }
+        // --- Getters for TableView PropertyValueFactory ---
+
+        /** @return the post's unique ID */
+        public int    getPostId()     { return postId;     }
+        /** @return the post title (or "[Deleted]") */
+        public String getTitle()      { return title;      }
+        /** @return the thread name */
+        public String getThread()     { return thread;     }
+        /** @return the author's username */
+        public String getAuthor()     { return author;     }
+        /** @return number of replies */
+        public int    getReplyCount() { return replyCount; }
+        /** @return "READ" or "UNREAD" */
+        public String getStatus()     { return status;     }
+        /** @return formatted timestamp string */
+        public String getTimestamp()  { return timestamp;  }
+        /** @return the underlying Post object */
+        public Post   getPost()       { return post;       }
     }
-    
-    
-    /**
-     * <p> Shows alert dialogs </p>
-     * @param title: text displayed at the top of the dialog window
-     * @param message: the text in the body of the dialog
-     */
-    protected static void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-	
 }

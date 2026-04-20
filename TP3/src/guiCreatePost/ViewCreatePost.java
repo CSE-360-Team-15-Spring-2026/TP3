@@ -130,7 +130,8 @@ public class ViewCreatePost {
 		
 		// Load user data and update application status
 		theDatabase.getUserAccountDetails(user.getUserName());
-		applicationMain.FoundationsMain.activeHomePage = theRole;
+		// NOTE: activeHomePage is intentionally NOT overwritten here so that the
+		// calling home page (Role1=2 or Role2/Staff=3) is preserved for Cancel routing.
 
 		// Display current user info on the page
 		label_UserDetails.setText("User: " + theUser.getUserName());
@@ -141,7 +142,7 @@ public class ViewCreatePost {
 		loadThreads();
 				
 		// Set up and display the scene
-		theStage.setTitle("Student Home Page");
+		theStage.setTitle("CSE 360 Foundations: Create Post");
 		theStage.setScene(theViewCreatePostScene);
 		theStage.show();
 	}
@@ -162,7 +163,7 @@ public class ViewCreatePost {
 	
 		
 		// GUI Area 1:Page title and user info section
-		label_PageTitle.setText("Student Home Page");
+		label_PageTitle.setText("Create New Post");
 		setupLabelUI(label_PageTitle, "Arial", 28, width, Pos.CENTER, 0, 5);
 
 		setupLabelUI(label_UserDetails, "Arial", 20, width, Pos.BASELINE_LEFT, 20, 55);

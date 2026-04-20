@@ -121,10 +121,17 @@ public class ControllerSearchPosts {
         ViewSearchPosts.textField_Keyword.clear();
         ViewSearchPosts.textField_Thread.clear();
 
-        // Return to Role1Home
-        guiRole1.ViewRole1Home.displayRole1Home(
-            ViewSearchPosts.theStage,
-            guiRole1.ViewRole1Home.theUser
-        );
+        // Return to the correct home page based on who opened Search Posts
+        if (applicationMain.FoundationsMain.activeHomePage == 3) {
+            guiRole2.ViewRole2Home.displayRole2Home(
+                ViewSearchPosts.theStage,
+                guiRole2.ViewRole2Home.theUser
+            );
+        } else {
+            guiRole1.ViewRole1Home.displayRole1Home(
+                ViewSearchPosts.theStage,
+                guiRole1.ViewRole1Home.theUser
+            );
+        }
     }
 }

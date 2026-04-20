@@ -101,7 +101,8 @@ public class ViewEditPost {
         }
         
         theDatabase.getUserAccountDetails(user.getUserName());
-        applicationMain.FoundationsMain.activeHomePage = theRole;
+        // NOTE: activeHomePage is intentionally NOT overwritten here so that the
+        // calling home page (Role1=2 or Role2/Staff=3) is preserved for Cancel routing.
         
         label_UserDetails.setText("User: " + theUser.getUserName());
         

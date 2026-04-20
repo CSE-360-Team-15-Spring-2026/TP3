@@ -1,12 +1,13 @@
 package database;
 
-import java.sql.*;
+import java.sql.*; 
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import entityClasses.User;
+import entityClasses.adminRequests;
 import entityClasses.Post;
 import entityClasses.Reply;
 
@@ -131,73 +132,83 @@ public class Database {
 	}
 
 	
-/**
- * *****
- * <p> Method: createTables </p>
- * 
- * <p> Description: Used to create new instances of the two database tables used by this class.</p>
- *
- * @throws SQLException the SQL exception
- */
-	private void createTables() throws SQLException {
-		// Create the user database
-		String userTable = "CREATE TABLE IF NOT EXISTS userDB ("
-				+ "id INT AUTO_INCREMENT PRIMARY KEY, "
-				+ "userName VARCHAR(255) UNIQUE, "
-				+ "password VARCHAR(255), "
-				+ "firstName VARCHAR(255), "
-				+ "middleName VARCHAR(255), "
-				+ "lastName VARCHAR (255), "
-				+ "preferredFirstName VARCHAR(255), "
-				+ "emailAddress VARCHAR(255), "
-				+ "adminRole BOOL DEFAULT FALSE, "
-				+ "newRole1 BOOL DEFAULT FALSE, "
-				+ "newRole2 BOOL DEFAULT FALSE)";
-		statement.execute(userTable);
-		
-		// Create the invitation codes table with expiration time.
-	    String invitationCodesTable = "CREATE TABLE IF NOT EXISTS InvitationCodes ("
-	            + "code VARCHAR(10) PRIMARY KEY, "
-	    		+ "emailAddress VARCHAR(255), "
-	            + "role VARCHAR(10),"
-	    		+ "expirationTime TIMESTAMP)";
-	    statement.execute(invitationCodesTable);
-	    
-	    String otpTable = "CREATE TABLE IF NOT EXISTS oneTimePasses ("
-				+ "otp VARCHAR(255) PRIMARY KEY, "
-				+ "userName VARCHAR(255) UNIQUE)";
-	    statement.execute(otpTable);
-	    
-	    // Create discussion post/reply table
-	    String postTable = "CREATE TABLE IF NOT EXISTS postDB ("
-	    		+ "postID INT PRIMARY KEY, "
-	    		+ "parentPostID INT DEFAULT -1, "
-	    		+ "userName VARCHAR(255), "
-	    		+ "title VARCHAR(255), "
-	    		+ "body CLOB, "
-	    		+ "threadName VARCHAR(255), "
-	    		+ "timeStamp TIMESTAMP, "
-	    		+ "isDeleted BOOL DEFAULT FALSE, "
-	    		+ "keywords VARCHAR(255), "
-	    		+ "feedback CLOB, "
-	    		+ "feedbackAuthor VARCHAR(255), "
-	    		+ "isFlagged BOOL DEFAULT FALSE, "
-	    		+ "reason CLOB)";
-	    statement.execute(postTable);
-	    
-	    // Create thread table
-	 	String threadTable = "CREATE TABLE IF NOT EXISTS threadDB ("
-	 			+ "threadName VARCHAR(255) PRIMARY KEY, "
-	 			+ "createdBy VARCHAR(255), "
-	 			+ "createdAt TIMESTAMP)";
-	 	statement.execute(threadTable);
-	 	
-	 	String readStatusTable = "CREATE TABLE IF NOT EXISTS ReadStatus ("
-	            + "username VARCHAR(255), "
-	            + "postID INT, "                                                      
-	            + "PRIMARY KEY (username, postID))";
-	    statement.execute(readStatusTable);
-	}
+	/**
+	 * *****
+	 * <p> Method: createTables </p>
+	 * 
+	 * <p> Description: Used to create new instances of the two database tables used by this class.</p>
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+		private void createTables() throws SQLException {
+			// Create the user database
+			String userTable = "CREATE TABLE IF NOT EXISTS userDB ("
+					+ "id INT AUTO_INCREMENT PRIMARY KEY, "
+					+ "userName VARCHAR(255) UNIQUE, "
+					+ "password VARCHAR(255), "
+					+ "firstName VARCHAR(255), "
+					+ "middleName VARCHAR(255), "
+					+ "lastName VARCHAR (255), "
+					+ "preferredFirstName VARCHAR(255), "
+					+ "emailAddress VARCHAR(255), "
+					+ "adminRole BOOL DEFAULT FALSE, "
+					+ "newRole1 BOOL DEFAULT FALSE, "
+					+ "newRole2 BOOL DEFAULT FALSE)";
+			statement.execute(userTable);
+			
+			// Create the invitation codes table with expiration time.
+		    String invitationCodesTable = "CREATE TABLE IF NOT EXISTS InvitationCodes ("
+		            + "code VARCHAR(10) PRIMARY KEY, "
+		    		+ "emailAddress VARCHAR(255), "
+		            + "role VARCHAR(10),"
+		    		+ "expirationTime TIMESTAMP)";
+		    statement.execute(invitationCodesTable);
+		    
+		    String otpTable = "CREATE TABLE IF NOT EXISTS oneTimePasses ("
+					+ "otp VARCHAR(255) PRIMARY KEY, "
+					+ "userName VARCHAR(255) UNIQUE)";
+		    statement.execute(otpTable);
+		    
+		    // Create discussion post/reply table
+		    String postTable = "CREATE TABLE IF NOT EXISTS postDB ("
+		    		+ "postID INT PRIMARY KEY, "
+		    		+ "parentPostID INT DEFAULT -1, "
+		    		+ "userName VARCHAR(255), "
+		    		+ "title VARCHAR(255), "
+		    		+ "body CLOB, "
+		    		+ "threadName VARCHAR(255), "
+		    		+ "timeStamp TIMESTAMP, "
+		    		+ "isDeleted BOOL DEFAULT FALSE, "
+		    		+ "keywords VARCHAR(255), "
+		    		+ "feedback CLOB, "
+		    		+ "feedbackAuthor VARCHAR(255), "
+		    		+ "isFlagged BOOL DEFAULT FALSE, "
+		    		+ "reason CLOB)";
+		    statement.execute(postTable);
+		    
+		    // Create thread table
+		 	String threadTable = "CREATE TABLE IF NOT EXISTS threadDB ("
+		 			+ "threadName VARCHAR(255) PRIMARY KEY, "
+		 			+ "createdBy VARCHAR(255), "
+		 			+ "createdAt TIMESTAMP)";
+		 	statement.execute(threadTable);
+		 	
+		 	String readStatusTable = "CREATE TABLE IF NOT EXISTS ReadStatus ("
+		            + "username VARCHAR(255), "
+		            + "postID INT, "                                                      
+		            + "PRIMARY KEY (username, postID))";
+		    statement.execute(readStatusTable);
+		    
+		    String requestTable = "CREATE TABLE IF NOT EXISTS requestDB ("
+		    		+ "requestID INT AUTO_INCREMENT PRIMARY KEY, "
+		    		+ "requestSubmiter VARCHAR(255), "
+		    		+ "recievingAdmin VARCHAR(255), "
+		    		+ "body CLOB, "
+		    		+ "completed BOOL DEFAULT FALSE, "
+		    		+ "firstRequestID INT DEFAULT -1, "
+		    		+ "timestamp TIMESTAMP)";
+		    statement.execute(requestTable);
+		}
 		
 
 
@@ -1880,6 +1891,133 @@ public class Database {
 		}
 
 		return reply;
+	}
+	
+	public adminRequests createRequest(String requester, String admin, String body) {
+		adminRequests requests = new adminRequests(requester, body, admin);
+		String sql = "INSERT INTO requestDB "
+				+ "(requestSubmiter, recievingAdmin, body, adminActions, completed, firstRequestID, timestamp) "
+				+ "VALUES (?, ?, ?, ?, ?, ?, ?)";
+		try (PreparedStatement pstmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+			pstmt.setString(1, requester);
+			pstmt.setString(2, admin);
+			pstmt.setString(3, body);
+			pstmt.setString(4, "");
+			pstmt.setBoolean(5, false);
+			pstmt.setInt(6, -1);
+			pstmt.setTimestamp(7, Timestamp.valueOf(requests.getTimeStamp()));
+			pstmt.executeUpdate();
+			
+			ResultSet rs = pstmt.getGeneratedKeys();
+			if (rs.next()) {
+				requests.setRequestID(rs.getInt(1));
+			}
+		
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		
+		return requests;
+	}
+	
+	public List<adminRequests> getRequestsForAdmin(String admin) {
+
+	    List<adminRequests> list = new ArrayList<>();
+
+	    String sql = "SELECT * FROM requestDB WHERE recievingAdmin = ?";
+
+	    try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+	        pstmt.setString(1, admin);
+	        ResultSet rs = pstmt.executeQuery();
+	        while (rs.next()) {
+	            adminRequests request = new adminRequests();
+
+	            request.setRequestID(rs.getInt("requestID"));
+	            request.setRequestSubmiter(rs.getString("requestSubmiter"));
+	            request.setRecievingAdmin(rs.getString("recievingAdmin"));
+	            request.setBody(rs.getString("body"));
+	            request.setCompleted(rs.getBoolean("completed"));
+	            request.setTimeStamp(rs.getTimestamp("timestamp").toLocalDateTime());
+
+	            list.add(request);
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+
+	    return list;
+	}
+	
+	public void requestCompletion(int RequestID) {
+		String sql = "UPDATE requestDB SET completed = ? WHERE requestID = ?";
+		
+		try(PreparedStatement pstmt = connection.prepareStatement(sql)) {
+			pstmt.setBoolean(1, true);
+			pstmt.setInt(2, RequestID);
+			pstmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public List<adminRequests> getRequests(String user) {
+		List<adminRequests> list = new ArrayList<>();
+		String sql = "SELECT * FROM requestDB WHERE requestSubmiter = ?";
+		
+		try(PreparedStatement pstmt = connection.prepareStatement(sql)) {
+			pstmt.setString(1, user);
+			ResultSet rs = pstmt.executeQuery();
+			while (rs.next()) {
+				adminRequests request = new adminRequests();
+				
+				request.setRequestID(rs.getInt("requestID"));
+				request.setFirstRequestID(rs.getInt("firstRequestID"));
+				request.setRequestSubmiter(rs.getString("requestSubmiter"));
+				request.setRecievingAdmin(rs.getString("recievingAdmin"));
+				request.setBody(rs.getString("body"));
+				request.setCompleted(rs.getBoolean("completed"));
+				request.setTimeStamp(rs.getTimestamp("timestamp").toLocalDateTime());
+						
+				list.add(request);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return list;
+	}
+	
+	public void updateRequest(adminRequests request) {
+		String sql = "UPDATE requestDB SET body=?, completed=?  WHERE requestID=?";
+		try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+			pstmt.setString(1, request.getBody());
+			pstmt.setBoolean(2, request.getCompleted());
+			pstmt.setInt(3, request.getRequestID());
+			
+			pstmt.execute();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public List<String> getAllAdmins() {
+		List<String> admins = new ArrayList<>();
+		String sql = "SELECT userName FROM userDB WHERE adminROle = TRUE";
+		
+		try(PreparedStatement pstmt = connection.prepareStatement(sql)) {
+			ResultSet rs = pstmt.executeQuery();
+			
+			while (rs.next()) {
+				admins.add(rs.getString("userName"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return admins;
 	}
 	
 	
