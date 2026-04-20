@@ -74,12 +74,10 @@ public class ViewRole2Home {
     // --- Area 2: Post management row ---
     /** Opens the Create Post page. */
     protected static Button button_CreatePost    = new Button("Create Post");
-    /** Reloads all posts into the table. */
+    /** Opens the Flagging and Thread Management page. */
     protected static Button button_ViewAllPosts  = new Button("Flagging and Thread Management");
     /** Opens the Search Posts page. */
     protected static Button button_SearchPosts   = new Button("Search Posts");
-//    /** Allows creating or deleting discussion threads. */
-//    protected static Button button_ManageThreads = new Button("Manage Threads");
 
     /** Horizontal separator between the action row and the post table. */
     protected static Line line_Separator2 = new Line(20, 150, width - 20, 150);
@@ -94,7 +92,7 @@ public class ViewRole2Home {
     protected static Line line_Separator3 = new Line(20, 430, width - 20, 430);
 
     // --- Area 4: Per-post action row ---
-    /** Opens the View Post & Replies page for the selected post. */
+    /** Opens the View Post and Replies page for the selected post. */
     protected static Button button_ViewPost   = new Button("View Post & Replies");
     /** Opens the Edit Post page for the selected post (staff may edit any post). */
     protected static Button button_EditPost   = new Button("Edit Post");
@@ -107,7 +105,7 @@ public class ViewRole2Home {
     // --- Area 5: Staff tools row ---
     /** Opens the Grading Statistics page (implemented). */
     protected static Button button_GradingStats        = new Button("Grading Statistics");
-    /** Placeholder – Private Feedback (not implemented). */
+    /** Opens the Private Feedback page for the selected post. */
     protected static Button button_PrivateFeedback     = new Button("Private Feedback");
     /** Placeholder – Grading Parameters CRUD (not implemented). */
     protected static Button button_GradingParameters   = new Button("Grading Parameters");
@@ -212,16 +210,13 @@ public class ViewRole2Home {
         button_UpdateThisUser.setOnAction((_) -> { ControllerRole2Home.performUpdate(); });
 
         // ── Area 2: Post-management action row ────────────────────────────────────
-        // Four buttons evenly across the window
-        setupButtonUI(button_CreatePost,    "Dialog", 14, 172, Pos.CENTER,  20, 108);
-        setupButtonUI(button_ViewAllPosts,  "Dialog", 14, 172, Pos.CENTER, 207, 108);
-        setupButtonUI(button_SearchPosts,   "Dialog", 14, 172, Pos.CENTER, 454, 108);
-//        setupButtonUI(button_ManageThreads, "Dialog", 14, 172, Pos.CENTER, 581, 108);
+        setupButtonUI(button_CreatePost,   "Dialog", 14, 172, Pos.CENTER,  20, 108);
+        setupButtonUI(button_ViewAllPosts, "Dialog", 14, 172, Pos.CENTER, 207, 108);
+        setupButtonUI(button_SearchPosts,  "Dialog", 14, 172, Pos.CENTER, 454, 108);
 
-        button_CreatePost   .setOnAction((_) -> { ControllerRole2Home.performCreatePost();    });
-        button_ViewAllPosts .setOnAction((_) -> { ControllerRole2Home.loadAllPosts();          });
-        button_SearchPosts  .setOnAction((_) -> { ControllerRole2Home.performSearch();         });
-//        button_ManageThreads.setOnAction((_) -> { ControllerRole2Home.performManageThreads(); });
+        button_CreatePost  .setOnAction((_) -> { ControllerRole2Home.performCreatePost(); });
+        button_ViewAllPosts.setOnAction((_) -> { ControllerRole2Home.loadAllPosts();       });
+        button_SearchPosts .setOnAction((_) -> { ControllerRole2Home.performSearch();      });
 
         // ── Area 3: Post table ────────────────────────────────────────────────────
         setupTableView();
@@ -236,20 +231,15 @@ public class ViewRole2Home {
         button_DeletePost.setOnAction((_) -> { ControllerRole2Home.performDeletePost(); });
 
         // ── Area 5: Staff-tools row ───────────────────────────────────────────────
-        // Grading Statistics is implemented; the other three are stubs
         setupButtonUI(button_GradingStats,      "Dialog", 13, 172, Pos.CENTER,  20, 484);
         setupButtonUI(button_PrivateFeedback,   "Dialog", 13, 172, Pos.CENTER, 207, 484);
         setupButtonUI(button_GradingParameters, "Dialog", 13, 172, Pos.CENTER, 394, 484);
         setupButtonUI(button_AdminRequests,      "Dialog", 13, 172, Pos.CENTER, 581, 484);
 
-        button_GradingStats     .setOnAction((_) -> { ControllerRole2Home.performGradingStats();        });
-        button_PrivateFeedback  .setOnAction((_) -> { ControllerRole2Home.performPrivateFeedback();     });
-        button_GradingParameters.setOnAction((_) -> { ControllerRole2Home.performGradingParameters();  });
-        button_AdminRequests    .setOnAction((_) -> { ControllerRole2Home.performAdminRequests();       });
-
-        // Style the remaining stub buttons so it's obvious they are placeholders
-        String stubStyle = "-fx-text-fill: gray; -fx-font-style: italic;";
-//        button_ManageThreads    .setStyle(stubStyle);
+        button_GradingStats     .setOnAction((_) -> { ControllerRole2Home.performGradingStats();       });
+        button_PrivateFeedback  .setOnAction((_) -> { ControllerRole2Home.performPrivateFeedback();    });
+        button_GradingParameters.setOnAction((_) -> { ControllerRole2Home.performGradingParameters(); });
+        button_AdminRequests    .setOnAction((_) -> { ControllerRole2Home.performAdminRequests();      });
 
         // ── Area 6: Navigation ────────────────────────────────────────────────────
         setupButtonUI(button_Logout, "Dialog", 18, 250, Pos.CENTER,  20, 535);
@@ -430,21 +420,52 @@ public class ViewRole2Home {
 
         // --- Getters for TableView PropertyValueFactory ---
 
-        /** @return the post's unique ID */
-        public int    getPostId()     { return postId;     }
-        /** @return the post title (or "[Deleted]") */
-        public String getTitle()      { return title;      }
-        /** @return the thread name */
-        public String getThread()     { return thread;     }
-        /** @return the author's username */
-        public String getAuthor()     { return author;     }
-        /** @return number of replies */
-        public int    getReplyCount() { return replyCount; }
-        /** @return "READ" or "UNREAD" */
-        public String getStatus()     { return status;     }
-        /** @return formatted timestamp string */
-        public String getTimestamp()  { return timestamp;  }
-        /** @return the underlying Post object */
-        public Post   getPost()       { return post;       }
+        /**
+         * <p> Returns the unique ID of this post. </p>
+         * @return the post's unique ID
+         */
+        public int getPostId() { return postId; }
+
+        /**
+         * <p> Returns the post title, or "[Deleted]" if the post has been soft-deleted. </p>
+         * @return the post title (or "[Deleted]")
+         */
+        public String getTitle() { return title; }
+
+        /**
+         * <p> Returns the name of the thread this post belongs to. </p>
+         * @return the thread name
+         */
+        public String getThread() { return thread; }
+
+        /**
+         * <p> Returns the username of the post's author. </p>
+         * @return the author's username
+         */
+        public String getAuthor() { return author; }
+
+        /**
+         * <p> Returns the number of replies on this post. </p>
+         * @return number of replies
+         */
+        public int getReplyCount() { return replyCount; }
+
+        /**
+         * <p> Returns the read status of this post for the current staff user. </p>
+         * @return "READ" or "UNREAD"
+         */
+        public String getStatus() { return status; }
+
+        /**
+         * <p> Returns the formatted creation timestamp of this post. </p>
+         * @return formatted timestamp string
+         */
+        public String getTimestamp() { return timestamp; }
+
+        /**
+         * <p> Returns the underlying Post entity object. </p>
+         * @return the underlying Post object
+         */
+        public Post getPost() { return post; }
     }
 }
