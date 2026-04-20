@@ -75,11 +75,11 @@ public class ViewRole2Home {
     /** Opens the Create Post page. */
     protected static Button button_CreatePost    = new Button("Create Post");
     /** Reloads all posts into the table. */
-    protected static Button button_ViewAllPosts  = new Button("View All Posts");
+    protected static Button button_ViewAllPosts  = new Button("Flagging and Thread Management");
     /** Opens the Search Posts page. */
     protected static Button button_SearchPosts   = new Button("Search Posts");
-    /** Allows creating or deleting discussion threads. */
-    protected static Button button_ManageThreads = new Button("Manage Threads");
+//    /** Allows creating or deleting discussion threads. */
+//    protected static Button button_ManageThreads = new Button("Manage Threads");
 
     /** Horizontal separator between the action row and the post table. */
     protected static Line line_Separator2 = new Line(20, 150, width - 20, 150);
@@ -215,13 +215,13 @@ public class ViewRole2Home {
         // Four buttons evenly across the window
         setupButtonUI(button_CreatePost,    "Dialog", 14, 172, Pos.CENTER,  20, 108);
         setupButtonUI(button_ViewAllPosts,  "Dialog", 14, 172, Pos.CENTER, 207, 108);
-        setupButtonUI(button_SearchPosts,   "Dialog", 14, 172, Pos.CENTER, 394, 108);
-        setupButtonUI(button_ManageThreads, "Dialog", 14, 172, Pos.CENTER, 581, 108);
+        setupButtonUI(button_SearchPosts,   "Dialog", 14, 172, Pos.CENTER, 454, 108);
+//        setupButtonUI(button_ManageThreads, "Dialog", 14, 172, Pos.CENTER, 581, 108);
 
         button_CreatePost   .setOnAction((_) -> { ControllerRole2Home.performCreatePost();    });
         button_ViewAllPosts .setOnAction((_) -> { ControllerRole2Home.loadAllPosts();          });
         button_SearchPosts  .setOnAction((_) -> { ControllerRole2Home.performSearch();         });
-        button_ManageThreads.setOnAction((_) -> { ControllerRole2Home.performManageThreads(); });
+//        button_ManageThreads.setOnAction((_) -> { ControllerRole2Home.performManageThreads(); });
 
         // ── Area 3: Post table ────────────────────────────────────────────────────
         setupTableView();
@@ -249,7 +249,7 @@ public class ViewRole2Home {
 
         // Style the remaining stub buttons so it's obvious they are placeholders
         String stubStyle = "-fx-text-fill: gray; -fx-font-style: italic;";
-        button_ManageThreads    .setStyle(stubStyle);
+//        button_ManageThreads    .setStyle(stubStyle);
 
         // ── Area 6: Navigation ────────────────────────────────────────────────────
         setupButtonUI(button_Logout, "Dialog", 18, 250, Pos.CENTER,  20, 535);
@@ -262,7 +262,7 @@ public class ViewRole2Home {
         theRootPane.getChildren().addAll(
                 label_PageTitle, label_UserDetails, button_UpdateThisUser,
                 line_Separator1,
-                button_CreatePost, button_ViewAllPosts, button_SearchPosts, button_ManageThreads,
+                button_CreatePost, button_ViewAllPosts, button_SearchPosts,
                 line_Separator2,
                 table_Posts,
                 line_Separator3,
