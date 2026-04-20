@@ -15,26 +15,38 @@ import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
+/*******
+ * <p> Title: ViewAdminRequests Class. </p>
+ *
+ * <p> Description: The Java/FX-based Admin Requests View.
+ * Displays all requests sent by staff members to the currently
+ * logged in admin in a table .</p>
+ */
 public class ViewAdminRequests {
-
+	
     private static double width = applicationMain.FoundationsMain.WINDOW_WIDTH;
     private static double height = applicationMain.FoundationsMain.WINDOW_HEIGHT;
-
+    
     protected static Stage theStage;
     protected static User theUser;
-
+    
     private static Pane root;
     private static Scene scene;
-
+    
     protected static TableView<RequestDisplay> table = new TableView<>();
     protected static ObservableList<RequestDisplay> data =
         FXCollections.observableArrayList();
-
+    
     private static Label label_Title = new Label("Admin Requests");
     private static Label label_User = new Label();
-
+    
     private static Button button_Return = new Button("Return");
-
+    /**
+     * <p> displays adminRequests window</p>
+     * 
+     * @param stage
+     * @param user
+     */
     public static void display(Stage stage, User user) {
 
         theStage = stage;
@@ -71,7 +83,9 @@ public class ViewAdminRequests {
 
         ControllerAdminRequests.loadRequests();
     }
-
+    /**
+     * <p> sets up the ui for table</p>
+     */
     private static void setupTable() {
 
         table.getColumns().clear();
@@ -114,7 +128,12 @@ public class ViewAdminRequests {
                     ControllerAdminRequests.loadRequests();
                 });
             }
-
+            /**
+             * <p> logic for button in the table(button used to mark staff requests as completed)</p>
+             * 
+             * @param item
+             * @param empty
+             */
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
@@ -144,7 +163,12 @@ public class ViewAdminRequests {
         table.setPrefWidth(760);
         table.setPrefHeight(400);
     }
-
+    
+    /**
+     * <p> populates table with a list of the requests sent to admin currently logged in</p>
+     * 
+     * @param list
+     */
     protected static void populateTable(List<adminRequests> list) {
 
         data.clear();
@@ -153,7 +177,9 @@ public class ViewAdminRequests {
             data.add(new RequestDisplay(r));
         }
     }
-
+    /**
+     * <p> used to get values used in requests table.</p>
+     */
     public static class RequestDisplay {
 
         private final int requestID;

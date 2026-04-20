@@ -110,7 +110,7 @@ public class ViewRole2Home {
     /** Placeholder – Private Feedback (not implemented). */
     protected static Button button_PrivateFeedback     = new Button("Private Feedback");
     /** Placeholder – Grading Parameters CRUD (not implemented). */
-    protected static Button button_GradingParameters   = new Button("Grading Parameters *");
+    protected static Button button_GradingParameters   = new Button("Grading Parameters");
     /** Opens the Student Participation Report page. */
     protected static Button button_AdminRequests       = new Button("Student Report");
 
@@ -250,7 +250,6 @@ public class ViewRole2Home {
         // Style the remaining stub buttons so it's obvious they are placeholders
         String stubStyle = "-fx-text-fill: gray; -fx-font-style: italic;";
         button_ManageThreads    .setStyle(stubStyle);
-        button_GradingParameters.setStyle(stubStyle);
 
         // ── Area 6: Navigation ────────────────────────────────────────────────────
         setupButtonUI(button_Logout, "Dialog", 18, 250, Pos.CENTER,  20, 535);

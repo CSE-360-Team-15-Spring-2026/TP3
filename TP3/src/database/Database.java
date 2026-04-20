@@ -12,6 +12,7 @@ import entityClasses.Post;
 import entityClasses.Reply;
 
 
+// TODO: Auto-generated Javadoc
 /*******
  * <p> Title: Database Class. </p>
  * 
@@ -36,32 +37,61 @@ import entityClasses.Reply;
  */
 public class Database {
 
+	/** The Constant JDBC_DRIVER. */
 	// JDBC driver name and database URL 
 	static final String JDBC_DRIVER = "org.h2.Driver";   
+	
+	/** The Constant DB_URL. */
 	static final String DB_URL = "jdbc:h2:~/FoundationDatabase";  
 
+	/** The Constant USER. */
 	//  Database credentials 
 	static final String USER = "sa"; 
+	
+	/** The Constant PASS. */
 	static final String PASS = ""; 
 
+	/** The connection. */
 	//  Shared variables used within this class
 	private Connection connection = null;		// Singleton to access the database 
+	
+	/** The statement. */
 	private Statement statement = null;			// The H2 Statement is used to construct queries
 	
+	/** The next post ID. */
 	// Post/reply ID counter
 	private int nextPostID = 1;
 	
 	// These are the easily accessible attributes of the currently logged-in user
+	/** The current username. */
 	// This is only useful for single user applications
 	private String currentUsername;
+	
+	/** The current password. */
 	private String currentPassword;
+	
+	/** The current first name. */
 	private String currentFirstName;
+	
+	/** The current middle name. */
 	private String currentMiddleName;
+	
+	/** The current last name. */
 	private String currentLastName;
+	
+	/** The current preferred first name. */
 	private String currentPreferredFirstName;
+	
+	/** The current email address. */
 	private String currentEmailAddress;
+	
+	/** The current admin role. */
 	private boolean currentAdminRole;
+	
+	/** The current new role 1. */
 	private boolean currentNewRole1;
+	
+	/** The current new role 2. */
 	private boolean currentNewRole2;
 
 	/*******
@@ -168,7 +198,7 @@ public class Database {
 		            + "postID INT, "                                                      
 		            + "PRIMARY KEY (username, postID))";
 		    statement.execute(readStatusTable);
-		    
+		    //Table for requests
 		    String requestTable = "CREATE TABLE IF NOT EXISTS requestDB ("
 		    		+ "requestID INT AUTO_INCREMENT PRIMARY KEY, "
 		    		+ "requestSubmiter VARCHAR(255), "
@@ -1504,11 +1534,14 @@ public class Database {
 		}
 
 		String trimmedThreadName = threadName.trim();
+		
+		// if input is xYYzzZ becomes -> Xyyzzz
+		String finalThreadName = trimmedThreadName.substring(0, 1).toUpperCase() + trimmedThreadName.substring(1).toLowerCase();
 
 		try {
 			String check = "SELECT COUNT(*) AS count FROM threadDB WHERE threadName = ?";
 			try (PreparedStatement checkStmt = connection.prepareStatement(check)) {
-				checkStmt.setString(1, trimmedThreadName);
+				checkStmt.setString(1, finalThreadName);
 				ResultSet rs = checkStmt.executeQuery();
 				if (rs.next() && rs.getInt("count") > 0) {
 					return false;
@@ -1517,7 +1550,7 @@ public class Database {
 
 			String insert = "INSERT INTO threadDB (threadName, createdBy, createdAt) VALUES (?, ?, ?)";
 			try (PreparedStatement pstmt = connection.prepareStatement(insert)) {
-				pstmt.setString(1, trimmedThreadName);
+				pstmt.setString(1, finalThreadName);
 				pstmt.setString(2, createdBy);
 				pstmt.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
 				pstmt.executeUpdate();
@@ -1860,6 +1893,18 @@ public class Database {
 		return reply;
 	}
 	
+	/*********
+	 * <p> Method: createRequest() </p>
+	 * 
+	 * <p> Description: Creates a request and stores it in the database. </p>
+	 * 
+	 * @param requester the user who submited the request
+	 * @param admin the admin user who is recieving the request
+	 * @param body text that contains the request made by the requester
+	 * @return created requests
+	 * @throws SQLException the SQL exception
+	 */
+	
 	public adminRequests createRequest(String requester, String admin, String body) {
 		adminRequests requests = new adminRequests(requester, body, admin);
 		String sql = "INSERT INTO requestDB "
@@ -1887,7 +1932,15 @@ public class Database {
 		
 		return requests;
 	}
-	
+	/*********
+	 * <p> Method: getRequestsForAdmin() </p>
+	 * 
+	 * <p> Description: gets Requests sent to the current admin user. </p>
+	 * 
+	 * @param admin current admin
+	 * @return created reply
+	 * @throws SQLException the SQL exception
+	 */
 	public List<adminRequests> getRequestsForAdmin(String admin) {
 
 	    List<adminRequests> list = new ArrayList<>();
@@ -1916,7 +1969,14 @@ public class Database {
 
 	    return list;
 	}
-	
+	/*********
+	 * <p> Method: requestCompletion() </p>
+	 * 
+	 * <p> Description: Marks requests made to the admin as completed. </p>
+	 * 
+	 * @param requestID the ID of the request that the admin would like to mark as completed
+	 * @throws SQLException the SQL exception
+	 */
 	public void requestCompletion(int RequestID) {
 		String sql = "UPDATE requestDB SET completed = ? WHERE requestID = ?";
 		
@@ -1929,6 +1989,15 @@ public class Database {
 			e.printStackTrace();
 		}
 	}
+	/*********
+	 * <p> Method: getRequests() </p>
+	 * 
+	 * <p> Description: get all the to put into table. </p>
+	 * 
+	 * @param user the username
+	 * @return list made 
+	 * @throws SQLException the SQL exception
+	 */
 	
 	public List<adminRequests> getRequests(String user) {
 		List<adminRequests> list = new ArrayList<>();
@@ -1957,6 +2026,15 @@ public class Database {
 		return list;
 	}
 	
+	/*********
+	 * <p> Method: updateRequest() </p>
+	 * 
+	 * <p> Description: update Request specified. </p>
+	 * 
+	 * @param request a request made by user
+	 * @throws SQLException the SQL exception
+	 */
+	
 	public void updateRequest(adminRequests request) {
 		String sql = "UPDATE requestDB SET body=?, completed=?  WHERE requestID=?";
 		try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
@@ -1970,6 +2048,14 @@ public class Database {
 		}
 	}
 	
+	/*********
+	 * <p> Method: getAllAdmins() </p>
+	 * 
+	 * <p> Description: makes an array  list . </p>
+	 * 
+	 * @return admins list of all
+	 * @throws SQLException the SQL exception
+	 */
 	public List<String> getAllAdmins() {
 		List<String> admins = new ArrayList<>();
 		String sql = "SELECT userName FROM userDB WHERE adminROle = TRUE";
@@ -1988,12 +2074,13 @@ public class Database {
 	}
 	
 	
-	/*********
+	/**
+	 * *******
 	 * <p> Method: deletePost() </p>
 	 * 
 	 * <p> Description: Soft deletes a post in the database. </p>
-	 * 
-	 * @param Post the post
+	 *
+	 * @param post the post
 	 * @return true if successful else false
 	 */
 	public boolean deletePost(Post post) {
@@ -2083,6 +2170,13 @@ public class Database {
 	}
 	
 	
+	/**
+	 * Search posts.
+	 *
+	 * @param keyword the keyword
+	 * @param thread the thread
+	 * @return the list
+	 */
 	public List<Post> searchPosts(String keyword, String thread) {
 		List<Post> posts = new ArrayList<>();
 		String query;
@@ -2136,7 +2230,62 @@ public class Database {
 	}
 	
 	/**
-	 * Update an existing post in the database
+	 * Search posts.
+	 *
+	 * @param thread the thread
+	 * @return the list
+	 */
+	// modified search for thread filtering only
+	public List<Post> searchPosts(String thread) {
+		List<Post> posts = new ArrayList<>();
+		String query;
+ 
+
+		query = "SELECT * FROM postDB WHERE isDeleted = FALSE AND parentPostID = -1 AND threadName = ? AND "
+					+ "(title LIKE ? OR body LIKE ? OR keywords LIKE ?) "
+					+ "ORDER BY timeStamp DESC";
+ 
+		try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+			String searchTerm = "%" + "" + "%";
+ 
+			if (thread == null || thread.isEmpty()) {
+				pstmt.setString(1, searchTerm);
+				pstmt.setString(2, searchTerm);
+				pstmt.setString(3, searchTerm);
+			} else {
+				pstmt.setString(1, thread);
+				pstmt.setString(2, searchTerm);
+				pstmt.setString(3, searchTerm);
+				pstmt.setString(4, searchTerm);
+			}
+ 
+			ResultSet rs = pstmt.executeQuery();
+			while (rs.next()) {
+				Post post = new Post(
+					rs.getString("userName"),
+					rs.getString("title"),
+					rs.getString("body"),
+					rs.getString("keywords"),
+					rs.getString("threadName")
+				);
+				post.setPostID(rs.getInt("postID"));
+				Timestamp ts = rs.getTimestamp("timeStamp");
+				if (ts != null) {
+					post.setTimestamp(ts.toLocalDateTime());
+				}
+				posts.add(post);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return posts;
+	}
+	
+	/**
+	 * Update an existing post in the database.
+	 *
+	 * @param post the post
+	 * @return true, if successful
 	 */
 	public boolean updatePost(Post post) {
 	    if (post == null) {
@@ -2174,7 +2323,10 @@ public class Database {
 	}
 
 	/**
-	 * flags a post within the database
+	 * flags a post within the database.
+	 *
+	 * @param post the post
+	 * @return true, if successful
 	 */
 	public boolean flagPost(Post post) {
 	    if (post == null) {
@@ -2202,6 +2354,30 @@ public class Database {
 	}
 	
 	
+
+	/**
+	 * <p> Removes the post from the database. </p>
+	 *
+	 * @param post the post
+	 * @return true, if successful
+	 */
+	public boolean removePost(Post post) {
+			if (post == null) {
+				return false;
+			}
+
+			try {
+				String deletePosts = "DELETE FROM postDB WHERE postID = ?";
+				try (PreparedStatement pstmtPosts = connection.prepareStatement(deletePosts)) {
+					pstmtPosts.setInt(1, post.getPostID());
+					return pstmtPosts.executeUpdate() > 0;
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				return false;
+			}
+	}
+	
 	/*******
 	 * <p> Method: void closeConnection()</p>
 	 * 
@@ -2221,4 +2397,6 @@ public class Database {
 			se.printStackTrace(); 
 		} 
 	}
+	
+	
 }
