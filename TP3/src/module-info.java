@@ -24,4 +24,5 @@ module FoundationsF25 {
     opens guiParticipationReport to javafx.base;
     opens guiStaffRequests to javafx.base;
     opens guiAdminRequests to javafx.base;
+    opens guiGradingRubric to javafx.base;
 }
