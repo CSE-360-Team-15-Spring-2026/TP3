@@ -47,6 +47,8 @@ public class ViewRole2Home {
     protected static Button button_ViewAllPosts  = new Button("Flagging and Thread Management");
     /** Opens the Search Posts page. */
     protected static Button button_SearchPosts   = new Button("Search Posts");
+    /** Opens the Admin Requests page. */
+    protected static Button button_AdminRequests2 = new Button("Admin Requests");
 
     /** Horizontal separator between the action row and the post table. */
     protected static Line line_Separator2 = new Line(20, 150, width - 20, 150);
@@ -158,12 +160,14 @@ public class ViewRole2Home {
         button_UpdateThisUser.setOnAction((_) -> { ControllerRole2Home.performUpdate(); });
 
         setupButtonUI(button_CreatePost,   "Dialog", 14, 172, Pos.CENTER,  20, 108);
-        setupButtonUI(button_ViewAllPosts, "Dialog", 14, 172, Pos.CENTER, 207, 108);
-        setupButtonUI(button_SearchPosts,  "Dialog", 14, 172, Pos.CENTER, 454, 108);
+        setupButtonUI(button_ViewAllPosts, "Dialog", 14, 172, Pos.CENTER, 200, 108);
+        setupButtonUI(button_SearchPosts,  "Dialog", 14, 160, Pos.CENTER, 440, 108);
+        setupButtonUI(button_AdminRequests2, "Dialog", 14, 160, Pos.CENTER, 607, 108);
 
         button_CreatePost  .setOnAction((_) -> { ControllerRole2Home.performCreatePost(); });
         button_ViewAllPosts.setOnAction((_) -> { ControllerRole2Home.loadAllPosts();       });
         button_SearchPosts .setOnAction((_) -> { ControllerRole2Home.performSearch();      });
+        button_AdminRequests2.setOnAction((_) -> { ControllerRole2Home.performAdminRequests();  });
 
         setupTableView();
 
@@ -194,7 +198,7 @@ public class ViewRole2Home {
         theRootPane.getChildren().addAll(
                 label_PageTitle, label_UserDetails, button_UpdateThisUser,
                 line_Separator1,
-                button_CreatePost, button_ViewAllPosts, button_SearchPosts,
+                button_CreatePost, button_ViewAllPosts, button_SearchPosts, button_AdminRequests2,
                 line_Separator2,
                 table_Posts,
                 line_Separator3,

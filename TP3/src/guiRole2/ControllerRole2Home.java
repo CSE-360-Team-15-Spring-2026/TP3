@@ -205,7 +205,7 @@ public class ControllerRole2Home {
      * Shows a "Not Implemented" alert until the back-end is ready. </p>
      */
     protected static void performAdminRequests() {
-        guiParticipationReport.ViewParticipationReport.displayParticipationReport(
+    	guiStaffRequests.ViewStaffRequests.display(
                 ViewRole2Home.theStage, ViewRole2Home.theUser);
     }
 
