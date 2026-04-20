@@ -21,6 +21,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -44,10 +45,18 @@ public class ViewStaffViewPost {
     /** Username and Role of the user */
     protected static Label label_UserDetails = new Label();
     
-    /** Line Separator between the page title, user details and account update button and role1 home gui */
+    /** Line Separator between the page title, user details and account update button and role2 post view gui */
     protected static Line line_Separator1 = new Line(20, 95, width-20, 95);
     
- 
+    protected static Line line_Separator2 = new Line(20, 160, width-20, 160);
+    
+    // Thread action buttons
+    /** Button that allows the staff to create a new thread */
+    protected static Button button_CreateThread = new Button("Create Thread");
+    /** Button that allows the staff to Delete a thread */
+    protected static Button button_DeleteThread = new Button("Delete Thread");
+    /** Dropdown for selecting thread name */
+	protected static ComboBox<String> comboBox_ThreadName = new ComboBox<String>();
     
     // Post table
     /** Table that displays all Posts */
@@ -61,18 +70,16 @@ public class ViewStaffViewPost {
     // Post action buttons
     /** Button that takes the user to the ViewPost GUI page for a specific post */
     protected static Button button_ViewPost = new Button("View Post & Replies");
-    /** Button that allows the user to flag a post, given that it is theirs */
+    /** Button that allows the staff to flag a post */
     protected static Button button_FlagPost = new Button("Flag Post");
-    
+    /** Button that allows the staff to Delete a flagged post */
+    protected static Button button_DeletePost = new Button("Delete Post");
+ 
     /** Line Separator between the buttons above and the log out and quit buttons */
     protected static Line line_Separator4 = new Line(20, 545, width-20, 545);
     
     // Navigation
     /** Button that logs the user out and takes them to the login page */
-    protected static Button button_Logout = new Button("Logout");
-    /** Button that terminates the program */
-    protected static Button button_Quit = new Button("Quit");
-    /** Button to return to the previous page */
     protected static Button button_Return = new Button("Return");
 
     /** Singleton instance of ViewViewPost */
@@ -91,7 +98,11 @@ public class ViewStaffViewPost {
     public static String previousPageType = "main"; 
     
     private static TextInputDialog dialogProvideReason;
-
+    
+    private static TextInputDialog dialogProvideThreadName;
+    
+    
+    
     /**
      * <p> Diplay post view for staff. </p>
      * <p> Calls ModelViewStaffViewPost and ControllerViewStaffViewPost to get the username and posts </p>
@@ -129,16 +140,29 @@ public class ViewStaffViewPost {
         theRootPane = new Pane();
         theScene = new Scene(theRootPane, width, height);
         
+        // Empty dialog box for inputs
+        dialogProvideReason = new TextInputDialog("");
+        
         // Page title
         label_PageTitle.setText("Student Discussion System");
         setupLabelUI(label_PageTitle, "Arial", 28, width, Pos.CENTER, 0, 5);
 
         label_UserDetails.setText("User: ");
         setupLabelUI(label_UserDetails, "Arial", 20, width, Pos.BASELINE_LEFT, 20, 55);
+
+        // Thread actions
+        setupButtonUI(button_CreateThread, "Dialog", 16, 180, Pos.CENTER, 20, 110);
+        button_CreateThread.setOnAction((_) -> {ControllerStaffViewPost.createThread(); 
+        										loadThreads();});
         
-
-        dialogProvideReason = new TextInputDialog("");
-
+        setupButtonUI(button_DeleteThread, "Dialog", 16, 180, Pos.CENTER, 220, 110);
+        button_DeleteThread.setOnAction((_) -> {ControllerStaffViewPost.deleteThread(comboBox_ThreadName.getValue());
+        										loadThreads();});
+        
+        setupComboBoxUI(comboBox_ThreadName, "Arial", 16, 180, 420, 110);
+        loadThreads();
+        
+        
         // Table
         setupTableView();
         
@@ -146,8 +170,12 @@ public class ViewStaffViewPost {
         setupButtonUI(button_ViewPost, "Dialog", 16, 180, Pos.CENTER, 20, 495);
         button_ViewPost.setOnAction((_) -> {ControllerStaffViewPost.viewPost(); });
         
-        setupButtonUI(button_FlagPost, "Dialog", 16, 150, Pos.CENTER, 220, 495);
+        setupButtonUI(button_FlagPost, "Dialog", 16, 180, Pos.CENTER, 220, 495);
         button_FlagPost.setOnAction((_) -> {ControllerStaffViewPost.flagPost(); });
+        
+        setupButtonUI(button_DeletePost, "Dialog", 16, 180, Pos.CENTER, 420, 495);
+        button_DeletePost.setOnAction((_) -> {ControllerStaffViewPost.deletePost(); });
+        
         
         // Navigation
         setupButtonUI(button_Return, "Dialog", 16, 150, Pos.CENTER, (width/2)-75, 555);
@@ -157,12 +185,60 @@ public class ViewStaffViewPost {
             label_PageTitle, 
             label_UserDetails,
             line_Separator1,
+            button_CreateThread, button_DeleteThread, comboBox_ThreadName,
+            line_Separator2,
             table_Posts, 
             line_Separator3,
-            button_ViewPost, button_FlagPost, line_Separator4,
+            button_ViewPost, button_FlagPost, button_DeletePost,
+            line_Separator4,
             button_Return);
     }
+    
+	/**********
+ 	* Private local method to initialize the standard fields for a combo box
+ 	*
+ 	* @param c   the ComboBox to configure
+ 	* @param ff  the font family
+ 	* @param f   the font size
+ 	* @param w   the width of the combo box
+ 	* @param x   the x-coordinate (horizontal position)
+ 	* @param y   the y-coordinate (vertical position)
+ 	*/
+	private static void setupComboBoxUI(ComboBox<String> c, String ff, double f, double w, double x,
+			double y){
+		c.setStyle("-fx-font: " + f + " " + ff + ";");
+		c.setMinWidth(w);
+		c.setLayoutX(x);
+		c.setLayoutY(y);
+	}
 
+	/**********
+	 * Loads the available thread names into the GUI.
+	 */
+	protected static void loadThreads() {
+		comboBox_ThreadName.getItems().clear();
+		
+		comboBox_ThreadName.getItems().add("All");
+		
+		try {
+			java.util.List<String> threads = applicationMain.FoundationsMain.database.getAllThreads();
+			if (threads != null && !threads.isEmpty()) {
+				comboBox_ThreadName.getItems().addAll(threads);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		comboBox_ThreadName.getSelectionModel().selectFirst();
+		
+		// Filters out posts by chosen thread
+		comboBox_ThreadName.valueProperty().addListener((obs, old, newThread) -> {
+			if(newThread == "All") ControllerStaffViewPost.loadAllPosts();
+			else ControllerStaffViewPost.filterPosts();
+		});
+	
+	}
+	
     /**
      * <p> Setups the TableView with columns: ID, Title, Thread, Author, Replies, Status and Date. </p>
      */
@@ -209,9 +285,9 @@ public class ViewStaffViewPost {
         table_Posts.setItems(postData);
         
         table_Posts.setLayoutX(20);
-        table_Posts.setLayoutY(115);
+        table_Posts.setLayoutY(175);
         table_Posts.setPrefWidth(760);
-        table_Posts.setPrefHeight(355);
+        table_Posts.setPrefHeight(290);
     }
     
     /**
@@ -258,20 +334,22 @@ public class ViewStaffViewPost {
     
     
     /**
-     * <p> Shows input dialogs. </p>
+     * <p> Shows input dialogs for flag reason/New thread name  input. </p>
      * 
      * @param title: the text displayed at the top of the dialog window
      * @param message: the text in the body of the dialog
-     * @return String reason to be inputted into the db
+     * @return String reason to be inputed into the db
      */
     protected static String giveReason(String title, String message) {
     	dialogProvideReason.setTitle(title);
     	dialogProvideReason.setHeaderText(message);
     	
-    	String reason = dialogProvideReason.showAndWait().get();
-        return reason;
+    	String input = dialogProvideReason.showAndWait().get();
+    	dialogProvideReason = new TextInputDialog("");
+        return input;
     }
     
+   
 
     // Helper methods
     /**

@@ -11,6 +11,7 @@ import entityClasses.Post;
 import entityClasses.Reply;
 
 
+// TODO: Auto-generated Javadoc
 /*******
  * <p> Title: Database Class. </p>
  * 
@@ -35,32 +36,61 @@ import entityClasses.Reply;
  */
 public class Database {
 
+	/** The Constant JDBC_DRIVER. */
 	// JDBC driver name and database URL 
 	static final String JDBC_DRIVER = "org.h2.Driver";   
+	
+	/** The Constant DB_URL. */
 	static final String DB_URL = "jdbc:h2:~/FoundationDatabase";  
 
+	/** The Constant USER. */
 	//  Database credentials 
 	static final String USER = "sa"; 
+	
+	/** The Constant PASS. */
 	static final String PASS = ""; 
 
+	/** The connection. */
 	//  Shared variables used within this class
 	private Connection connection = null;		// Singleton to access the database 
+	
+	/** The statement. */
 	private Statement statement = null;			// The H2 Statement is used to construct queries
 	
+	/** The next post ID. */
 	// Post/reply ID counter
 	private int nextPostID = 1;
 	
 	// These are the easily accessible attributes of the currently logged-in user
+	/** The current username. */
 	// This is only useful for single user applications
 	private String currentUsername;
+	
+	/** The current password. */
 	private String currentPassword;
+	
+	/** The current first name. */
 	private String currentFirstName;
+	
+	/** The current middle name. */
 	private String currentMiddleName;
+	
+	/** The current last name. */
 	private String currentLastName;
+	
+	/** The current preferred first name. */
 	private String currentPreferredFirstName;
+	
+	/** The current email address. */
 	private String currentEmailAddress;
+	
+	/** The current admin role. */
 	private boolean currentAdminRole;
+	
+	/** The current new role 1. */
 	private boolean currentNewRole1;
+	
+	/** The current new role 2. */
 	private boolean currentNewRole2;
 
 	/*******
@@ -1493,11 +1523,14 @@ public class Database {
 		}
 
 		String trimmedThreadName = threadName.trim();
+		
+		// if input is xYYzzZ becomes -> Xyyzzz
+		String finalThreadName = trimmedThreadName.substring(0, 1).toUpperCase() + trimmedThreadName.substring(1).toLowerCase();
 
 		try {
 			String check = "SELECT COUNT(*) AS count FROM threadDB WHERE threadName = ?";
 			try (PreparedStatement checkStmt = connection.prepareStatement(check)) {
-				checkStmt.setString(1, trimmedThreadName);
+				checkStmt.setString(1, finalThreadName);
 				ResultSet rs = checkStmt.executeQuery();
 				if (rs.next() && rs.getInt("count") > 0) {
 					return false;
@@ -1506,7 +1539,7 @@ public class Database {
 
 			String insert = "INSERT INTO threadDB (threadName, createdBy, createdAt) VALUES (?, ?, ?)";
 			try (PreparedStatement pstmt = connection.prepareStatement(insert)) {
-				pstmt.setString(1, trimmedThreadName);
+				pstmt.setString(1, finalThreadName);
 				pstmt.setString(2, createdBy);
 				pstmt.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
 				pstmt.executeUpdate();
@@ -1850,12 +1883,13 @@ public class Database {
 	}
 	
 	
-	/*********
+	/**
+	 * *******
 	 * <p> Method: deletePost() </p>
 	 * 
 	 * <p> Description: Soft deletes a post in the database. </p>
-	 * 
-	 * @param Post the post
+	 *
+	 * @param post the post
 	 * @return true if successful else false
 	 */
 	public boolean deletePost(Post post) {
@@ -1945,6 +1979,13 @@ public class Database {
 	}
 	
 	
+	/**
+	 * Search posts.
+	 *
+	 * @param keyword the keyword
+	 * @param thread the thread
+	 * @return the list
+	 */
 	public List<Post> searchPosts(String keyword, String thread) {
 		List<Post> posts = new ArrayList<>();
 		String query;
@@ -1998,7 +2039,62 @@ public class Database {
 	}
 	
 	/**
-	 * Update an existing post in the database
+	 * Search posts.
+	 *
+	 * @param thread the thread
+	 * @return the list
+	 */
+	// modified search for thread filtering only
+	public List<Post> searchPosts(String thread) {
+		List<Post> posts = new ArrayList<>();
+		String query;
+ 
+
+		query = "SELECT * FROM postDB WHERE isDeleted = FALSE AND parentPostID = -1 AND threadName = ? AND "
+					+ "(title LIKE ? OR body LIKE ? OR keywords LIKE ?) "
+					+ "ORDER BY timeStamp DESC";
+ 
+		try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+			String searchTerm = "%" + "" + "%";
+ 
+			if (thread == null || thread.isEmpty()) {
+				pstmt.setString(1, searchTerm);
+				pstmt.setString(2, searchTerm);
+				pstmt.setString(3, searchTerm);
+			} else {
+				pstmt.setString(1, thread);
+				pstmt.setString(2, searchTerm);
+				pstmt.setString(3, searchTerm);
+				pstmt.setString(4, searchTerm);
+			}
+ 
+			ResultSet rs = pstmt.executeQuery();
+			while (rs.next()) {
+				Post post = new Post(
+					rs.getString("userName"),
+					rs.getString("title"),
+					rs.getString("body"),
+					rs.getString("keywords"),
+					rs.getString("threadName")
+				);
+				post.setPostID(rs.getInt("postID"));
+				Timestamp ts = rs.getTimestamp("timeStamp");
+				if (ts != null) {
+					post.setTimestamp(ts.toLocalDateTime());
+				}
+				posts.add(post);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return posts;
+	}
+	
+	/**
+	 * Update an existing post in the database.
+	 *
+	 * @param post the post
+	 * @return true, if successful
 	 */
 	public boolean updatePost(Post post) {
 	    if (post == null) {
@@ -2036,7 +2132,10 @@ public class Database {
 	}
 
 	/**
-	 * flags a post within the database
+	 * flags a post within the database.
+	 *
+	 * @param post the post
+	 * @return true, if successful
 	 */
 	public boolean flagPost(Post post) {
 	    if (post == null) {
@@ -2064,6 +2163,30 @@ public class Database {
 	}
 	
 	
+
+	/**
+	 * <p> Removes the post from the database. </p>
+	 *
+	 * @param post the post
+	 * @return true, if successful
+	 */
+	public boolean removePost(Post post) {
+			if (post == null) {
+				return false;
+			}
+
+			try {
+				String deletePosts = "DELETE FROM postDB WHERE postID = ?";
+				try (PreparedStatement pstmtPosts = connection.prepareStatement(deletePosts)) {
+					pstmtPosts.setInt(1, post.getPostID());
+					return pstmtPosts.executeUpdate() > 0;
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				return false;
+			}
+	}
+	
 	/*******
 	 * <p> Method: void closeConnection()</p>
 	 * 
@@ -2083,4 +2206,6 @@ public class Database {
 			se.printStackTrace(); 
 		} 
 	}
+	
+	
 }
