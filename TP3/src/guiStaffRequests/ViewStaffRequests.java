@@ -23,29 +23,46 @@ import entityClasses.adminRequests;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-
+/*******
+ * <p> Title: ViewStaffRequests Class. </p>
+ *
+ * <p> Description: The Java/FX-based Staff Requests View.
+ * Allows staff users to submit requests to admins and
+ * view previously submitted requests in a table format.
+ * The view communicates with the controller to process actions
+ * and update the displayed data.</p>
+ */
 public class ViewStaffRequests {
+	//width of window
 	private static double width = applicationMain.FoundationsMain.WINDOW_WIDTH;
+	//height of window
 	private static double height = applicationMain.FoundationsMain.WINDOW_HEIGHT;
-	
+	//stage and user
 	protected static Stage theStage;
 	protected static User theUser;
-	
+	//root and pane
 	private static Pane root;
 	private static Scene scene;
-	
+	//table of requests
     protected static TableView<RequestDisplay> table_Requests = new TableView<>();
     protected static ObservableList<RequestDisplay> requestData = FXCollections.observableArrayList();
-
+    
+    //label used for title
     private static Label label_Title = new Label("Staff Requests");
     private static Label label_User = new Label();
-
+    //combo box used to grab admin to recieve requests
     private static TextArea text_Request = new TextArea();
     private static ComboBox<String> combo_Admin = new ComboBox<>();
-
+    //send request button
     private static Button button_Send = new Button("Send Request");
+    //return to role2 home button
     private static Button button_Return = new Button("Return");
-    
+    /**
+     * <p> displays visible gui in satff requests.</p>
+     * 
+     * @param stage
+     * @param user
+     */
     public static void display(Stage stage, User user) {
 
         theStage = stage;
@@ -123,7 +140,11 @@ public class ViewStaffRequests {
         ControllerStaffRequests.loadRequests(); // initial load
     }
     
-    
+    /**
+     * <p> populates table with the list given</p>
+     * 
+     * @param list
+     */
     public static void populateTable(List<adminRequests> list) {
         requestData.clear();
         for (adminRequests r : list) {
@@ -131,6 +152,9 @@ public class ViewStaffRequests {
         }
     }
     
+    /**
+     * <p> used to get values used in requests table.</p> 
+     */
     public static class RequestDisplay {
 
         private final int requestID;
@@ -154,7 +178,9 @@ public class ViewStaffRequests {
         public String getStatus() { return status; }
         public String getTimestamp() { return timestamp; }
     }
-    
+    /**
+     * <p> setup for the Table of requests.</p>
+     */
     private static void setupTableView() {
     	table_Requests.getColumns().clear();
     	

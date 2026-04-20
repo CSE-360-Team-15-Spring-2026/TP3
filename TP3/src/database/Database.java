@@ -168,7 +168,7 @@ public class Database {
 		            + "postID INT, "                                                      
 		            + "PRIMARY KEY (username, postID))";
 		    statement.execute(readStatusTable);
-		    
+		    //Table for requests
 		    String requestTable = "CREATE TABLE IF NOT EXISTS requestDB ("
 		    		+ "requestID INT AUTO_INCREMENT PRIMARY KEY, "
 		    		+ "requestSubmiter VARCHAR(255), "
@@ -1860,6 +1860,18 @@ public class Database {
 		return reply;
 	}
 	
+	/*********
+	 * <p> Method: createRequest() </p>
+	 * 
+	 * <p> Description: Creates a request and stores it in the database. </p>
+	 * 
+	 * @param requester the user who submited the request
+	 * @param admin the admin user who is recieving the request
+	 * @param body text that contains the request made by the requester
+	 * @return created requests
+	 * @throws SQLException the SQL exception
+	 */
+	
 	public adminRequests createRequest(String requester, String admin, String body) {
 		adminRequests requests = new adminRequests(requester, body, admin);
 		String sql = "INSERT INTO requestDB "
@@ -1887,7 +1899,15 @@ public class Database {
 		
 		return requests;
 	}
-	
+	/*********
+	 * <p> Method: getRequestsForAdmin() </p>
+	 * 
+	 * <p> Description: gets Requests sent to the current admin user. </p>
+	 * 
+	 * @param admin current admin
+	 * @return created reply
+	 * @throws SQLException the SQL exception
+	 */
 	public List<adminRequests> getRequestsForAdmin(String admin) {
 
 	    List<adminRequests> list = new ArrayList<>();
@@ -1916,7 +1936,14 @@ public class Database {
 
 	    return list;
 	}
-	
+	/*********
+	 * <p> Method: requestCompletion() </p>
+	 * 
+	 * <p> Description: Marks requests made to the admin as completed. </p>
+	 * 
+	 * @param requestID the ID of the request that the admin would like to mark as completed
+	 * @throws SQLException the SQL exception
+	 */
 	public void requestCompletion(int RequestID) {
 		String sql = "UPDATE requestDB SET completed = ? WHERE requestID = ?";
 		
@@ -1929,6 +1956,15 @@ public class Database {
 			e.printStackTrace();
 		}
 	}
+	/*********
+	 * <p> Method: getRequests() </p>
+	 * 
+	 * <p> Description: get all the to put into table. </p>
+	 * 
+	 * @param user the username
+	 * @return list made 
+	 * @throws SQLException the SQL exception
+	 */
 	
 	public List<adminRequests> getRequests(String user) {
 		List<adminRequests> list = new ArrayList<>();
@@ -1957,6 +1993,15 @@ public class Database {
 		return list;
 	}
 	
+	/*********
+	 * <p> Method: updateRequest() </p>
+	 * 
+	 * <p> Description: update Request specified. </p>
+	 * 
+	 * @param request a request made by user
+	 * @throws SQLException the SQL exception
+	 */
+	
 	public void updateRequest(adminRequests request) {
 		String sql = "UPDATE requestDB SET body=?, completed=?  WHERE requestID=?";
 		try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
@@ -1970,6 +2015,14 @@ public class Database {
 		}
 	}
 	
+	/*********
+	 * <p> Method: getAllAdmins() </p>
+	 * 
+	 * <p> Description: makes an array  list . </p>
+	 * 
+	 * @return admins list of all
+	 * @throws SQLException the SQL exception
+	 */
 	public List<String> getAllAdmins() {
 		List<String> admins = new ArrayList<>();
 		String sql = "SELECT userName FROM userDB WHERE adminROle = TRUE";
