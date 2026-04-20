@@ -17,7 +17,7 @@ import java.util.List;
  * It aggregates data from the database, the gradingStatistics utility, and the
  * Post entity's feedback and flag fields (added for TP3). </p>
  *
- * <p> Tested by: ParticipationReportTest (JUnit 5) </p>
+ * <p> Tested by: ModelParticipationReportTest (JUnit 5) </p>
  *
  * @author Jack Ding
  * @version 1.00  2026-04-19  Initial implementation for TP3
@@ -114,8 +114,7 @@ public class ModelParticipationReport {
             } else {
                 // For replies, show who the student was replying to
                 String parentAuthor = findParentAuthor(post.getParentPostID(), allPosts);
-                String bodySnippet  = truncate(post.getBody(), 50);
-                typeAndTitle = "[REPLY to " + parentAuthor + "] \"" + bodySnippet + "\"";
+                typeAndTitle = "[REPLY to " + parentAuthor + "] \"" + post.getBody() + "\"";
             }
 
             // Build the flag portion
@@ -159,20 +158,4 @@ public class ModelParticipationReport {
         return "unknown";
     }
 
-    /*****
-     * <p> Truncates a string to at most maxLen characters, appending "..." if cut. </p>
-     *
-     * <p> Reply bodies can be arbitrarily long; truncating them keeps each ListView
-     * row to a single readable line without horizontal scrolling. </p>
-     *
-     * @param text   the string to truncate
-     * @param maxLen the maximum number of characters before truncation
-     * @return the original string if short enough, otherwise the first maxLen
-     *         characters followed by "..."
-     */
-    private static String truncate(String text, int maxLen) {
-        if (text == null)              return "";
-        if (text.length() <= maxLen)   return text;
-        return text.substring(0, maxLen) + "...";
-    }
 }

@@ -38,13 +38,13 @@ import java.util.List;
  * <p> Layout (top to bottom): </p>
  * <ul>
  *   <li> Area 1 – page title, logged-in user label, Account Update button </li>
- *   <li> Area 2 – student selector (ComboBox) and Refresh button </li>
+ *   <li> Area 2 – student selector (ComboBox) </li>
  *   <li> Area 3 – one-line participation summary </li>
  *   <li> Area 4 – scrollable list of posts/replies with flag and feedback status </li>
  *   <li> Area 5 – Back to Staff Home, Logout, Quit </li>
  * </ul>
  *
- * <p> Tested by: ParticipationReportTest (JUnit 5) </p>
+ * <p> Tested by: ModelParticipationReportTest (JUnit 5) — GUI behavior covered by manual tests </p>
  *
  * @author Jack Ding
  * @version 1.00  2026-04-19  Initial implementation for TP3
@@ -90,9 +90,6 @@ public class ViewParticipationReport {
 
     /** Drop-down list of all student usernames found in the post data. */
     protected static ComboBox<String> comboBox_Students = new ComboBox<>();
-
-    /** Reloads the student list from the database. */
-    protected static Button button_Refresh = new Button("Refresh");
 
     /** Horizontal separator below the selector row. */
     protected static Line line_Separator2 = new Line(20, 145, width - 20, 145);
@@ -236,9 +233,6 @@ public class ViewParticipationReport {
         comboBox_Students.setLayoutY(103);
         comboBox_Students.setOnAction((_) -> { ControllerParticipationReport.selectStudent(); });
 
-        setupButtonUI(button_Refresh, "Dialog", 14, 150, Pos.CENTER, 575, 103);
-        button_Refresh.setOnAction((_) -> { ControllerParticipationReport.loadStudents(); });
-
         // --- Area 3: Participation summary ---
         setupLabelUI(label_SummaryTitle, "Arial", 13, width - 40, Pos.BASELINE_LEFT, 20, 153);
         setupLabelUI(label_Stats,        "Arial", 13, width - 40, Pos.BASELINE_LEFT, 20, 175);
@@ -265,7 +259,7 @@ public class ViewParticipationReport {
         theRootPane.getChildren().addAll(
                 label_PageTitle, label_UserDetails, button_UpdateThisUser,
                 line_Separator1,
-                label_SelectStudent, comboBox_Students, button_Refresh,
+                label_SelectStudent, comboBox_Students,
                 line_Separator2,
                 label_SummaryTitle, label_Stats,
                 line_Separator3,

@@ -14,7 +14,7 @@ import java.util.List;
  * It coordinates between the View (what the user sees) and the Model (where data lives),
  * keeping the logic out of both. </p>
  *
- * <p> Tested by: ParticipationReportTest (JUnit 5) </p>
+ * <p> Tested by: ModelParticipationReportTest (JUnit 5) — GUI behavior covered by manual tests </p>
  *
  * @author Jack Ding
  * @version 1.00  2026-04-19  Initial implementation for TP3
@@ -62,7 +62,7 @@ public class ControllerParticipationReport {
      * <p> Loads all students into the ComboBox and resets the report area. </p>
      *
      * <p> Called once when the page first appears and again whenever the user
-     * clicks Refresh.  Storing the post list in the View avoids re-querying the
+     * Storing the post list in the View avoids re-querying the
      * database every time the user changes the selected student. </p>
      */
     protected static void loadStudents() {
