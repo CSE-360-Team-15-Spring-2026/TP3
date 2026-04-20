@@ -72,6 +72,15 @@ public class adminRequests {
 	
 	
 	/*****
+	 * <p> Checks whether the title provided is valid: Meaning it can't be empty </p>
+	 *
+	 * @return true if valid, false otherwise
+	 */
+	public  boolean validateBody() {
+		return body != null && !body.isBlank();
+	}
+	
+	/*****
 	 * <p> Changes the completed Boolean Value </p>
 	 * <p> Useful for marking requests as completed</p>
 	 *
