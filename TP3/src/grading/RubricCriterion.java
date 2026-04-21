@@ -187,3 +187,4 @@ public class RubricService {
         return sum;
     }
 }
+}
