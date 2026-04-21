@@ -3,24 +3,40 @@ package grading;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Prototype service for marking discussion content as reviewed
- * and assigning grade points.
+/*******
+ * <p> Title: GradingService Class. </p>
  *
- * This class supports the instructional-team aspect
- * "Mark as Reviewed and Assign Grade Points."
+ * <p> Description: Prototype service for marking discussion content as reviewed and assigning
+ * grade points. This class supports the instructional-team aspect of marking content as
+ * reviewed and assigning grade points.
  *
+ * Each grading action is traceable to the grader who performed it, and grading is enforced
+ * to occur only after a review has taken place. </p>
+ *
+ * <p> Copyright: Lynn Robert Carter © 2025 </p>
+ *
+ * @author Lynn Robert Carter
+ *
+ * @version 1.00    2025-04-20 Initial version for TP3
  */
 public class GradingService {
 
+    /** In-memory store mapping content IDs to their associated grading records. */
     private final Map<Integer, GradingRecord> records = new HashMap<>();
 
+
+    /*-*******************************************************************************************
+
+    Grading Actions
+
+     */
+
     /**
-     * Marks a discussion item as reviewed.
+     * <p> Marks a discussion item as reviewed by an authorized grader. </p>
      *
-     * @param contentId the ID of the content item
-     * @param graderUsername the grader performing the review
-     * @return true if review succeeded, false otherwise
+     * @param contentId      the ID of the content item to mark as reviewed
+     * @param graderUsername the username of the grader performing the review
+     * @return true if the review succeeded, false otherwise
      */
     public boolean markAsReviewed(int contentId, String graderUsername) {
         if (contentId <= 0) {
@@ -40,11 +56,11 @@ public class GradingService {
     }
 
     /**
-     * Assigns a grade to a reviewed item.
+     * <p> Assigns a grade to a content item that has already been reviewed. </p>
      *
-     * @param contentId the ID of the content item
-     * @param grade the grade to assign
-     * @param graderUsername the grader assigning the grade
+     * @param contentId      the ID of the content item to grade
+     * @param grade          the grade to assign
+     * @param graderUsername the username of the grader assigning the grade
      * @return true if grading succeeded, false otherwise
      */
     public boolean assignGrade(int contentId, Integer grade, String graderUsername) {
@@ -73,11 +89,12 @@ public class GradingService {
     }
 
     /**
-     * Updates an existing grade.
+     * <p> Updates an existing grade for a content item that has already been reviewed
+     * and graded. </p>
      *
-     * @param contentId the ID of the content item
-     * @param newGrade the new grade value
-     * @param graderUsername the grader making the change
+     * @param contentId      the ID of the content item whose grade is being updated
+     * @param newGrade       the new grade value to store
+     * @param graderUsername the username of the grader making the change
      * @return true if the grade update succeeded, false otherwise
      */
     public boolean updateGrade(int contentId, Integer newGrade, String graderUsername) {
@@ -104,10 +121,17 @@ public class GradingService {
         return true;
     }
 
+
+    /*-*******************************************************************************************
+
+    Getters
+
+     */
+
     /**
-     * Returns whether a content item has been reviewed.
+     * <p> Returns whether a content item has been marked as reviewed. </p>
      *
-     * @param contentId the content ID
+     * @param contentId the content ID to check
      * @return true if reviewed, false otherwise
      */
     public boolean isReviewed(int contentId) {
@@ -116,9 +140,9 @@ public class GradingService {
     }
 
     /**
-     * Returns the stored grade for a content item.
+     * <p> Returns the stored grade for a content item. </p>
      *
-     * @param contentId the content ID
+     * @param contentId the content ID to look up
      * @return the grade, or null if none exists
      */
     public Integer getGrade(int contentId) {
@@ -127,17 +151,25 @@ public class GradingService {
     }
 
     /**
-     * Returns the grading record for a content item.
+     * <p> Returns the full grading record for a content item. </p>
      *
-     * @param contentId the content ID
+     * @param contentId the content ID to look up
      * @return the grading record, or null if none exists
      */
     public GradingRecord getRecord(int contentId) {
         return records.get(contentId);
     }
 
+
+    /*-*******************************************************************************************
+
+    Private helpers
+
+     */
+
     /**
-     * Checks whether a user is an authorized grader.
+     * <p> Checks whether a user is an authorized grader. For this prototype, usernames
+     * beginning with "staff_" or "grader_" represent instructional-team members. </p>
      *
      * @param username the username to validate
      * @return true if authorized, false otherwise
@@ -149,4 +181,5 @@ public class GradingService {
 
         // For this prototype, staff_ and grader_ usernames represent instructional-team users.
         return username.startsWith("staff_") || username.startsWith("grader_");
-    }}
+    }
+}
