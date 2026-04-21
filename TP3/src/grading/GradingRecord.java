@@ -1,10 +1,14 @@
 package grading;
 
-/**
- * Stores review and grading information for one discussion item.
- * This prototype supports the instructional-team workflow for
- * marking content as reviewed and assigning grade points.
+/*******
+ * <p> Title: GradingRecord Class. </p>
  *
+ * <p> Description: The GradingRecord class stores review and grading information for a single
+ * discussion item. This prototype supports the instructional-team workflow for marking content
+ * as reviewed and assigning grade points.
+ *
+ * Each record tracks whether the content has been reviewed, what grade (if any) has been
+ * assigned, and which grader performed the action. </p>
  */
 public class GradingRecord {
 
@@ -13,10 +17,8 @@ public class GradingRecord {
     private Integer grade;
     private String graderUsername;
 
-    /**
-     * Creates a new grading record for a specific content item.
-     *
-     * @param contentId the ID of the post or reply
+     /**
+     * Default constructor is not used.
      */
     public GradingRecord(int contentId) {
         this.contentId = contentId;
@@ -26,16 +28,16 @@ public class GradingRecord {
     }
 
     /**
-     * Returns the content ID.
+     * <p> Returns the content ID associated with this grading record. </p>
      *
-     * @return the content ID
+     * @return the integer content ID
      */
     public int getContentId() {
         return contentId;
     }
 
     /**
-     * Returns whether the item has been reviewed.
+     * <p> Returns whether the content item has been marked as reviewed. </p>
      *
      * @return true if reviewed, false otherwise
      */
@@ -43,8 +45,8 @@ public class GradingRecord {
         return reviewed;
     }
 
-    /**
-     * Sets the reviewed state.
+     /**
+     * <p> Sets the reviewed state of this grading record. </p>
      *
      * @param reviewed the new reviewed state
      */
@@ -53,36 +55,36 @@ public class GradingRecord {
     }
 
     /**
-     * Returns the assigned grade.
+     * <p> Returns the grade assigned to the content item, or null if none has been set. </p>
      *
-     * @return the grade, or null if none exists
+     * @return the assigned grade, or null
      */
     public Integer getGrade() {
         return grade;
     }
 
     /**
-     * Sets the grade.
+     * <p> Sets the grade for the content item associated with this record. </p>
      *
-     * @param grade the grade to store
+     * @param grade the grade to store, or null to clear it
      */
     public void setGrade(Integer grade) {
         this.grade = grade;
     }
 
     /**
-     * Returns the grader username.
+     * <p> Returns the username of the grader who reviewed or graded this content item. </p>
      *
-     * @return the grader username
+     * @return the grader's username, or null if not yet assigned
      */
     public String getGraderUsername() {
         return graderUsername;
     }
 
     /**
-     * Sets the grader username.
+     * <p> Sets the username of the grader associated with this record. </p>
      *
-     * @param graderUsername the grader username
+     * @param graderUsername the grader's username
      */
     public void setGraderUsername(String graderUsername) {
         this.graderUsername = graderUsername;
