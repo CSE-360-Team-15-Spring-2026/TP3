@@ -105,6 +105,7 @@ public class ViewAdminHome {
 	protected static Button button_DeleteUser = new Button("Delete a User");
 	protected static Button button_ListUsers = new Button("List All Users");
 	protected static Button button_AddRemoveRoles = new Button("Add/Remove Roles");
+	protected static Button button_ViewRequests = new Button("View Requests");
 	protected static Alert alertNotImplemented = new Alert(AlertType.INFORMATION);
 	
 	protected static TextInputDialog dialogsetOneTimePassword;
@@ -278,6 +279,9 @@ public class ViewAdminHome {
 		setupButtonUI(button_AddRemoveRoles, "Dialog", 16, 250, Pos.CENTER, 20, 470);
 		button_AddRemoveRoles.setOnAction((_) -> {ControllerAdminHome.addRemoveRoles(); });
 		
+		setupButtonUI(button_ViewRequests, "Dialog", 16, 250, Pos.CENTER, 300, 270);
+		button_ViewRequests.setOnAction((_) -> {guiAdminRequests.ViewAdminRequests.display(theStage, theUser); });
+		
 		// GUI Area 5
 		setupButtonUI(button_Logout, "Dialog", 18, 250, Pos.CENTER, 20, 540);
 		button_Logout.setOnAction((_) -> {ControllerAdminHome.performLogout(); });
@@ -300,6 +304,7 @@ public class ViewAdminHome {
     		button_DeleteUser,
     		button_ListUsers,
     		button_AddRemoveRoles,
+    		button_ViewRequests,
     		line_Separator4, 
     		button_Logout,
     		button_Quit
