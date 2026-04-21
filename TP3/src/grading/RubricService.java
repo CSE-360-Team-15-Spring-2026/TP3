@@ -9,14 +9,33 @@ import java.util.Map;
 import entityClasses.Post;
 import gradingTools.gradingStatistics;
 
-/**
- * All rubric computation lives here.
- * The GUI layer must never do arithmetic – it only calls this class.
+/*******
+ * <p> Title: RubricService Class. </p>
+ *
+ * <p> Description: All rubric computation lives here. The GUI layer must never do
+ * arithmetic – it only calls this class. </p>
  */
 public class RubricService {
 
-    // ── Rubric definition ─────────────────────────────────────────────────────
+    /*-*******************************************************************************************
 
+    Constructor
+
+     */
+
+    /**
+     * Default constructor is not used (all methods are static).
+     */
+    public RubricService() {}
+
+
+    /*-*******************************************************************************************
+
+    Rubric definition
+
+     */
+
+    /** The list of rubric criteria used to evaluate student discussion posts. */
     private static final List<RubricCriterion> CRITERIA = new ArrayList<>();
 
     static {
@@ -42,26 +61,44 @@ public class RubricService {
             10));
     }
 
-    /** Returns the immutable list of rubric criteria. */
+    /**
+     * <p> Returns the immutable list of rubric criteria. </p>
+     *
+     * @return unmodifiable list of all rubric criteria
+     */
     public static List<RubricCriterion> getCriteria() {
         return Collections.unmodifiableList(CRITERIA);
     }
 
-    /** Returns the maximum achievable total across all criteria. */
+    /**
+     * <p> Returns the maximum achievable total across all criteria. </p>
+     *
+     * @return the sum of max points for every criterion
+     */
     public static int getMaxTotal() {
         int sum = 0;
         for (RubricCriterion c : CRITERIA) sum += c.getMaxPoints();
         return sum;
     }
 
-    // ── Per-student score storage ─────────────────────────────────────────────
 
+    /*-*******************************************************************************************
+
+    Per-student score storage
+
+     */
+
+    /** Maps each username to a map of criterion names and their awarded points. */
     // username → (criterionName → awarded points)
     private static final Map<String, Map<String, Integer>> scores = new HashMap<>();
 
     /**
-     * Records points for one criterion for one student.
-     * Points are clamped to [0, criterion.maxPoints].
+     * <p> Records points for one criterion for one student.
+     * Points are clamped to [0, criterion.maxPoints]. </p>
+     *
+     * @param username      the student's username
+     * @param criterionName the name of the criterion being scored
+     * @param points        the raw point value to record
      */
     public static void setPoints(String username, String criterionName, int points) {
         int max = 0;
@@ -73,7 +110,11 @@ public class RubricService {
     }
 
     /**
-     * Returns the awarded points for one criterion for one student (0 if not yet set).
+     * <p> Returns the awarded points for one criterion for one student, or 0 if not yet set. </p>
+     *
+     * @param username      the student's username
+     * @param criterionName the name of the criterion to look up
+     * @return the awarded points, or 0 if not yet recorded
      */
     public static int getPoints(String username, String criterionName) {
         Map<String, Integer> row = scores.get(username);
@@ -81,7 +122,10 @@ public class RubricService {
     }
 
     /**
-     * Returns the sum of all awarded criterion points for a student.
+     * <p> Returns the sum of all awarded criterion points for a student. </p>
+     *
+     * @param username the student's username
+     * @return the total grade for that student
      */
     public static int getTotalGrade(String username) {
         Map<String, Integer> row = scores.get(username);
@@ -92,7 +136,10 @@ public class RubricService {
     }
 
     /**
-     * Returns true if at least one criterion has been saved for this student.
+     * <p> Returns true if at least one criterion has been saved for this student. </p>
+     *
+     * @param username the student's username
+     * @return true if any criterion score exists, false otherwise
      */
     public static boolean hasGrade(String username) {
         Map<String, Integer> row = scores.get(username);
@@ -100,16 +147,25 @@ public class RubricService {
     }
 
     /**
-     * Clears all stored criterion scores for a student.
+     * <p> Clears all stored criterion scores for a student. </p>
+     *
+     * @param username the student's username
      */
     public static void clearGrades(String username) {
         scores.remove(username);
     }
 
-    // ── Student list helper ───────────────────────────────────────────────────
+
+    /*-*******************************************************************************************
+
+    Student list helpers
+
+     */
 
     /**
-     * Returns every student username that has posted in the system.
+     * <p> Returns every student username that has posted in the system. </p>
+     *
+     * @return list of all student usernames
      */
     public static List<String> getAllStudentUsernames() {
         List<Post> allPosts = applicationMain.FoundationsMain.database.getAllPosts();
@@ -117,8 +173,11 @@ public class RubricService {
     }
 
     /**
-     * Builds the display string shown in the student ListView.
-     * Shows awarded/max when graded, otherwise "[not graded]".
+     * <p> Builds the display string shown in the student ListView.
+     * Shows awarded/max when graded, otherwise "[not graded]". </p>
+     *
+     * @param username the student's username
+     * @return a formatted label string for display in the UI
      */
     public static String buildStudentLabel(String username) {
         if (hasGrade(username)) {
@@ -128,8 +187,11 @@ public class RubricService {
     }
 
     /**
-     * Computes the running total from an array of raw point values
-     * (one per criterion, in CRITERIA order). Used for live preview in the UI.
+     * <p> Computes the running total from an array of raw point values,
+     * one per criterion in CRITERIA order. Used for live preview in the UI. </p>
+     *
+     * @param pointsPerCriterion array of point values in criteria order
+     * @return the sum of all values in the array
      */
     public static int computeRunningTotal(int[] pointsPerCriterion) {
         int sum = 0;
