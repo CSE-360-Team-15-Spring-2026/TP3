@@ -204,6 +204,7 @@ public class Database {
 		    		+ "requestSubmiter VARCHAR(255), "
 		    		+ "recievingAdmin VARCHAR(255), "
 		    		+ "body CLOB, "
+		    		+ "adminActions CLOB, "
 		    		+ "completed BOOL DEFAULT FALSE, "
 		    		+ "firstRequestID INT DEFAULT -1, "
 		    		+ "timestamp TIMESTAMP)";
