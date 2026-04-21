@@ -27,7 +27,7 @@ public class RubricCriterion {
      */
 
     /**
-     * Default constructor is not used.
+     * Default constructor is not used
      *
      * @param name        the name of the criterion
      * @param description a brief description of what this criterion evaluates
