@@ -1,6 +1,9 @@
 package guiRole2;
 
 import entityClasses.Post;
+import guiStaffViewPost.ModelStaffViewPost;
+import guiStaffViewPost.ViewStaffViewPost;
+
 import java.util.List;
 import java.util.Optional;
 import javafx.scene.control.Alert;
@@ -136,6 +139,55 @@ public class ControllerRole2Home {
             loadAllPosts();
         } else {
             showAlert("Error", "Failed to delete the post.");
+        }
+    }
+    
+    /**
+     * <p> Flags the selected post after a confirmation dialog and text input.
+     * Staff may flag posts authored by any user. </p>
+     */
+    protected static void performFlagPost() {
+    	ViewRole2Home.PostDisplay selected = 
+    			ViewRole2Home.table_Posts.getSelectionModel().getSelectedItem();
+        
+        if (selected == null) {
+        	showAlert("No Selection", "Please select a post from the table first.");
+            return;
+        }
+        
+        int postId = selected.getPostId();
+        Post post = ModelRole2Home.getPostById(selected.getPostId());
+        
+        if (post == null) {
+        	showAlert("Error", "Could not retrieve the selected post.");
+            return;
+        }
+        
+        if (post.isFlag()) {
+        	showAlert("Already Flagged", "That post has already been flagged.");
+            return;
+        }
+         
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Confirm Delete");
+        confirm.setHeaderText(null);
+        confirm.setContentText(
+                "Flag this post?\n\nTitle: " + post.getTitle()
+                + "\nAuthor: " + post.getUsername()
+                + "\n\nPost will remain visible but users may say flag status.");
+        Optional<ButtonType> result = confirm.showAndWait();
+        if (result.isEmpty() || result.get() != ButtonType.OK) {
+            return;
+        }
+
+        String reason = ViewRole2Home.giveReason("Reason","Input a reason");
+        
+        boolean ok = ModelRole2Home.flagPost(postId, reason);
+        if (ok) {
+            showAlert("Deleted", "Post flagged successfully.");
+            loadAllPosts();
+        } else {
+        	showAlert("Error", "Failed to flag the post.");
         }
     }
 

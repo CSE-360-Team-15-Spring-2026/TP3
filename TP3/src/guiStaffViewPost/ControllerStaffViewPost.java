@@ -27,13 +27,31 @@ public class ControllerStaffViewPost {
         ViewStaffViewPost.populatePostTable(posts);
     }
     
+    /**
+     * <p> Loads all the threads into the threads_table </p>
+     */
+    public static void loadAllThreads() {
+        List<String> threads = ModelStaffViewPost.getAllThreads();
+        ViewStaffViewPost.populateThreadsTable(threads);
+    }
+    
+    /**
+     * <p> filters posts table by thread </p>
+     */
     public static void filterPosts() {
-        // Get input from text fields
-        String thread = ViewStaffViewPost.comboBox_ThreadName.getValue();
-
+    	ViewStaffViewPost.ThreadDisplay selected = 
+    			ViewStaffViewPost.table_Threads.getSelectionModel().getSelectedItem();
+    	
+        if (selected == null) {
+        	ViewStaffViewPost.showAlert("No Selection", 
+                "Please select a Thread to continue.");
+            return;
+        }
+    	
+        String threadName = selected.getThread().split("\\|")[1];
 
         // Call model to search
-        List<Post> results = ModelStaffViewPost.filter(thread);
+        List<Post> results = ModelStaffViewPost.filter(threadName);
 
 
         // Populate results table
@@ -78,7 +96,7 @@ public class ControllerStaffViewPost {
         
         if (selected == null) {
         	ViewStaffViewPost.showAlert("No Selection", 
-                "Please select a post to flag.");
+                "Please select a post to continue.");
             return;
         }
         
@@ -91,28 +109,26 @@ public class ControllerStaffViewPost {
         }
         
         
-        if (post.isFlag()) {
-        	ViewStaffViewPost.showAlert("Error", "Post already flagged.");
+        if (!post.isFlag()) {
+        	ViewStaffViewPost.showAlert("Error", "Post already unflagged.");
             return;
         }
         
         // Confirmation dialog
-        boolean confirmed = ViewStaffViewPost.showConfirmation("Confirm Flag", 
-            "Are you sure you want to flag this post?\n\n" +
+        boolean ok = ViewStaffViewPost.showConfirmation("Confirm Flag", 
+            "Are you sure you want to unflag this post?\n\n" +
             "Title: " + post.getTitle() + "\n\n" +
-            "Note: post will remain visible untill deleted.");
+            "Note: will be visible to all users now.");
         
         
-        if (confirmed) {
-        	String reason = ViewStaffViewPost.giveReason("Reason","Input a reason");
-        	
-            boolean success = ModelStaffViewPost.flagPost(postId, reason);
+        if (ok) {
+            boolean success = ModelStaffViewPost.flagPost(postId);
             
             if (success) {
-            	ViewStaffViewPost.showAlert("Success", "Post flagged.");
+            	ViewStaffViewPost.showAlert("Success", "Post unflagged.");
                 loadAllPosts(); // Refreshes the table
             } else {
-            	ViewStaffViewPost.showAlert("Error", "Failed to flag post.");
+            	ViewStaffViewPost.showAlert("Error", "Failed to unflag post.");
             }
         }
     }
@@ -187,17 +203,32 @@ public class ControllerStaffViewPost {
     	} else {
     		ViewStaffViewPost.showAlert("Error", "Failed to create thread.");
     	}
-    }
+    }//String result = str.split("\\|")[1];
     
-    protected static void deleteThread(String thread) {
+    /**
+     * <p> Deletes the selected Thread after a confirmation dialog </p>.
+     */
+    protected static void deleteThread() {
+    	
+    	ViewStaffViewPost.ThreadDisplay selected = 
+    			ViewStaffViewPost.table_Threads.getSelectionModel().getSelectedItem();
+    	
+        if (selected == null) {
+        	ViewStaffViewPost.showAlert("No Selection", 
+                "Please select a Thread to continue.");
+            return;
+        }
+        
+    	String threadName = selected.getThread().split("\\|")[1];
+    	
     	
     	boolean confirmed = ViewStaffViewPost.showConfirmation("Confirm Delete Thread", 
                 "Are you sure you want to Delete this Thread?\n\n" +
-                "Title: " + thread + "\n\n" +
-                "Note: all posts within thisthread will be deleted.");
+                "Title: " + threadName + "\n\n" +
+                "Note: all posts within this thread will be deleted.");
     	
     	if (confirmed) {
-            boolean success = ModelStaffViewPost.deleteThread(thread);
+            boolean success = ModelStaffViewPost.deleteThread(threadName);
             
             if (success) {
             	ViewStaffViewPost.showAlert("Success", "Thread Deleted.");

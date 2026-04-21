@@ -67,6 +67,8 @@ public class ViewRole2Home {
     protected static Button button_EditPost   = new Button("Edit Post");
     /** Soft-deletes the selected post (staff may delete any post). */
     protected static Button button_DeletePost = new Button("Delete Post");
+    /** Flags the selected post. */
+    protected static Button button_FlagPost = new Button("Flag Post");
 
     /** Horizontal separator between post actions and staff tools. */
     protected static Line line_Separator4 = new Line(20, 475, width - 20, 475);
@@ -87,7 +89,9 @@ public class ViewRole2Home {
     protected static Button button_Logout = new Button("Logout");
     /** Terminates the application. */
     protected static Button button_Quit   = new Button("Quit");
-
+    
+    /** setup empty dialog box for String inputs */
+    private static TextInputDialog dialogProvideReason;
 
     /** Singleton guard – null until first instantiation. */
     private static ViewRole2Home theView = null;
@@ -149,6 +153,8 @@ public class ViewRole2Home {
 
         theRootPane        = new Pane();
         theRole2HomeScene  = new Scene(theRootPane, width, height);
+        
+        dialogProvideReason = new TextInputDialog("");
 
         label_PageTitle.setText("Staff Home Page");
         setupLabelUI(label_PageTitle, "Arial", 28, width, Pos.CENTER, 0, 5);
@@ -170,15 +176,17 @@ public class ViewRole2Home {
         button_AdminRequests2.setOnAction((_) -> { ControllerRole2Home.performAdminRequests();  });
 
         setupTableView();
-
-        setupButtonUI(button_ViewPost,   "Dialog", 14, 220, Pos.CENTER,  20, 440);
-        setupButtonUI(button_EditPost,   "Dialog", 14, 220, Pos.CENTER, 260, 440);
-        setupButtonUI(button_DeletePost, "Dialog", 14, 220, Pos.CENTER, 500, 440);
+        
+        setupButtonUI(button_ViewPost,   "Dialog", 14, 170, Pos.CENTER,  20, 440);
+        setupButtonUI(button_EditPost,   "Dialog", 14, 170, Pos.CENTER, 210, 440);
+        setupButtonUI(button_DeletePost, "Dialog", 14, 170, Pos.CENTER, 400, 440);
+        setupButtonUI(button_FlagPost, "Dialog", 14, 170, Pos.CENTER, 590, 440);
 
         button_ViewPost  .setOnAction((_) -> { ControllerRole2Home.performViewPost();   });
         button_EditPost  .setOnAction((_) -> { ControllerRole2Home.performEditPost();   });
         button_DeletePost.setOnAction((_) -> { ControllerRole2Home.performDeletePost(); });
-
+        button_FlagPost  .setOnAction((_) -> { ControllerRole2Home.performFlagPost();   });
+        
         setupButtonUI(button_GradingStats,      "Dialog", 13, 172, Pos.CENTER,  20, 484);
         setupButtonUI(button_PrivateFeedback,   "Dialog", 13, 172, Pos.CENTER, 207, 484);
         setupButtonUI(button_GradingParameters, "Dialog", 13, 172, Pos.CENTER, 394, 484);
@@ -202,7 +210,7 @@ public class ViewRole2Home {
                 line_Separator2,
                 table_Posts,
                 line_Separator3,
-                button_ViewPost, button_EditPost, button_DeletePost,
+                button_ViewPost, button_EditPost, button_DeletePost, button_FlagPost,
                 line_Separator4,
                 button_GradingStats, button_PrivateFeedback,
                 button_GradingParameters, button_AdminRequests,
@@ -306,6 +314,15 @@ public class ViewRole2Home {
         b.setLayoutX(x);
         b.setLayoutY(y);
     }
+    
+    protected static String giveReason(String title, String message) {
+    	dialogProvideReason.setTitle(title);
+    	dialogProvideReason.setHeaderText(message);
+    	
+    	String input = dialogProvideReason.showAndWait().get();
+    	dialogProvideReason = new TextInputDialog("");
+        return input;
+    }
 
     /**
      * <p> Wraps a Post object for display in the staff post table.
@@ -344,6 +361,8 @@ public class ViewRole2Home {
             this.replyCount = ModelRole2Home.getReplyCount(post.getPostID());
             this.status     = ModelRole2Home.isRead(post.getPostID()) ? "READ" : "UNREAD";
             this.timestamp  = ModelRole2Home.getFormattedTimestamp(post);
+            
+            if(post.isFlag()) { this.title += " [flagged]";}
         }
 
 

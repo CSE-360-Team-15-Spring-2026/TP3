@@ -55,14 +55,15 @@ public class ViewStaffViewPost {
     protected static Button button_CreateThread = new Button("Create Thread");
     /** Button that allows the staff to Delete a thread */
     protected static Button button_DeleteThread = new Button("Delete Thread");
-    /** Dropdown for selecting thread name */
-	protected static ComboBox<String> comboBox_ThreadName = new ComboBox<String>();
     
     // Post table
     /** Table that displays all Posts */
     protected static TableView<PostDisplay> table_Posts = new TableView<>();
+    /** Table that displays all Posts */
+    protected static TableView<ThreadDisplay> table_Threads = new TableView<>();
     /** List of all the Posts to be displayed in the table */
     protected static ObservableList<PostDisplay> postData = FXCollections.observableArrayList();
+    protected static ObservableList<ThreadDisplay> threadData = FXCollections.observableArrayList();
     
     /** Line Separator between the table and the buttons below it */
     protected static Line line_Separator3 = new Line(20, 480, width-20, 480);
@@ -70,8 +71,8 @@ public class ViewStaffViewPost {
     // Post action buttons
     /** Button that takes the user to the ViewPost GUI page for a specific post */
     protected static Button button_ViewPost = new Button("View Post & Replies");
-    /** Button that allows the staff to flag a post */
-    protected static Button button_FlagPost = new Button("Flag Post");
+    /** Button that allows the staff to remove flag from a post */
+    protected static Button button_FlagPost = new Button("Unflag Post");
     /** Button that allows the staff to Delete a flagged post */
     protected static Button button_DeletePost = new Button("Delete Post");
  
@@ -99,7 +100,6 @@ public class ViewStaffViewPost {
     
     private static TextInputDialog dialogProvideReason;
     
-    private static TextInputDialog dialogProvideThreadName;
     
     
     
@@ -121,9 +121,9 @@ public class ViewStaffViewPost {
         // Initialize the model with current user
         ModelStaffViewPost.initialize(theUser.getUserName());
         
-        // Load all posts by default
+        // Load all tables by default
         ControllerStaffViewPost.loadAllPosts();
-        
+        ControllerStaffViewPost.loadAllThreads();
 
         
         label_UserDetails.setText("User: " + theUser.getUserName());
@@ -153,18 +153,15 @@ public class ViewStaffViewPost {
         // Thread actions
         setupButtonUI(button_CreateThread, "Dialog", 16, 180, Pos.CENTER, 20, 110);
         button_CreateThread.setOnAction((_) -> {ControllerStaffViewPost.createThread(); 
-        										loadThreads();});
-        
+        										ControllerStaffViewPost.loadAllThreads();});
         setupButtonUI(button_DeleteThread, "Dialog", 16, 180, Pos.CENTER, 220, 110);
-        button_DeleteThread.setOnAction((_) -> {ControllerStaffViewPost.deleteThread(comboBox_ThreadName.getValue());
-        										loadThreads();});
-        
-        setupComboBoxUI(comboBox_ThreadName, "Arial", 16, 180, 420, 110);
-        loadThreads();
+        button_DeleteThread.setOnAction((_) -> {ControllerStaffViewPost.deleteThread();
+        										ControllerStaffViewPost.loadAllThreads();});
         
         
         // Table
         setupTableView();
+        setupThreadTableView();
         
         // Post actions
         setupButtonUI(button_ViewPost, "Dialog", 16, 180, Pos.CENTER, 20, 495);
@@ -185,9 +182,10 @@ public class ViewStaffViewPost {
             label_PageTitle, 
             label_UserDetails,
             line_Separator1,
-            button_CreateThread, button_DeleteThread, comboBox_ThreadName,
+            button_CreateThread, button_DeleteThread,
             line_Separator2,
-            table_Posts, 
+            table_Posts,
+            table_Threads,
             line_Separator3,
             button_ViewPost, button_FlagPost, button_DeletePost,
             line_Separator4,
@@ -211,33 +209,6 @@ public class ViewStaffViewPost {
 		c.setLayoutX(x);
 		c.setLayoutY(y);
 	}
-
-	/**********
-	 * Loads the available thread names into the GUI.
-	 */
-	protected static void loadThreads() {
-		comboBox_ThreadName.getItems().clear();
-		
-		comboBox_ThreadName.getItems().add("All");
-		
-		try {
-			java.util.List<String> threads = applicationMain.FoundationsMain.database.getAllThreads();
-			if (threads != null && !threads.isEmpty()) {
-				comboBox_ThreadName.getItems().addAll(threads);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		comboBox_ThreadName.getSelectionModel().selectFirst();
-		
-		// Filters out posts by chosen thread
-		comboBox_ThreadName.valueProperty().addListener((obs, old, newThread) -> {
-			if(newThread == "All") ControllerStaffViewPost.loadAllPosts();
-			else ControllerStaffViewPost.filterPosts();
-		});
-	
-	}
 	
     /**
      * <p> Setups the TableView with columns: ID, Title, Thread, Author, Replies, Status and Date. </p>
@@ -253,41 +224,53 @@ public class ViewStaffViewPost {
     	// Title Column (350px -> reduce this to make room for Thread)
     	TableColumn<PostDisplay, String> colTitle = new TableColumn<>("Title");
     	colTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
-    	colTitle.setPrefWidth(250);  // CHANGED from 350 to 250
+    	colTitle.setPrefWidth(130);  // CHANGED from 350 to 250
 
     	// Thread Column (100px) - NEW!
     	TableColumn<PostDisplay, String> colThread = new TableColumn<>("Thread");
     	colThread.setCellValueFactory(new PropertyValueFactory<>("thread"));
-    	colThread.setPrefWidth(100);
+    	colThread.setPrefWidth(80);
 
     	// Author Column (120px)
     	TableColumn<PostDisplay, String> colAuthor = new TableColumn<>("Author");
     	colAuthor.setCellValueFactory(new PropertyValueFactory<>("author"));
     	colAuthor.setPrefWidth(120);
 
-    	// Flags Column (80px)
-    	TableColumn<PostDisplay, String> colFlags = new TableColumn<>("Flagged");
-    	colFlags.setCellValueFactory(new PropertyValueFactory<>("flagged"));
-    	colFlags.setPrefWidth(80);
-
-    	// Status Column (80px)
-    	TableColumn<PostDisplay, String> colStatus = new TableColumn<>("Status");
-    	colStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
-    	colStatus.setPrefWidth(80);
 
     	// Date Column (160px)
     	TableColumn<PostDisplay, String> colDate = new TableColumn<>("Date");
     	colDate.setCellValueFactory(new PropertyValueFactory<>("timestamp"));
-    	colDate.setPrefWidth(160);
+    	colDate.setPrefWidth(200);
 
     	// Add all columns to the table
-    	table_Posts.getColumns().addAll(colId, colTitle, colThread, colAuthor, colFlags, colStatus, colDate);
+    	table_Posts.getColumns().addAll(colId, colTitle, colThread, colAuthor, colDate);
         table_Posts.setItems(postData);
         
-        table_Posts.setLayoutX(20);
+        table_Posts.setLayoutX(280);
         table_Posts.setLayoutY(175);
-        table_Posts.setPrefWidth(760);
+        table_Posts.setPrefWidth(480);
         table_Posts.setPrefHeight(290);
+    }
+    
+    /**
+     * <p> Setups the threads TableView with column: Thread. </p>
+     */
+    private void setupThreadTableView() {
+
+    	TableColumn<ThreadDisplay, String> colThread = new TableColumn<>("Thread");
+    	colThread.setCellValueFactory(new PropertyValueFactory<>("thread"));
+    	colThread.setPrefWidth(240);
+
+
+
+    	// Add all columns to the table
+    	table_Threads.getColumns().addAll(colThread);
+    	table_Threads.setItems(threadData);
+        
+    	table_Threads.setLayoutX(20);
+    	table_Threads.setLayoutY(175);
+    	table_Threads.setPrefWidth(240);
+    	table_Threads.setPrefHeight(290);
     }
     
     /**
@@ -298,7 +281,20 @@ public class ViewStaffViewPost {
         
         postData.clear();
         for (Post post : posts) {
+        	if(post.isFlag())
                postData.add(new PostDisplay(post));
+        }
+    }
+    
+    /**
+     * <p> Populates the table with all thread. </p>
+     * @param thread: ArrayList of String to be displayed
+     */
+    protected static void populateThreadsTable(List<String> threads) {
+        
+        threadData.clear();
+        for (String thread : threads) {
+        	threadData.add(new ThreadDisplay(thread));
         }
     }
     
@@ -334,7 +330,7 @@ public class ViewStaffViewPost {
     
     
     /**
-     * <p> Shows input dialogs for flag reason/New thread name  input. </p>
+     * <p> Shows input dialogs for New thread name input. </p>
      * 
      * @param title: the text displayed at the top of the dialog window
      * @param message: the text in the body of the dialog
@@ -401,10 +397,6 @@ public class ViewStaffViewPost {
         private final String thread;    
         /** Username of the author of the post */
         private final String author;
-        /** Status of post flag */
-        private final String flagged;
-        /** Status of the post relative to the user viewing it */
-        private final String status;
         /** Time and date the post was posted on */
         private final String timestamp;
         /** The Post object */
@@ -417,14 +409,12 @@ public class ViewStaffViewPost {
         public PostDisplay(Post post) {
             this.post = post;
             this.postId = post.getPostID();
-            this.thread = post.getThreadName();  // NEW!
-            //if(post.isDeleted()) this.title = "[Deleted]";
-            //else 				 this.title = post.getTitle();
+            this.thread = post.getThreadName();
             this.title = post.isDeleted() ? "[Deleted]" : post.getTitle();
             this.author = post.getUsername();
-            this.flagged = post.isFlag() ? "YES" : "NO";
-            this.status = ModelStaffViewPost.isRead(post.getPostID()) ? "READ" : "UNREAD";
             this.timestamp = ModelStaffViewPost.getFormattedTimestamp(post);
+            
+            if(post.isFlag()) {this.title += " [flagged]";};
         }
 
         // Getters
@@ -449,16 +439,6 @@ public class ViewStaffViewPost {
          */
         public String getAuthor() { return author; }
         /** 
-         * <p> Gets the flag status of post </p> 
-         * @return flag status
-         */
-        public String getFlagged() { return flagged; }
-        /** 
-         * <p> Gets status: if read or unread </p> 
-         * @return if the post has been read or not
-         */
-        public String getStatus() { return status; }
-        /** 
          * <p> Gets Date and time of posting </p> 
          * @return date and time of posting
          */
@@ -469,4 +449,30 @@ public class ViewStaffViewPost {
          */
         public Post getPost() { return post; }
     }
+    /**
+     * Inner class for TableThreadView display
+     * 
+     */
+    public static class ThreadDisplay {
+    	/** Thread name */
+        private final String thread;
+
+
+        /**
+         * <p> Gets all the details of the Posts for the TableVie>w </p>
+         * @param post: object of the current post
+         */
+        public ThreadDisplay(String thread) {
+            this.thread = thread;
+        }
+
+        // Getters
+        /** 
+         * <p> Gets Thread name </p> 
+         * @return thread
+         */
+        public String getThread() { return thread; }
+
+    }
+
 }

@@ -1499,14 +1499,15 @@ public class Database {
 	 * @return list of thread names
 	 */
 	public List<String> getAllThreads() {
-		List<String> threads = new ArrayList<>();
-		String query = "SELECT threadName FROM threadDB ORDER BY threadName ASC";
+	    List<String> threads = new ArrayList<>();
+	    String query = "SELECT threadName, createdBy FROM threadDB ORDER BY threadName ASC";
 
-		try (PreparedStatement pstmt = connection.prepareStatement(query)) {
-			ResultSet rs = pstmt.executeQuery();
-			while (rs.next()) {
-				threads.add(rs.getString("threadName"));
-			}
+	    try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+	        ResultSet rs = pstmt.executeQuery();
+	        while (rs.next()) {
+	            String combined = "|" + rs.getString("threadName") + "| created by " + rs.getString("createdBy");
+	            threads.add(combined);
+	        }
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -2241,23 +2242,12 @@ public class Database {
 		String query;
  
 
-		query = "SELECT * FROM postDB WHERE isDeleted = FALSE AND parentPostID = -1 AND threadName = ? AND "
-					+ "(title LIKE ? OR body LIKE ? OR keywords LIKE ?) "
+		query = "SELECT * FROM postDB WHERE isDeleted = FALSE AND parentPostID = -1 AND threadName = ? "
 					+ "ORDER BY timeStamp DESC";
  
 		try (PreparedStatement pstmt = connection.prepareStatement(query)) {
-			String searchTerm = "%" + "" + "%";
  
-			if (thread == null || thread.isEmpty()) {
-				pstmt.setString(1, searchTerm);
-				pstmt.setString(2, searchTerm);
-				pstmt.setString(3, searchTerm);
-			} else {
-				pstmt.setString(1, thread);
-				pstmt.setString(2, searchTerm);
-				pstmt.setString(3, searchTerm);
-				pstmt.setString(4, searchTerm);
-			}
+			pstmt.setString(1, thread);
  
 			ResultSet rs = pstmt.executeQuery();
 			while (rs.next()) {
@@ -2329,6 +2319,37 @@ public class Database {
 	 * @return true, if successful
 	 */
 	public boolean flagPost(Post post) {
+	    if (post == null) {
+	        return false;
+	    }
+	    
+	    try {
+	        String sql = "UPDATE postDB SET " 
+	    + "isFlagged = ?, "
+	    + "reason = ? "
+	    + "WHERE postID = ?";
+	        
+	        PreparedStatement pstmt = connection.prepareStatement(sql);
+	        pstmt.setBoolean(1, post.isFlagged());
+	        pstmt.setString(2, post.getReason());
+	        pstmt.setInt(3, post.getPostID());
+	        
+	        int rowsAffected = pstmt.executeUpdate();
+	        return rowsAffected > 0;
+	        
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        return false;
+	    }
+	}
+	
+	/**
+	 * flags a post within the database.
+	 *
+	 * @param post the post
+	 * @return true, if successful
+	 */
+	public boolean unFlagPost(Post post) {
 	    if (post == null) {
 	        return false;
 	    }

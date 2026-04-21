@@ -78,6 +78,17 @@ public class ModelRole2Home {
         post.changeDelete();
         return applicationMain.FoundationsMain.database.deletePost(post);
     }
+    
+    public static boolean flagPost(int postId, String reason) {
+        Post post = getPostById(postId);
+        if (post == null) {
+            return false;
+        }
+        
+        post.setFlag(true);
+        post.setReason(reason);
+        return applicationMain.FoundationsMain.database.flagPost(post);
+    }
 
     /**
      * <p> Returns the number of replies attached to the given post. </p>

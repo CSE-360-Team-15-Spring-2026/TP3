@@ -24,10 +24,16 @@ public class ModelStaffViewPost {
         currentUser = username;
     }
     
+	/**
+	 * <p> get current user </p>
+	 */
     public static String getCurrentUser() {
         return currentUser;
     }
     
+	/**
+	 * <p> get all posts in a post list from the database </p>
+	 */
     public static List<Post> getAllPosts() {
         database.Database db = applicationMain.FoundationsMain.database;
         List<Post> allPosts = db.getAllPosts();
@@ -42,25 +48,39 @@ public class ModelStaffViewPost {
         }
         return topLevelPosts;
     }
+	/**
+	 * <p> get all threads in a string list from the database </p>
+	 */
+    public static List<String> getAllThreads() {
+        database.Database db = applicationMain.FoundationsMain.database;
+        List<String> allThreads = db.getAllThreads();
+        
+
+        return allThreads;
+    }
     
+	/**
+	 * <p> get a filter post list with given thread name </p>
+	 */
     public static List<Post> filter(String thread) {
         return applicationMain.FoundationsMain.database.searchPosts(thread);
     }
     
 	/**
-	 * flags an existing post in the database and inputs a reason
+	 * <p> flags an existing post in the database and inputs a reason </p>
 	 */
-    public static boolean flagPost(int postId, String reason) {
+    public static boolean flagPost(int postId) {
         Post post = getPostById(postId);
         if (post == null) {
             return false;
         }
         
-        post.setFlag(true);
-        post.setReason(reason);
+        post.setFlag(false);
         return applicationMain.FoundationsMain.database.flagPost(post);
     }
-    
+	/**
+	 * <p> flags an existing post in the database and inputs a reason </p>
+	 */
     public static boolean deletePost(int postId) {
         Post post = getPostById(postId);
         if (post == null) {
@@ -70,7 +90,9 @@ public class ModelStaffViewPost {
         post.changeDelete();
         return applicationMain.FoundationsMain.database.deletePost(post);
     }
-    
+	/**
+	 * <p> flags an existing post in the database and inputs a reason </p>
+	 */
     public static boolean removePost(int postId) {
         Post post = getPostById(postId);
         if (post == null) {
@@ -82,22 +104,23 @@ public class ModelStaffViewPost {
     }
     
 	/**
-	 * Creates a new thread and inputs it in the database
+	 * <p> Creates a new thread and inputs it in the database </p>
 	 */
     protected static boolean createThread(String name) {
     	
     	return applicationMain.FoundationsMain.database.createThread(name, currentUser);
     }
     
+	/**
+	 * <p> deletes a thread from the database </p>
+	 */
     protected static boolean deleteThread(String thread) {
     	return applicationMain.FoundationsMain.database.deleteThread(thread);
     }
     
-    public static boolean isRead(int postId) {
-        database.Database db = applicationMain.FoundationsMain.database;
-        return db.isPostRead(currentUser, postId);
-    }
-    
+	/**
+	 * <p> formates date data from database for the table view</p>
+	 */
     public static String getFormattedTimestamp(Post post) {
         if (post.getTimestamp() == null) {
             return "";
@@ -107,6 +130,9 @@ public class ModelStaffViewPost {
         return post.getTimestamp().format(formatter);
     }
     
+	/**
+	 * <p> get post by postID </p>
+	 */
     public static Post getPostById(int postId) {
         database.Database db = applicationMain.FoundationsMain.database;
         return db.getPostByID(postId);
