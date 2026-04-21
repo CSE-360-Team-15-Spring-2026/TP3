@@ -12,12 +12,23 @@ import java.util.Map;
  *
  * Each grading action is traceable to the grader who performed it, and grading is enforced
  * to occur only after a review has taken place. </p>
- *
  */
 public class GradingService {
 
     /** In-memory store mapping content IDs to their associated grading records. */
     private final Map<Integer, GradingRecord> records = new HashMap<>();
+
+
+    /*-*******************************************************************************************
+
+    Constructor
+
+     */
+
+    /**
+     * Default constructor is not used (all methods are instance-based).
+     */
+    public GradingService() {}
 
 
     /*-*******************************************************************************************
