@@ -13,11 +13,6 @@ import java.util.Map;
  * Each grading action is traceable to the grader who performed it, and grading is enforced
  * to occur only after a review has taken place. </p>
  *
- * <p> Copyright: Lynn Robert Carter © 2025 </p>
- *
- * @author Lynn Robert Carter
- *
- * @version 1.00    2025-04-20 Initial version for TP3
  */
 public class GradingService {
 
