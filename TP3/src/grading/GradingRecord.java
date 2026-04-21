@@ -11,14 +11,25 @@ package grading;
  * assigned, and which grader performed the action. </p>
  */
 public class GradingRecord {
-
+    /** The ID of the post or reply associated with this grading record. */
     private int contentId;
+    /** Whether the content item has been reviewed by the instructional team. */
     private boolean reviewed;
+    /** The grade assigned to the content item, or null if not yet graded. */
     private Integer grade;
+    /** The username of the grader who reviewed or graded this content item. */
     private String graderUsername;
+    
+    /*-*******************************************************************************************
 
-     /**
+    Constructor
+
+     */
+
+    /**
      * Default constructor is not used.
+     *
+     * @param contentId the ID of the post or reply being tracked
      */
     public GradingRecord(int contentId) {
         this.contentId = contentId;
@@ -26,6 +37,12 @@ public class GradingRecord {
         this.grade = null;
         this.graderUsername = null;
     }
+
+    /*-*******************************************************************************************
+
+    Getters and Setters
+
+     */
 
     /**
      * <p> Returns the content ID associated with this grading record. </p>
@@ -45,7 +62,7 @@ public class GradingRecord {
         return reviewed;
     }
 
-     /**
+    /**
      * <p> Sets the reviewed state of this grading record. </p>
      *
      * @param reviewed the new reviewed state
