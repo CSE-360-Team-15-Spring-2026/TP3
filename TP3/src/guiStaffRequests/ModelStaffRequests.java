@@ -17,6 +17,18 @@ public class ModelStaffRequests {
 
     /*-*******************************************************************************************
 
+    Constructor
+
+     */
+
+    /**
+     * Default constructor is not used (all methods are static).
+     */
+    public ModelStaffRequests() {}
+
+
+    /*-*******************************************************************************************
+
     Initialization
 
      */
