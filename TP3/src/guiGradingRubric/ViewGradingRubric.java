@@ -31,26 +31,45 @@ public class ViewGradingRubric {
     /** The height of the application window. */
     private static double height = applicationMain.FoundationsMain.WINDOW_HEIGHT;
 
-    // Header
+    /** Page title label displayed at the top of the rubric page. */
     protected static Label label_PageTitle   = new Label("Grading Rubric");
+
+    /** Label showing the currently logged-in user's name. */
     protected static Label label_UserDetails = new Label();
+
+    /** Horizontal separator line below the page header. */
     protected static Line  line_Sep1         = new Line(20, 95, width - 20, 95);
 
-    // Left column – student list
+    /** Header label for the student list column. */
     protected static Label                  label_StudentsHeader = new Label("Students");
+
+    /** ListView displaying all students who have posted in the system. */
     protected static ListView<String>       list_Students        = new ListView<>();
+
+    /** Observable data backing the student ListView. */
     protected static ObservableList<String> studentData          = FXCollections.observableArrayList();
+
+    /** Parallel list of raw usernames corresponding to each row in the student ListView. */
     protected static List<String>           tempUsernames        = new ArrayList<>();
 
-    // Right column – rubric
+    /** Header label for the rubric criteria column. */
     protected static Label              label_RubricHeader    = new Label("Rubric Criteria");
+
+    /** Label showing the name of the currently selected student. */
     protected static Label              label_SelectedStudent = new Label("No student selected");
+
+    /** List of name labels, one per rubric criterion. */
     protected static List<Label>        criterionLabels       = new ArrayList<>();
+
+    /** List of description labels, one per rubric criterion. */
     protected static List<Label>        descLabels            = new ArrayList<>();
+
+    /** List of spinners for entering point values, one per rubric criterion. */
     protected static List<Spinner<Integer>> criterionSpinners = new ArrayList<>();
+
+    /** Label showing the running total points out of the maximum. */
     protected static Label              label_Total           = new Label("Total: 0 / 100");
 
-    // Buttons
     /** Button to save the current spinner values as grades for the selected student. */
     protected static Button button_SaveGrades  = new Button("Save Grades");
 
@@ -62,14 +81,26 @@ public class ViewGradingRubric {
 
     /** Button to log out the current user. */
     protected static Button button_Logout      = new Button("Logout");
+
+    /** Horizontal separator line above the action buttons. */
     protected static Line   line_Sep2          = new Line(20, height - 85, width - 20, height - 85);
 
-    // Singleton state
+    /** Singleton instance of this view. */
     private  static ViewGradingRubric theView;
+
+    /** The primary stage on which this page is displayed. */
     protected static Stage  theStage;
+
+    /** The root pane containing all widgets for this page. */
     protected static Pane   theRootPane;
+
+    /** The currently logged-in user. */
     protected static User   theUser;
+
+    /** The username of the student currently selected in the ListView. */
     protected static String currentStudent;
+
+    /** The JavaFX scene for this page. */
     private  static Scene   theScene;
 
 
