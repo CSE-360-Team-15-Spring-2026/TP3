@@ -195,7 +195,7 @@ public class ViewRole2Home {
         button_GradingStats     .setOnAction((_) -> { ControllerRole2Home.performGradingStats();       });
         button_PrivateFeedback  .setOnAction((_) -> { ControllerRole2Home.performPrivateFeedback();    });
         button_GradingParameters.setOnAction((_) -> { ControllerRole2Home.performGradingParameters(); });
-        button_AdminRequests    .setOnAction((_) -> { ControllerRole2Home.performAdminRequests();      });
+        button_AdminRequests    .setOnAction((_) -> { ControllerRole2Home.performEvaluatePerformance();      });
 
         setupButtonUI(button_Logout, "Dialog", 18, 250, Pos.CENTER,  20, 535);
         setupButtonUI(button_Quit,   "Dialog", 18, 250, Pos.CENTER, 300, 535);

@@ -12,11 +12,20 @@ import guiSearchPosts.ModelSearchPosts;
 import guiSearchPosts.ViewSearchPosts;
 import guiViewPost.ViewViewPost;
 
-//ViewStaffViewPost
-//ModelStaffViewPost
-
+/*******
+ * <p> Title: ControllerStaffViewPost Class. </p>
+ *
+ * <p> Description: The Java/FX-based Staff View Post Controller. Handles all user
+ * interactions related to flags and threads management.
+ *
+ * This controller connects the View Staff post view with the View staff post view model and
+ * database functionality. </p>
+ */
 public class ControllerStaffViewPost {
 
+    /**
+     * <p> Default constructor is not used. </p>
+     */
 	public ControllerStaffViewPost() {}
 	
     /**
