@@ -73,6 +73,7 @@ public class ModelStaffViewPost {
 	/**
 	 * <p> get a filter post list with given thread name </p>
 	 * @param thread: string name of thread
+	 * @return a post list filtered by provided thread
 	 */
     public static List<Post> filter(String thread) {
         return applicationMain.FoundationsMain.database.searchPosts(thread);
@@ -80,7 +81,7 @@ public class ModelStaffViewPost {
     
 	/**
 	 * <p> flags an existing post in the database and inputs a reason </p>
-	 * @param postID: the integer value of the post ID
+	 * @param postId: the integer value of the post ID
 	 * @return boolean value true if deleted, false if not
 	 */
     public static boolean flagPost(int postId) {
@@ -94,7 +95,7 @@ public class ModelStaffViewPost {
     }
 	/**
 	 * <p> flags an existing post in the database and inputs a reason </p>
-	 * @param postID: the integer value of the post ID
+	 * @param postId: the integer value of the post ID
 	 * @return boolean value true if deleted, false if not
 	 */
     public static boolean deletePost(int postId) {
@@ -108,7 +109,7 @@ public class ModelStaffViewPost {
     }
 	/**
 	 * <p> removes an existing post in the database </p>
-	 * @param postID: the integer value of post ID
+	 * @param postId: the integer value of post ID
 	 * @return boolean value true if removed, false if not
 	 */
     public static boolean removePost(int postId) {

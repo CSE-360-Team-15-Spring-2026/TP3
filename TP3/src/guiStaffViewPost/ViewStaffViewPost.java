@@ -31,7 +31,13 @@ import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-
+/*******
+ * <p> Title: ViewStaffViewPost Class. </p>
+ *
+ * <p> Description: The Java/FX-based Staff Home Page.  Staff members can manage all flagged post as well as
+ * threads here, performing actions such as create and delete thread, unflag and delete flagged posts </p>
+ * 
+ */
 public class ViewStaffViewPost {
 	/** Width of the GUI page */
     private static double width = applicationMain.FoundationsMain.WINDOW_WIDTH;
@@ -47,7 +53,7 @@ public class ViewStaffViewPost {
     
     /** Line Separator between the page title, user details and account update button and role2 post view gui */
     protected static Line line_Separator1 = new Line(20, 95, width-20, 95);
-    
+    /** Line Separator between the thread action buttons and all the tables */
     protected static Line line_Separator2 = new Line(20, 160, width-20, 160);
     
     // Thread action buttons
@@ -63,6 +69,7 @@ public class ViewStaffViewPost {
     protected static TableView<ThreadDisplay> table_Threads = new TableView<>();
     /** List of all the Posts to be displayed in the table */
     protected static ObservableList<PostDisplay> postData = FXCollections.observableArrayList();
+    /** List of all the threads to be displayed in the table */
     protected static ObservableList<ThreadDisplay> threadData = FXCollections.observableArrayList();
     
     /** Line Separator between the table and the buttons below it */
@@ -97,7 +104,7 @@ public class ViewStaffViewPost {
     private static Scene theScene = null;
     /** Tracks whether the user came from the main page or search page */
     public static String previousPageType = "main"; 
-    
+    /** Dialog input box for choosing thread name */
     private static TextInputDialog dialogProvideReason;
     
     
@@ -288,7 +295,7 @@ public class ViewStaffViewPost {
     
     /**
      * <p> Populates the table with all the thread names. </p>
-     * @param thread: ArrayList of String to be displayed
+     * @param threads: ArrayList of String to be displayed
      */
     protected static void populateThreadsTable(List<String> threads) {
         
