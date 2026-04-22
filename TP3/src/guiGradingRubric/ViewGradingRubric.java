@@ -16,9 +16,19 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
+/*******
+ * <p> Title: ViewGradingRubric Class. </p>
+ *
+ * <p> Description: The Java/FX-based Grading Rubric Page. Defines and lays out all GUI
+ * widgets for the grading rubric view, including the student list, criterion spinners,
+ * running total label, and action buttons. </p>
+ */
 public class ViewGradingRubric {
 
+    /** The width of the application window. */
     private static double width  = applicationMain.FoundationsMain.WINDOW_WIDTH;
+
+    /** The height of the application window. */
     private static double height = applicationMain.FoundationsMain.WINDOW_HEIGHT;
 
     // Header
@@ -41,9 +51,16 @@ public class ViewGradingRubric {
     protected static Label              label_Total           = new Label("Total: 0 / 100");
 
     // Buttons
+    /** Button to save the current spinner values as grades for the selected student. */
     protected static Button button_SaveGrades  = new Button("Save Grades");
+
+    /** Button to clear all spinner values for the selected student. */
     protected static Button button_ClearGrades = new Button("Clear");
+
+    /** Button to navigate back to the Role 2 Home page. */
     protected static Button button_Back        = new Button("Back");
+
+    /** Button to log out the current user. */
     protected static Button button_Logout      = new Button("Logout");
     protected static Line   line_Sep2          = new Line(20, height - 85, width - 20, height - 85);
 
@@ -55,8 +72,19 @@ public class ViewGradingRubric {
     protected static String currentStudent;
     private  static Scene   theScene;
 
-    // ── Entry point ───────────────────────────────────────────────────────────
 
+    /*-*******************************************************************************************
+
+    Entry point
+
+     */
+
+    /**
+     * <p> Displays the Grading Rubric page on the given stage for the given user. </p>
+     *
+     * @param ps   the primary stage on which to display the page
+     * @param user the currently logged-in user
+     */
     public static void displayGradingRubric(Stage ps, User user) {
         theStage = ps;
         theUser  = user;
@@ -68,8 +96,16 @@ public class ViewGradingRubric {
         theStage.show();
     }
 
-    // ── Constructor ───────────────────────────────────────────────────────────
 
+    /*-*******************************************************************************************
+
+    Constructor
+
+     */
+
+    /**
+     * Default constructor is not used externally. Builds and lays out all GUI widgets.
+     */
     private ViewGradingRubric() {
         theRootPane = new Pane();
         theScene    = new Scene(theRootPane, width, height);
@@ -151,8 +187,26 @@ public class ViewGradingRubric {
         theRootPane.getChildren().addAll(criterionSpinners);
     }
 
-    // ── Helpers ───────────────────────────────────────────────────────────────
 
+    /*-*******************************************************************************************
+
+    Private helpers
+
+     */
+
+    /**
+     * <p> Configures a Label with the given font, size, weight, width, alignment,
+     * and position. </p>
+     *
+     * @param l      the label to configure
+     * @param font   the font family name
+     * @param size   the font size
+     * @param weight the font weight
+     * @param minW   the minimum width
+     * @param pos    the alignment
+     * @param x      the x layout position
+     * @param y      the y layout position
+     */
     private static void setupLabel(Label l, String font, double size, FontWeight weight,
                                    double minW, Pos pos, double x, double y) {
         l.setFont(Font.font(font, weight, size));
@@ -162,6 +216,18 @@ public class ViewGradingRubric {
         l.setLayoutY(y);
     }
 
+    /**
+     * <p> Configures a Button with the given font, size, width, alignment,
+     * and position. </p>
+     *
+     * @param b    the button to configure
+     * @param font the font family name
+     * @param size the font size
+     * @param minW the minimum width
+     * @param pos  the alignment
+     * @param x    the x layout position
+     * @param y    the y layout position
+     */
     private static void setupButton(Button b, String font, double size,
                                     double minW, Pos pos, double x, double y) {
         b.setFont(Font.font(font, size));
@@ -171,6 +237,12 @@ public class ViewGradingRubric {
         b.setLayoutY(y);
     }
 
+    /**
+     * <p> Displays a standard informational alert dialog. </p>
+     *
+     * @param title   the dialog title
+     * @param message the message body
+     */
     public static void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
