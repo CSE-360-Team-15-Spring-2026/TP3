@@ -248,8 +248,7 @@ public class ControllerRole2Home {
      * Shows a "Not Implemented" alert until the back-end is ready. </p>
      */
     protected static void performEvaluatePerformance() {
-        showNotImplemented("Evaluate Performance",
-                "Evaluating student discussion performance and assigning marks has not been implemented yet.");
+        guiParticipationReport.ViewParticipationReport.displayParticipationReport(ViewRole2Home.theStage, ViewRole2Home.theUser);
     }
 
     /**
