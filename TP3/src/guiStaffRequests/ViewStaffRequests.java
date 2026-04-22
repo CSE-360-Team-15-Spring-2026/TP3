@@ -78,6 +78,18 @@ public class ViewStaffRequests {
 
     /*-*******************************************************************************************
 
+    Constructor
+
+     */
+
+    /**
+     * Default constructor is not used (all methods are static).
+     */
+    public ViewStaffRequests() {}
+
+
+    /*-*******************************************************************************************
+
     Entry point
 
      */
