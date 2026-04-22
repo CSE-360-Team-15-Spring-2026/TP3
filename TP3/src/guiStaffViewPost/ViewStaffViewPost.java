@@ -287,7 +287,7 @@ public class ViewStaffViewPost {
     }
     
     /**
-     * <p> Populates the table with all thread. </p>
+     * <p> Populates the table with all the thread names. </p>
      * @param thread: ArrayList of String to be displayed
      */
     protected static void populateThreadsTable(List<String> threads) {
@@ -459,8 +459,8 @@ public class ViewStaffViewPost {
 
 
         /**
-         * <p> Gets all the details of the Posts for the TableVie>w </p>
-         * @param post: object of the current post
+         * <p> Gets all the details of the threads for the TableVie>w </p>
+         * @param thread: string name of thread and creator
          */
         public ThreadDisplay(String thread) {
             this.thread = thread;
@@ -469,7 +469,7 @@ public class ViewStaffViewPost {
         // Getters
         /** 
          * <p> Gets Thread name </p> 
-         * @return thread
+         * @return string thread name
          */
         public String getThread() { return thread; }
 
