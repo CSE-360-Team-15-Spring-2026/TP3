@@ -55,8 +55,8 @@ public class ViewAdminRequests {
     /**
      * <p> displays adminRequests window</p>
      * 
-     * @param stage
-     * @param user
+     * @param stage the stage for window
+     * @param user the user for window
      */
     public static void display(Stage stage, User user) {
     	
@@ -178,7 +178,7 @@ public class ViewAdminRequests {
     /**
      * <p> populates table with a list of the requests sent to admin currently logged in</p>
      * 
-     * @param list
+     * @param list list used to populate table
      */
     protected static void populateTable(List<adminRequests> list) {
 
@@ -219,15 +219,30 @@ public class ViewAdminRequests {
             this.timestamp = request.getTimeStamp().format(formatter);
             this.status = request.getCompleted() ? "COMPLETED" : "OPEN";
         }
-        /** gets request ID*/
+        /** gets request ID
+         * 
+         * @return requestID ID of the request
+         */
         public int getRequestID() { return requestID; }
-        /** gets user who sent the request*/
+        /** gets user who sent the request
+         * 
+         * @return requester username of the user who made request
+         */
         public String getRequester() { return requester; }
-        /** gets the body*/
+        /** gets the body
+         * 
+         * @return body text of the request
+         */
         public String getBody() { return body; }
-        /** gets the time submitted*/
+        /** gets the time submitted
+         * 
+         * @return timestamp time that the request was submitted
+         */
         public String getTimestamp() { return timestamp; }
-        /** gets the status of completion*/
+        /** gets the status of completion
+         * 
+         * @return status completion status of the request
+         */
         public String getStatus() { return status; }
     }
     

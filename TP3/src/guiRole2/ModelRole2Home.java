@@ -79,6 +79,14 @@ public class ModelRole2Home {
         return applicationMain.FoundationsMain.database.deletePost(post);
     }
     
+    /**
+     * 
+     * <p> flags the post by the id and sets the reason </p>
+     * 
+     * @param postId the id of the post that needs to be flagged
+     * @param reason the reason the post was flagged
+     * @return true if the post gets flagged successfully, false if it fails
+     */
     public static boolean flagPost(int postId, String reason) {
         Post post = getPostById(postId);
         if (post == null) {

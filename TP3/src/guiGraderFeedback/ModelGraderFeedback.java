@@ -20,6 +20,8 @@ public class ModelGraderFeedback {
 	
 	/**
 	 * 
+	 * <p> saves feedback data of post feedback and grader username</p>
+	 * 
 	 * @param post that feedback is for
 	 * @param feedback reply from grader
 	 * @param grader name of person who graded post
