@@ -315,6 +315,14 @@ public class ViewRole2Home {
         b.setLayoutY(y);
     }
     
+    /**
+     * 
+     * <p> Creates a message box that asks the user for their reason as to why they flagged a post </p>
+     * 
+     * @param title of the dialog box
+     * @param message the message in the box
+     * @return the input from the reason dialog box
+     */
     protected static String giveReason(String title, String message) {
     	dialogProvideReason.setTitle(title);
     	dialogProvideReason.setHeaderText(message);
