@@ -212,7 +212,7 @@ public class ControllerStaffViewPost {
     	} else {
     		ViewStaffViewPost.showAlert("Error", "Failed to create thread.");
     	}
-    }//String result = str.split("\\|")[1];
+    }
     
     /**
      * <p> Deletes the selected Thread after a confirmation dialog </p>.

@@ -7,6 +7,14 @@ import database.Database;
 import entityClasses.Post;
 import entityClasses.Reply;
 
+
+/*******
+ * <p> Title: ModelStaffViewPost Class. </p>
+ *
+ * <p> Description: The Staff Post View Model. Provides data-access methods for managing threads and post flags
+ *
+ * This model class connects the staff view post GUI to the database. </p>
+ */
 public class ModelStaffViewPost {
 	/**
 	 * <p> Constructor - Not utilized </p>
@@ -26,6 +34,7 @@ public class ModelStaffViewPost {
     
 	/**
 	 * <p> get current user </p>
+	 * @return string of current user name
 	 */
     public static String getCurrentUser() {
         return currentUser;
@@ -33,6 +42,7 @@ public class ModelStaffViewPost {
     
 	/**
 	 * <p> get all posts in a post list from the database </p>
+	 * @return a post list of top level post
 	 */
     public static List<Post> getAllPosts() {
         database.Database db = applicationMain.FoundationsMain.database;
@@ -50,6 +60,7 @@ public class ModelStaffViewPost {
     }
 	/**
 	 * <p> get all threads in a string list from the database </p>
+	 * @return a String list of all the thread names
 	 */
     public static List<String> getAllThreads() {
         database.Database db = applicationMain.FoundationsMain.database;
@@ -61,6 +72,7 @@ public class ModelStaffViewPost {
     
 	/**
 	 * <p> get a filter post list with given thread name </p>
+	 * @param thread: string name of thread
 	 */
     public static List<Post> filter(String thread) {
         return applicationMain.FoundationsMain.database.searchPosts(thread);
@@ -68,6 +80,8 @@ public class ModelStaffViewPost {
     
 	/**
 	 * <p> flags an existing post in the database and inputs a reason </p>
+	 * @param postID: the integer value of the post ID
+	 * @return boolean value true if deleted, false if not
 	 */
     public static boolean flagPost(int postId) {
         Post post = getPostById(postId);
@@ -80,6 +94,8 @@ public class ModelStaffViewPost {
     }
 	/**
 	 * <p> flags an existing post in the database and inputs a reason </p>
+	 * @param postID: the integer value of the post ID
+	 * @return boolean value true if deleted, false if not
 	 */
     public static boolean deletePost(int postId) {
         Post post = getPostById(postId);
@@ -91,7 +107,9 @@ public class ModelStaffViewPost {
         return applicationMain.FoundationsMain.database.deletePost(post);
     }
 	/**
-	 * <p> flags an existing post in the database and inputs a reason </p>
+	 * <p> removes an existing post in the database </p>
+	 * @param postID: the integer value of post ID
+	 * @return boolean value true if removed, false if not
 	 */
     public static boolean removePost(int postId) {
         Post post = getPostById(postId);
@@ -105,6 +123,8 @@ public class ModelStaffViewPost {
     
 	/**
 	 * <p> Creates a new thread and inputs it in the database </p>
+	 * @param name: string name of new thread
+	 * @return true if created new thread, else false
 	 */
     protected static boolean createThread(String name) {
     	
@@ -113,13 +133,17 @@ public class ModelStaffViewPost {
     
 	/**
 	 * <p> deletes a thread from the database </p>
+	 * @param thread: String name of thread to be deleted
+	 * @return boolean value true if deleted, false if not
 	 */
     protected static boolean deleteThread(String thread) {
     	return applicationMain.FoundationsMain.database.deleteThread(thread);
     }
     
 	/**
-	 * <p> formates date data from database for the table view</p>
+	 * <p> formats date data from database for the table view</p>
+	 * @param post: post to have date formated
+	 * @return string of formated time stamp
 	 */
     public static String getFormattedTimestamp(Post post) {
         if (post.getTimestamp() == null) {
@@ -132,6 +156,8 @@ public class ModelStaffViewPost {
     
 	/**
 	 * <p> get post by postID </p>
+	 * @param postId: integer value of post ID
+	 * @return post
 	 */
     public static Post getPostById(int postId) {
         database.Database db = applicationMain.FoundationsMain.database;
