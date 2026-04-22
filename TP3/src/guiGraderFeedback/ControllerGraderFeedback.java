@@ -65,7 +65,12 @@ public class ControllerGraderFeedback {
 	}
 	
 
-	
+	/**********
+	 * <p> Method: performLogout() </p>
+	 * 
+	 * <p> Description: Logs out user. </p>
+	 * 
+	 */
 	protected static void performLogout() {
 		guiUserLogin.ViewUserLogin.displayUserLogin(ViewGraderFeedback.theStage);
 	}

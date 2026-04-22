@@ -11,40 +11,64 @@ import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-
+/*******
+ * <p> Title: ViewGrader Class. </p>
+ *
+ * <p> Description: The Java/FX-based Grader feedback
+ * Sets up the ui for grader feedback and allows the 
+ * Use of buttons.</p>
+ */
 public class ViewGraderFeedback {
+	/** window width*/
     private static double width = applicationMain.FoundationsMain.WINDOW_WIDTH;
+    /** window height*/
     private static double height = applicationMain.FoundationsMain.WINDOW_HEIGHT;
-
+    /** label of page title*/
     protected static Label label_PageTitle = new Label();
+    /** label of user details*/
     protected static Label label_UserDetails = new Label();
+    /** takes user to the update user window*/
     protected static Button button_UpdateUser = new Button("Account Update");
-
+    /** line separator*/
     protected static Line line_Separator1 = new Line(20, 95, width-20, 95);
-
+    /** label for post title*/
     protected static Label label_PostTitle = new Label("Post:");
+    /** label for post body*/
     protected static Label label_PostBody = new Label();
-
+    /** label for feedback*/
     protected static Label label_Feedback = new Label("Feedback:");
+    /** text area used for feedback*/
     protected static TextArea textarea_Feedback = new TextArea();
 
-
+    /** button to save feedback*/
     protected static Button button_SaveFeedback = new Button("Save Feedback");
-
+    /** line separator*/
     protected static Line line_Separator4 = new Line(20, 525, width-20, 525);
-
+    /** button to return*/
     protected static Button button_Return = new Button("Return");
+    /** button to logout*/
     protected static Button button_Logout = new Button("Logout");
+    /** button to quit*/
     protected static Button button_Quit = new Button("Quit");
-
+    /** view*/
     private static ViewGraderFeedback theView;
+    /** stage*/
     protected static Stage theStage;
+    /** root pane*/
     protected static Pane theRootPane;
+    /** current user*/
     protected static User currentUser;
+    /** selected post*/
     protected static Post selectedPost;
-
+    /** scene*/
     private static Scene scene;
-	
+	/**
+	 * <p> displays the window for grader feedback</p>
+	 * 
+	 * @param ps stage
+	 * @param user current user
+	 * @param post post to be displayed
+	 */
 	public static void display(Stage ps, User user, Post post) {
 		theStage = ps;
 		currentUser = user;
@@ -72,7 +96,12 @@ public class ViewGraderFeedback {
         theStage.setTitle("Grader Feedback");
         theStage.show();
 	}
-	
+	/**
+	 * <p> Method: ViewGraderFeedback() </p>
+	 * 
+	 * <p> sets up ui for labels,buttons, and text areas used
+	 * in View grader feedback</p>
+	 */
 	private ViewGraderFeedback() {
         theRootPane = new Pane();
         scene = new Scene(theRootPane, width, height);
@@ -167,7 +196,11 @@ public class ViewGraderFeedback {
 		b.setLayoutY(y);		
 	}
 
-	
+    /**
+     * <p> Shows alert dialogs </p>
+     * @param title: text displayed at the top of the dialog window
+     * @param message: the text in the body of the dialog
+     */
 	public static void showAlert(String title, String message) {
 		Alert alert = new Alert(Alert.AlertType.INFORMATION);
 		alert.setTitle(title);

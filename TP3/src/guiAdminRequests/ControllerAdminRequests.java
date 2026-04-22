@@ -16,7 +16,15 @@ import entityClasses.adminRequests;
  */
 public class ControllerAdminRequests {
 	/**
-	 * Loads request for the table in view
+	 * <p> Constructor - Not utilized </p>
+	 */
+	public ControllerAdminRequests() {}
+	
+	/**********
+	 * <p> Method: loadRequests() </p>
+	 * 
+	 * <p> retrieves data from request table. </p>
+	 * 
 	 */
     public static void loadRequests() {
         List<adminRequests> list = ModelAdminRequests.getRequests();

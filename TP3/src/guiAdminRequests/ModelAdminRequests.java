@@ -14,24 +14,31 @@ import entityClasses.adminRequests;
  *
  */
 public class ModelAdminRequests {
-	//database access
+	/** database */
     private static Database database = applicationMain.FoundationsMain.database;
-    //current admin user
+    /** current user admin*/
     private static String currentAdmin = "";
+    
+	/**
+	 * <p> Constructor - Not utilized </p>
+	 */
+	public ModelAdminRequests() {}
+    
     /**
      * <p> initialize currentAdmin with admin who currently is logged in</p>
      * 
-     * @param admin
+     * @param admin current user admin
      */
     public static void initialize(String admin) {
         currentAdmin = admin;
     }
     
-    /**
-     * <p> get requests that were specifically sent to the current admin</p>
-     * 
-     * @return requests sent to admins
-     */
+	/**********
+	 * <p> Method: getRequests() </p>
+	 * 
+	 * <p> gets request tables. </p>
+	 * 
+	 */
     public static List<adminRequests> getRequests() {
         return database.getRequestsForAdmin(currentAdmin);
     }

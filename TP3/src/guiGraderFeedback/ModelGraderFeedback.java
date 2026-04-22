@@ -15,12 +15,12 @@ public class ModelGraderFeedback {
 	 * <p> Constructor - Not utilized </p>
 	 */
 	public ModelGraderFeedback() {}
-	
+	/** database */
 	private static Database db = applicationMain.FoundationsMain.database;
 	
 	/**
 	 * 
-	 * @param postID posts identification
+	 * @param post that feedback is for
 	 * @param feedback reply from grader
 	 * @param grader name of person who graded post
 	 * 

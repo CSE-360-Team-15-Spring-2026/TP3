@@ -23,24 +23,35 @@ import javafx.stage.Stage;
  * logged in admin in a table .</p>
  */
 public class ViewAdminRequests {
-	
+	/** window width*/
     private static double width = applicationMain.FoundationsMain.WINDOW_WIDTH;
+    /** window height*/
     private static double height = applicationMain.FoundationsMain.WINDOW_HEIGHT;
-    
+    /** stage*/ 
     protected static Stage theStage;
+    /** current user*/
     protected static User theUser;
-    
+    /** root*/
     private static Pane root;
+    /** scene*/
     private static Scene scene;
-    
+    /** table*/
     protected static TableView<RequestDisplay> table = new TableView<>();
+    /** observable*/
     protected static ObservableList<RequestDisplay> data =
         FXCollections.observableArrayList();
-    
+    /** label for title*/
     private static Label label_Title = new Label("Admin Requests");
+    /** label for user*/
     private static Label label_User = new Label();
-    
+    /** button for return*/
     private static Button button_Return = new Button("Return");
+    
+	/**
+	 * <p> Constructor - Not utilized </p>
+	 */
+	public ViewAdminRequests() {}
+    
     /**
      * <p> displays adminRequests window</p>
      * 
@@ -48,7 +59,7 @@ public class ViewAdminRequests {
      * @param user
      */
     public static void display(Stage stage, User user) {
-
+    	
         theStage = stage;
         theUser = user;
 
@@ -181,13 +192,22 @@ public class ViewAdminRequests {
      * <p> used to get values used in requests table.</p>
      */
     public static class RequestDisplay {
-
+    	/** requests id*/
         private final int requestID;
+        /** user who made request*/
         private final String requester;
+        /** text of the request*/
         private final String body;
+        /** time request submitted*/
         private final String timestamp;
+        /** Status of completion*/
         private final String status;
-
+        
+        /**
+         * <p> method to set data from requests pulled</p>
+         * 
+         * @param request request pulled from table
+         */
         public RequestDisplay(adminRequests request) {
 
             DateTimeFormatter formatter =
@@ -199,11 +219,15 @@ public class ViewAdminRequests {
             this.timestamp = request.getTimeStamp().format(formatter);
             this.status = request.getCompleted() ? "COMPLETED" : "OPEN";
         }
-
+        /** gets request ID*/
         public int getRequestID() { return requestID; }
+        /** gets user who sent the request*/
         public String getRequester() { return requester; }
+        /** gets the body*/
         public String getBody() { return body; }
+        /** gets the time submitted*/
         public String getTimestamp() { return timestamp; }
+        /** gets the status of completion*/
         public String getStatus() { return status; }
     }
     

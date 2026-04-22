@@ -18,19 +18,19 @@ import java.time.LocalDateTime;
  * @version 1.00    
  */
 public class adminRequests {
-	//Identifier for requests
+	/** ID of request*/
 	private int requestID;
-	//text where actual request is held
+	/** text where staffs request is held*/
 	private String body;
-	//user who submitted the request
+	/** user who submitted the request*/
 	private String requestSubmiter;
-	//admin who received request 
+	/** admin who received the request*/
 	private String recievingAdmin;
-	//marks request as completed
+	/** marks request as completed when true*/
 	private boolean completed;
-	//time request was submitted
+	/** time request submitted*/
 	private LocalDateTime timestamp;
-	//first requestIDcan be used for threading
+	/** first request ID*/
 	private Integer firstRequestID;
 	
 	/**
@@ -92,7 +92,7 @@ public class adminRequests {
 	/**
 	 * <p> gets the request ID </p>
 	 * 
-	 * @return requestID
+	 * @return requestID ID number of requests
 	 */
 	public int getRequestID() {
 		return requestID;
@@ -141,7 +141,7 @@ public class adminRequests {
 	/**
 	 * <p> get user who made request</p>
 	 * 
-	 * @return requestSubmiter 
+	 * @return requestSubmiter user who submitted request
 	 */
 	public String getRequestSubmiter() {
 		return requestSubmiter;
@@ -149,7 +149,7 @@ public class adminRequests {
 	/**
 	 * <p> set the user who made request</p>
 	 * 
-	 * @param submiter
+	 * @param submiter user who submitted request
 	 */
 	public void setRequestSubmiter(String submiter) {
 		this.requestSubmiter = submiter;
@@ -157,7 +157,7 @@ public class adminRequests {
 	/**
 	 * <p> get the admin who received the request</p>
 	 * 
-	 * @return recievingAdmin
+	 * @return recievingAdmin admin who received request
 	 */
 	public String getRecievingAdmin() {
 		return recievingAdmin;
@@ -166,7 +166,7 @@ public class adminRequests {
 	/**
 	 * <p> set the admin who recieved the request</p>
 	 * 
-	 * @param admin
+	 * @param admin admin set to receive request
 	 */
 	public void setRecievingAdmin(String admin) {
 		this.recievingAdmin = admin;
@@ -184,7 +184,7 @@ public class adminRequests {
 	/**
 	 * <p> set value of completed</p>
 	 * 
-	 * @param complete
+	 * @param complete sets request as completed
 	 */
 	public void setCompleted(boolean complete) {
 		this.completed = complete;
@@ -192,7 +192,7 @@ public class adminRequests {
 	/**
 	 * <p> get the time request was submitted</p>
 	 * 
-	 * @return timestamp
+	 * @return timestamp sets timestamp as completed
 	 */
 	public LocalDateTime getTimeStamp() {
 		return timestamp;
@@ -200,7 +200,7 @@ public class adminRequests {
 	/**
 	 * <p> set the timestamp with the time requests are submitted</p>
 	 * 
-	 * @param timeStamp
+	 * @param timeStamp sets the time request submitted
 	 */
 	public void setTimeStamp(LocalDateTime timeStamp) {
 		this.timestamp = timeStamp;
