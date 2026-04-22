@@ -10,7 +10,7 @@ import entityClasses.adminRequests;
  *
  * <p> Description: The Admin Requests Model.
  * Provides data-access functionality for retrieving requests
- * assigned to the current user admin.
+ * assigned to the current user admin. </p>
  *
  */
 public class ModelAdminRequests {
@@ -21,6 +21,7 @@ public class ModelAdminRequests {
     
 	/**
 	 * <p> Constructor - Not utilized </p>
+	 * 
 	 */
 	public ModelAdminRequests() {}
     
@@ -38,6 +39,7 @@ public class ModelAdminRequests {
 	 * 
 	 * <p> gets request tables. </p>
 	 * 
+	 * @return request based on if addressed to current admin
 	 */
     public static List<adminRequests> getRequests() {
         return database.getRequestsForAdmin(currentAdmin);
